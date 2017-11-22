@@ -1,6 +1,9 @@
 DimensionalPocketsII
 ===================
-Due to having a similiar idea to NPException's Dimensional Pockets, I am creating DimensionalPocketsII with very similar features, but with my own twist. The mod is in Alpha stage currently, using Forge for Minecraft version 1.11.2.
+Due to having a similiar idea to NPException's Dimensional Pockets, I have created DimensionalPocketsII with some features carried over, but with my own twist. The mod is in the Alpha stage currently, using Forge for Minecraft version 1.11.2.
+
+# Mod Page
+[Curse-Forge]()
 
 # Licence
 This repo does not have a licence. This means that by default, it is All Rights Reserved. However, due to having complete control over what rights that includes, here is a list of what you can & cannot do:
@@ -19,5 +22,4 @@ This repo does not have a licence. This means that by default, it is All Rights 
 
 If you wish to use original DimensionalPockets code, please refer to [NPException's GitHub](https://github.com/NPException/Dimensional-Pockets)
 
-2015/17 TheRealZeher | TRZ
-All Rights Reserved.
+2017 @ TheRealZeher | TRZ | All Rights Reserved.
