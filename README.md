@@ -17,7 +17,7 @@ This repo does not have a licence. This means that by default, it is All Rights 
 - Re-distribute the mod under a different name & author.
 - Post redirected links to the mod/code that use advertising/money-making sites like ad.fly.
 
-If you wish to use original DimensionalPockets code, please refer to the original [NPException GitHub](https://github.com/NPException/Dimensional-Pockets)
+If you wish to use original DimensionalPockets code, please refer to [NPException's GitHub](https://github.com/NPException/Dimensional-Pockets)
 
 2015/17 TheRealZeher | TRZ
 All Rights Reserved.
