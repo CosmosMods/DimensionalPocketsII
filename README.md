@@ -1,6 +1,6 @@
-DimensionalPocketsII
+DimensionalPockets-II
 ===================
-Due to having a similiar idea to NPException's Dimensional Pockets, I have created DimensionalPocketsII with some features carried over, but with my own twist. The mod is in the Alpha stage currently, using Forge for Minecraft version 1.11.2.
+Due to having a similiar idea to NPException's Dimensional Pockets, I have created DimensionalPockets-II with some features carried over, but with my own twist. The mod is in the Alpha stage currently, using Forge for Minecraft version 1.11.2.
 
 # Mod Page
 [Curse-Forge]()
