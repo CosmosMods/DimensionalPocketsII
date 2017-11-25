@@ -27,7 +27,7 @@ public class PocketRegistry {
 	private static PocketGenParameters pocketGenParameters = new PocketGenParameters();
 
 	static class PocketGenParameters {
-		private BlockPos currentChunk = new BlockPos(0, 4, 0);
+		private BlockPos currentChunk = new BlockPos(0, 0, 0);
 		private EnumFacing nextPocketCoordsDirection = EnumFacing.NORTH;
 	}
 
@@ -36,6 +36,8 @@ public class PocketRegistry {
 	}
 
 	public static Pocket getPocket(BlockPos chunkPos) {
+		System.out.println(backLinkMap + " -- " +  chunkPos);
+		
 		DimUtils.enforceServer();
 		if (backLinkMap.containsKey(chunkPos))
 			return backLinkMap.get(chunkPos);
@@ -87,6 +89,8 @@ public class PocketRegistry {
 		backLinkMap.put(pocket.getChunkPos(), pocket);
 		
 		saveData();
+		
+		System.out.println(backLinkMap);
 
 		return pocket;
 	}

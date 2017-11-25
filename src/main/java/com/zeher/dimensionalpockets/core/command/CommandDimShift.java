@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import org.apache.commons.lang3.StringUtils;
 
 import com.zeher.dimensionalpockets.core.dimshift.DimensionalShifter;
+import com.zeher.dimensionalpockets.DimensionalPockets;
 import com.zeher.dimensionalpockets.core.dimshift.DimensionalShiftUtils;
 import com.zeher.dimensionalpockets.core.util.DimUtils;
 import com.zeher.trzcore.api.TRZTextUtil;
@@ -40,7 +41,7 @@ public class CommandDimShift extends CommandBase {
 	
 	@Override
 	public int getRequiredPermissionLevel() {
-        return 2;
+        return 4;
     }
 
 	@Override
@@ -58,6 +59,12 @@ public class CommandDimShift extends CommandBase {
 				if(StringUtils.isNumeric(args[0])) {
 					int dim_id = Integer.parseInt(args[0]);
 					
+					if(!(DimensionalPockets.can_teleport_to_dim) && dim_id == 98) {
+						TextComponentString string = new TextComponentString(TRZTextUtil.RED + "You cannot teleport to that dimension.");
+						player.sendMessage(string);
+						return;
+					}
+					
 					WorldServer world_server = server.worldServerForDimension(dim_id);
 					WorldInfo world_info = world_server.getWorldInfo();
 					
@@ -66,9 +73,7 @@ public class CommandDimShift extends CommandBase {
 					
 					BlockPos dim_pos = DimensionManager.getProvider(dim_id).getSpawnPoint();
 					
-					
-					System.out.println("PRO" + dim_pos + " -- ");
-					
+					//System.out.println("PRO" + dim_pos + " -- ");
 					DimensionType dimension = DimensionType.getById(dim_id);
 					String dim_name = dimension.getName();
 					
@@ -80,7 +85,7 @@ public class CommandDimShift extends CommandBase {
 						
 						//player.setPositionAndUpdate(spawn_point.getX(), spawn_point.getY(), spawn_point.getZ());
 					} else {
-						TextComponentString comp = new TextComponentString("Shifted " + player.getName() + " to: " + dim_name);
+						TextComponentString comp = new TextComponentString(TRZTextUtil.TEAL + "Shifted: " + TRZTextUtil.GREEN + player.getName() + TRZTextUtil.TEAL + " to dimension: " + dim_id + ".");
 						player.sendMessage(comp);
 						
 						DimensionalShiftUtils.shiftPlayerToDimension(player, dim_id, teleporter);
@@ -103,7 +108,7 @@ public class CommandDimShift extends CommandBase {
 						TextComponentString comp = new TextComponentString(TRZTextUtil.RED + "You are already in that dimension!");
 						player.sendMessage(comp);
 					} else {
-						TextComponentString comp = new TextComponentString("Shifted " + player.getName() + " to: " + dim_name);
+						TextComponentString comp = new TextComponentString(TRZTextUtil.TEAL + "Shifted: " + TRZTextUtil.GREEN + player.getName() + TRZTextUtil.TEAL + " to dimension: " + dim_id + ".");
 						player.sendMessage(comp);
 						
 						DimensionalShiftUtils.shiftPlayerToDimension(player, -dim_id, teleporter);
@@ -114,7 +119,6 @@ public class CommandDimShift extends CommandBase {
 				}
 			}
 		}
-		
 	}
 
 }

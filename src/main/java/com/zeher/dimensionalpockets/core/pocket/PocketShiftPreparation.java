@@ -7,29 +7,29 @@ public class PocketShiftPreparation {
 		INTO_POCKET, OUT_OF_POCKET
 	}
 
-	private int ticksBeforeTeleport;
+	private int ticksBeforeShift;
 	private final EntityPlayer player;
 	private final Pocket pocket;
 	private final Direction direction;
 
-	public PocketShiftPreparation(EntityPlayer player, int ticksBeforeTeleport, Pocket pocket, Direction direction) {
+	public PocketShiftPreparation(EntityPlayer player, int ticksBeforeShift, Pocket pocket, Direction direction) {
 		this.player = player;
-		this.ticksBeforeTeleport = ticksBeforeTeleport;
+		this.ticksBeforeShift = ticksBeforeShift;
 		this.pocket = pocket;
 		this.direction = direction;
 	}
 
 	public boolean doPrepareTick() {
-		if (ticksBeforeTeleport < 0)
+		if (ticksBeforeShift < 0)
 			return true;
 
-		ticksBeforeTeleport--;
+		ticksBeforeShift--;
 
-		if (ticksBeforeTeleport <= 0) {
+		if (ticksBeforeShift <= 0) {
 			if (direction == Direction.INTO_POCKET) {
-				pocket.teleportTo(player);
+				pocket.shiftTo(player);
 			} else {
-				pocket.teleportFrom(player);
+				pocket.shiftFrom(player);
 			}
 			return true;
 		}

@@ -110,17 +110,9 @@ public class Pocket {
 
 		Chunk chunk = world.getChunkFromChunkCoords(chunkPos.getX(), chunkPos.getZ());
 		
-		System.out.println("Pocket.class" + " - Generated pocket.");
-		System.out.println("Pocket.class" + " - World Pos: " + worldX + " __ " + worldY + " __ " + worldZ + " Chunk data:" + chunk);
-		System.out.println("Pocket.class" + " - Chunk Pos: " + this.chunkPos);
-		
-		int l = worldY >> 4;
-		ExtendedBlockStorage extendedBlockStorage = chunk.getBlockStorageArray()[l];  
-
-		if (extendedBlockStorage == null) {
-			extendedBlockStorage = new ExtendedBlockStorage(worldY, !world.provider.hasNoSky());
-			chunk.getBlockStorageArray()[l] = extendedBlockStorage;
-		}
+		//System.out.println("Pocket.class" + " - Generated pocket.");
+		//System.out.println("Pocket.class" + " - World Pos: " + worldX + " __ " + worldY + " __ " + worldZ + " Chunk data:" + chunk);
+		//System.out.println("Pocket.class" + " - Chunk Pos: " + this.chunkPos);
 
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
@@ -134,14 +126,12 @@ public class Pocket {
 						continue;
 					}
 
-					//extendedBlockStorage.set(x, y, z, BlockHandler.block_dimensional_pocket_wall.getDefaultState());
-					//world.markBlockRangeForRenderUpdate(worldX + x, worldY + y, worldZ + z, worldX + x, worldY + y, worldZ + z);
 					world.setBlockState(new BlockPos(x, y, z), BlockHandler.block_dimensional_pocket_wall.getDefaultState());
 				}
 			}
 		}
 
-		isGenerated = world.getBlockState(new BlockPos(worldX + 1, worldY, worldZ + 1)).getBlock() instanceof BlockDimensionalPocketWall;
+		isGenerated = world.getBlockState(new BlockPos(worldX + 1, 0, worldZ + 1)).getBlock() instanceof BlockDimensionalPocketWall;
 		getNBT().setBoolean(NBT_GENERATED_KEY, isGenerated);
 
 		if (!Strings.isNullOrEmpty(creatorName)) {
@@ -171,18 +161,18 @@ public class Pocket {
 		BlockPos tempSet = getChunkPos();
 		BlockPos spawnSet = tempSet.add(this.spawnPos);
 		
-		DimensionalShifter teleporter = DimensionalShiftUtils.createTeleporter(dimID, tempSet, spawnYaw, spawnPitch);
+		DimensionalShifter teleporter = DimensionalShiftUtils.createTeleporter(dimID, spawnSet, spawnYaw, spawnPitch);
 
-		//generatePocketRoom(entityPlayer.getName());
+		generatePocketRoom(entityPlayer.getName());
 
+		TextComponentString comp = new TextComponentString(TRZTextUtil.TEAL + "Entering pocket dimension...");
+		entityPlayer.sendMessage(comp);
+		
 		if (dimID != DimensionalPockets.dimension_id) {
 			DimensionalShiftUtils.shiftPlayerToDimension(player, DimensionalPockets.dimension_id, teleporter, spawnSet);
 		} else {
 			teleporter.placeInPortal(player, 0);
 		}
-		
-		TextComponentString comp = new TextComponentString(TRZTextUtil.TEAL + "Entering pocket dimension...");
-		entityPlayer.sendMessage(comp);
 	}
 
 	public void shiftFrom(EntityPlayer entityPlayer) {

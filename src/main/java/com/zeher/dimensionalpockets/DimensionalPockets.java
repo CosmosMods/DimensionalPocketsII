@@ -39,10 +39,10 @@ public class DimensionalPockets{
 	public static CommonProxy common_proxy;
 	public static TRZIProxy iproxy;
 	
-	public static final String mod_id = "dimensionalpockets";
-	public static final String mod_name = "Dimensional Pockets";
-	public static final String mod_version = "0.0.1-mc-1.11.2-a";
-	public static final String mod_version_max = "0.0.5-mc-1.11.2-a";
+	public static final String mod_id = "dimensionalpocketsii";
+	public static final String mod_name = "Dimensional Pockets II";
+	public static final String mod_version = "0.0.2a";
+	public static final String mod_version_max = "0.1.0a";
 	public static final String mod_dependencies = TRZCore.version_group;
 	
 	public static final String version_group = "required-after:" + mod_id + "@[" + mod_version + "," + mod_version_max + "];";
@@ -51,6 +51,7 @@ public class DimensionalPockets{
 	public static int biome_id = 99;
 	public static boolean keep_pockets_chunkloaded = true;
 	public static boolean can_destroy_walls_in_creative = false;
+	public static boolean can_teleport_to_dim = false;
 	
 	public static CreativeTabs tab_dimensionalpockets = new CreativeTabDimensional(CreativeTabs.getNextID(), "tab_dimensionalpockets");
 	

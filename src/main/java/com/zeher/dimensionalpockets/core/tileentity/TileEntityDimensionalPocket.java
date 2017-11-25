@@ -205,7 +205,8 @@ implements IBlockNotifier, IBlockInteract, ITickable {
 	
 	private void shiftIntoPocket(EntityPlayer player) {
 		if(!world.isRemote) {
-			getPocket().teleportTo(player);
+			getPocket().shiftTo(player);
 		}
 	}
+	
 }

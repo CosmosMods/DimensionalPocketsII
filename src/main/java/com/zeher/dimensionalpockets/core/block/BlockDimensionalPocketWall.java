@@ -25,7 +25,8 @@ public class BlockDimensionalPocketWall extends TRZBlock {
 
 	public BlockDimensionalPocketWall(String name, Material arg0, String tool, int harvest, int hardness, int resistance, CreativeTabs tab) {
 		super(name, arg0, tool, harvest, hardness, resistance, tab);
-
+		this.setLightLevel(1F);
+		this.setBlockUnbreakable();
 	}
 
 	@Override
@@ -50,8 +51,7 @@ public class BlockDimensionalPocketWall extends TRZBlock {
 	}
 
 	public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
-		//return (worldIn.provider.getDimension() == DimensionalPockets.dimension_id) && DimensionalPockets.can_destroy_walls_in_creative;
-		return false;
+		return (worldIn.provider.getDimension() == DimensionalPockets.dimension_id) && DimensionalPockets.can_destroy_walls_in_creative;
 	}
 
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
@@ -67,14 +67,14 @@ public class BlockDimensionalPocketWall extends TRZBlock {
 			return false;
 		}
 
-		if (playerIn.dimension == DimensionalPockets.dimension_id) {
+		if (playerIn.dimension == DimensionalPockets.dimension_id && playerIn.isSneaking()) {
 			if (worldIn.isRemote) {
 				return false;
 			}
 			
 			Pocket pocket = PocketRegistry.getPocket(new BlockPos(pos.getX() >> 4, pos.getY() >> 4, pos.getZ() >> 4));
-			if(pocket.equals(null)) {
-				TextComponentString comp = new TextComponentString(TRZTextUtil.ITALIC + "Pocket is null. Teleport disabled.");
+			if(pocket == null) {
+				TextComponentString comp = new TextComponentString(TRZTextUtil.RED + "Pocket is null. Teleport disabled.");
 				playerIn.sendMessage(comp);
 				return false;
 			}
@@ -82,11 +82,11 @@ public class BlockDimensionalPocketWall extends TRZBlock {
 				playerIn.setSneaking(false);
 			}
 			
-			pocket.teleportFrom(playerIn);
+			pocket.shiftFrom(playerIn);
 			return true;
 		}
 		
-		return false;
+		return true;
 	}
 
 }

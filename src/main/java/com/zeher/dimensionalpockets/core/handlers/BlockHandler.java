@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
@@ -41,9 +42,9 @@ public class BlockHandler {
 		block_dimensional = new TRZBlock("block_dimensional", Material.IRON, "pickaxe", 2, 8, 8, DimensionalPockets.tab_dimensionalpockets);
 		
 		block_dimensional_pocket = new BlockDimensionalPocket("block_dimensional_pocket", Material.CIRCUITS, "pickaxe", 4, 12, 12, DimensionalPockets.tab_dimensionalpockets);
-		block_dimensional_pocket_wall = new BlockDimensionalPocketWall("block_dimensional_pocket_wall", Material.STRUCTURE_VOID, "", 5, 40, 40, null);
-		
+		block_dimensional_pocket_wall = new BlockDimensionalPocketWall("block_dimensional_pocket_wall", Material.GROUND, "", 5, 40, 40, null);
 	}
+	
 	 
 	public static void register(){
 		registerBlock(block_dimensional_ore);

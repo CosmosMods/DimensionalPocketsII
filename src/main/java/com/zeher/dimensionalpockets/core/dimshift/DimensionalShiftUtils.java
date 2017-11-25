@@ -25,6 +25,7 @@ public class DimensionalShiftUtils {
 		WorldServer world_server = server.worldServerForDimension(dim_id);
 		
 		world_server.getMinecraftServer().getPlayerList().transferPlayerToDimension(player, dim_id, teleporter);
-		world_server.getMinecraftServer().getPlayerList().changePlayerDimension(player, dim_id);
+		//world_server.getMinecraftServer().getPlayerList().changePlayerDimension(player, dim_id);
 	}
+	
 }
