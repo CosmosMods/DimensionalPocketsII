@@ -1,0 +1,16 @@
+[
+{
+  "modid": "orecraft",
+  "name": "OreCraft",
+  "description": "Ores! Weapons! Tools! And more...",
+  "version": "{4.0.1}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["TheRealZeher", "ManWithAPlan"],
+  "credits": "Open source mods, ManWithAPlan for textures.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": ["TRZCore 1.5.1"]
+}
+]
