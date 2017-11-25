@@ -134,8 +134,9 @@ public class Pocket {
 						continue;
 					}
 
-					extendedBlockStorage.set(x, y, z, BlockHandler.block_dimensional_pocket_wall.getDefaultState());
-					world.markBlockRangeForRenderUpdate(worldX + x, worldY + y, worldZ + z, worldX + x, worldY + y, worldZ + z);
+					//extendedBlockStorage.set(x, y, z, BlockHandler.block_dimensional_pocket_wall.getDefaultState());
+					//world.markBlockRangeForRenderUpdate(worldX + x, worldY + y, worldZ + z, worldX + x, worldY + y, worldZ + z);
+					world.setBlockState(new BlockPos(x, y, z), BlockHandler.block_dimensional_pocket_wall.getDefaultState());
 				}
 			}
 		}
@@ -149,7 +150,7 @@ public class Pocket {
 		}
 	}
 	
-	public void teleportTo(EntityPlayer entityPlayer) {
+	public void shiftTo(EntityPlayer entityPlayer) {
 		if (entityPlayer.world.isRemote || !(entityPlayer instanceof EntityPlayerMP)) {
 			return;
 		}
@@ -172,7 +173,7 @@ public class Pocket {
 		
 		DimensionalShifter teleporter = DimensionalShiftUtils.createTeleporter(dimID, tempSet, spawnYaw, spawnPitch);
 
-		generatePocketRoom(entityPlayer.getName());
+		//generatePocketRoom(entityPlayer.getName());
 
 		if (dimID != DimensionalPockets.dimension_id) {
 			DimensionalShiftUtils.shiftPlayerToDimension(player, DimensionalPockets.dimension_id, teleporter, spawnSet);
@@ -184,7 +185,7 @@ public class Pocket {
 		entityPlayer.sendMessage(comp);
 	}
 
-	public void teleportFrom(EntityPlayer entityPlayer) {
+	public void shiftFrom(EntityPlayer entityPlayer) {
 		if (entityPlayer.world.isRemote || !(entityPlayer instanceof EntityPlayerMP)) {
 			return;
 		}
