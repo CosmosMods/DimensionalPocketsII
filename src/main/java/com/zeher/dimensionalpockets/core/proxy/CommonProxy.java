@@ -21,12 +21,6 @@ import net.minecraftforge.fml.relauncher.Side;
 public class CommonProxy implements TRZIProxy {
 
 	public void preInit(FMLPreInitializationEvent event) {
-		ItemHandler.preInit();
-		ItemHandler.register();
-
-		BlockHandler.preInit();
-		BlockHandler.register();
-
 		RecipeHandler.registerRecipes();
 		RecipeHandler.registerSmelting();
 

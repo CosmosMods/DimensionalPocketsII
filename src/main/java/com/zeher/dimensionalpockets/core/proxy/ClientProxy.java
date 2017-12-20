@@ -22,9 +22,6 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void init(FMLInitializationEvent event) {
-		ItemHandler.registerModelLocations();
-		BlockHandler.registerModelLocations();
-
 		MinecraftForge.EVENT_BUS.register(new PocketBlockEventHandler());
 	}
 	

@@ -107,13 +107,7 @@ public class Pocket {
 		int worldX = chunkPos.getX() * 16;
 		int worldY = chunkPos.getY() * 16;
 		int worldZ = chunkPos.getZ() * 16;
-
-		Chunk chunk = world.getChunkFromChunkCoords(chunkPos.getX(), chunkPos.getZ());
 		
-		//System.out.println("Pocket.class" + " - Generated pocket.");
-		//System.out.println("Pocket.class" + " - World Pos: " + worldX + " __ " + worldY + " __ " + worldZ + " Chunk data:" + chunk);
-		//System.out.println("Pocket.class" + " - Chunk Pos: " + this.chunkPos);
-
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
 				for (int z = 0; z < 16; z++) {
@@ -214,7 +208,7 @@ public class Pocket {
 	}
 
 	public World getBlockWorld() {
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getServer().worldServerForDimension(blockDim);
+		return FMLCommonHandler.instance().getMinecraftServerInstance().getServer().getWorld(blockDim);
 	}
 
 	public Block getBlock() {

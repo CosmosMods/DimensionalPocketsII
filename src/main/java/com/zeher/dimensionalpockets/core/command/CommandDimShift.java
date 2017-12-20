@@ -59,13 +59,13 @@ public class CommandDimShift extends CommandBase {
 				if(StringUtils.isNumeric(args[0])) {
 					int dim_id = Integer.parseInt(args[0]);
 					
-					if(!(DimensionalPockets.can_teleport_to_dim) && dim_id == 98) {
+					if((DimensionalPockets.can_teleport_to_dim) && dim_id == 98) {
 						TextComponentString string = new TextComponentString(TRZTextUtil.RED + "You cannot teleport to that dimension.");
 						player.sendMessage(string);
 						return;
 					}
 					
-					WorldServer world_server = server.worldServerForDimension(dim_id);
+					WorldServer world_server = server.getWorld(dim_id);
 					WorldInfo world_info = world_server.getWorldInfo();
 					
 					BlockPos spawn_point = world_server.getSpawnPoint();
@@ -97,7 +97,7 @@ public class CommandDimShift extends CommandBase {
 					String args1 = args[0].substring(1);
 					int dim_id = Integer.parseInt(args1);
 					
-					WorldServer world_server = server.worldServerForDimension(-dim_id);
+					WorldServer world_server = server.getWorld(-dim_id);
 					BlockPos spawn_point = DimensionManager.getWorld(-dim_id).getSpawnPoint();
 					
 					DimensionType dimension = DimensionType.getById(-dim_id);

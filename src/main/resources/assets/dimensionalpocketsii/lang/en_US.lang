@@ -1,0 +1,14 @@
+#en_US
+itemGroup.tabdimensionalpockets=Dimensional Pockets
+
+item.dimensional_shard.name=Dimensional Shard
+item.dimensional_ingot.name=Dimensional Ingot
+
+tile.block_ore_copper.name=Copper Ore
+tile.block_copper.name=Block of Copper
+
+command.dimshift.usage=/dimshift <destination dimension>
+command.dim.usage=Use /dim help to get a list of commands.
+
+commands.dim_help.header=--- Showing help for Dimensional Pockets ---
+commands.dim_help.usage=/dim_help [page|command name]

@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+         "all": "dimensionalpocketsii:blocks/pocket/block_dimensional_pocket_frame"
+    }
+}

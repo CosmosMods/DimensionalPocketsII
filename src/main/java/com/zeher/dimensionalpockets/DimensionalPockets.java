@@ -4,12 +4,9 @@ import org.apache.logging.log4j.LogManager;
 
 import com.zeher.dimensionalpockets.core.creativetab.*;
 import com.zeher.dimensionalpockets.core.handlers.*;
-import com.zeher.dimensionalpockets.core.pocket.PocketRegistry;
-import com.zeher.dimensionalpockets.core.pocket.PocketWorldProvider;
-import com.zeher.dimensionalpockets.core.pocket.handlers.PocketBiomeHandler;
-import com.zeher.dimensionalpockets.core.pocket.handlers.PocketChunkLoaderHandler;
-import com.zeher.dimensionalpockets.core.proxy.ClientProxy;
-import com.zeher.dimensionalpockets.core.proxy.CommonProxy;
+import com.zeher.dimensionalpockets.core.pocket.*;
+import com.zeher.dimensionalpockets.core.pocket.handlers.*;
+import com.zeher.dimensionalpockets.core.proxy.*;
 import com.zeher.dimensionalpockets.core.util.DimLogger;
 import com.zeher.trzcore.TRZCore;
 import com.zeher.trzcore.api.TRZIProxy;
@@ -41,8 +38,8 @@ public class DimensionalPockets{
 	
 	public static final String mod_id = "dimensionalpocketsii";
 	public static final String mod_name = "Dimensional Pockets II";
-	public static final String mod_version = "0.0.2a";
-	public static final String mod_version_max = "0.1.0a";
+	public static final String mod_version = "0.0.4a";
+	public static final String mod_version_max = "0.0.6a";
 	public static final String mod_dependencies = TRZCore.version_group;
 	
 	public static final String version_group = "required-after:" + mod_id + "@[" + mod_version + "," + mod_version_max + "];";
@@ -51,7 +48,7 @@ public class DimensionalPockets{
 	public static int biome_id = 99;
 	public static boolean keep_pockets_chunkloaded = true;
 	public static boolean can_destroy_walls_in_creative = false;
-	public static boolean can_teleport_to_dim = false;
+	public static boolean can_teleport_to_dim = true;
 	
 	public static CreativeTabs tab_dimensionalpockets = new CreativeTabDimensional(CreativeTabs.getNextID(), "tab_dimensionalpockets");
 	
@@ -72,8 +69,6 @@ public class DimensionalPockets{
 		
 		DimensionType.register("Pocket Dimension", "_pocket", dimension_id, PocketWorldProvider.class, true);
 		DimensionManager.registerDimension(dimension_id, DimensionType.getById(dimension_id));
-		
-		PocketBiomeHandler.init();
 		
 		if(this.keep_pockets_chunkloaded) {
 			ForgeChunkManager.setForcedChunkLoadingCallback(this, new PocketChunkLoaderHandler());

@@ -16,7 +16,6 @@ import com.zeher.dimensionalpockets.core.util.DimUtils;
 import com.zeher.trzcore.api.interfaces.IBlockInteract;
 import com.zeher.trzcore.api.interfaces.IBlockNotifier;
 
-import cofh.redstoneflux.api.IEnergyHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

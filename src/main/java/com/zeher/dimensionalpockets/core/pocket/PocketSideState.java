@@ -35,10 +35,6 @@ public enum PocketSideState {
 		this.textureName = textureName;
 	}
 
-	public String translateName() {
-		return I18n.translateToLocal("pocket.side.state." + name());
-	}
-
 	public String getTextureName() {
 		return textureName;
 	}

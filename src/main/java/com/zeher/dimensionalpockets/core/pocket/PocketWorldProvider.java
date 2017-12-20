@@ -3,7 +3,7 @@ package com.zeher.dimensionalpockets.core.pocket;
 import java.util.Vector;
 
 import com.zeher.dimensionalpockets.DimensionalPockets;
-import com.zeher.dimensionalpockets.core.pocket.handlers.PocketBiomeHandler;
+import com.zeher.dimensionalpockets.core.handlers.BiomeHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -16,8 +16,8 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,7 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class PocketWorldProvider extends WorldProvider {
 	
 	public PocketWorldProvider() {
-		hasNoSky = true;
+		this.hasSkyLight = true;
 		if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
 			setSkyRenderer(new IRenderHandler() {
 				@Override
@@ -55,16 +55,6 @@ public class PocketWorldProvider extends WorldProvider {
 	}
 	
 	@Override
-	public String getDepartMessage() {
-		return "Leaving the Dimensional Pocket...";
-	}
-
-	@Override
-	public String getWelcomeMessage() {
-		return "Entering the Dimensional Pocket...";
-	}
-
-	@Override
 	@SideOnly(Side.CLIENT)
 	public float getStarBrightness(float par1) {
 		return 1F;
@@ -72,7 +62,7 @@ public class PocketWorldProvider extends WorldProvider {
 
 	@Override
 	public Biome getBiomeForCoords(BlockPos pos) {
-		return PocketBiomeHandler.getPocketBiome();
+		return BiomeHandler.pocketBiome;
 	}
 
 	@Override
