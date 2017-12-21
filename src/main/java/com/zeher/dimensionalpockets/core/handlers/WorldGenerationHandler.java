@@ -6,6 +6,7 @@ import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenerator;
@@ -17,8 +18,8 @@ import com.google.common.base.Predicate;
 
 public class WorldGenerationHandler implements IWorldGenerator {
 	
-	public void generate(Random random, int chunkX, int chunkZ, World world,net.minecraft.world.gen.IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
-		
+	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
+			IChunkProvider chunkProvider) {
 		switch (world.provider.getDimension()) {
 		case -1:
 			generateNether(world, random, chunkX * 16, chunkZ * 16);
@@ -122,4 +123,5 @@ public class WorldGenerationHandler implements IWorldGenerator {
 
 	public static void add(IWorldGenerator generator) {
 	}
+
 }

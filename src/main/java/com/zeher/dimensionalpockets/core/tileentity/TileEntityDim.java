@@ -1,7 +1,7 @@
 package com.zeher.dimensionalpockets.core.tileentity;
 
 import com.zeher.dimensionalpockets.core.pocket.Pocket;
-import com.zeher.trzcore.core.tileentity.TRZTileEntityAbstract;
+import com.zeher.trzlib.core.tileentity.TRZTileEntityAbstract;
 
 import net.minecraft.entity.player.EntityPlayer;
 

@@ -11,7 +11,7 @@ public class TileEntityHandler {
 	public static void preInit(){
 		GameRegistry.registerTileEntity(TileEntityDimensionalPocket.class, "tile_dimensional_pocket");
 		
-		//ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDimensionalPocket.class, new RendererPocketInner());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDimensionalPocket.class, new RendererPocketInner());
 	}
 
 }

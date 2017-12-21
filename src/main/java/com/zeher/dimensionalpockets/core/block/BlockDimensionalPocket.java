@@ -1,9 +1,9 @@
 package com.zeher.dimensionalpockets.core.block;
 
 import com.zeher.dimensionalpockets.core.tileentity.TileEntityDimensionalPocket;
-import com.zeher.trzcore.api.interfaces.IBlockInteract;
-import com.zeher.trzcore.api.interfaces.IBlockNotifier;
-import com.zeher.trzcore.core.block.TRZBlock;
+import com.zeher.trzlib.api.interfaces.IBlockInteract;
+import com.zeher.trzlib.api.interfaces.IBlockNotifier;
+import com.zeher.trzlib.core.block.TRZBlock;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;

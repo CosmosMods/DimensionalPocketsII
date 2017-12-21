@@ -2,32 +2,33 @@ package com.zeher.dimensionalpockets;
 
 import org.apache.logging.log4j.LogManager;
 
-import com.zeher.dimensionalpockets.core.creativetab.*;
-import com.zeher.dimensionalpockets.core.handlers.*;
-import com.zeher.dimensionalpockets.core.pocket.*;
-import com.zeher.dimensionalpockets.core.pocket.handlers.*;
-import com.zeher.dimensionalpockets.core.proxy.*;
+import com.zeher.dimensionalpockets.core.creativetab.CreativeTabDimensional;
+import com.zeher.dimensionalpockets.core.handlers.GuiHandler;
+import com.zeher.dimensionalpockets.core.pocket.PocketRegistry;
+import com.zeher.dimensionalpockets.core.pocket.PocketWorldProvider;
+import com.zeher.dimensionalpockets.core.pocket.handlers.PocketBiomeHandler;
+import com.zeher.dimensionalpockets.core.pocket.handlers.PocketChunkLoaderHandler;
+import com.zeher.dimensionalpockets.core.proxy.CommonProxy;
 import com.zeher.dimensionalpockets.core.util.DimLogger;
-import com.zeher.trzcore.TRZCore;
-import com.zeher.trzcore.api.TRZIProxy;
+import com.zeher.trzlib.TRZLib;
+import com.zeher.trzlib.api.TRZIProxy;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = DimensionalPockets.mod_id, name = DimensionalPockets.mod_name, version = DimensionalPockets.mod_version, dependencies = DimensionalPockets.mod_dependencies)
 public class DimensionalPockets{
@@ -38,9 +39,9 @@ public class DimensionalPockets{
 	
 	public static final String mod_id = "dimensionalpocketsii";
 	public static final String mod_name = "Dimensional Pockets II";
-	public static final String mod_version = "0.0.4a";
-	public static final String mod_version_max = "0.0.6a";
-	public static final String mod_dependencies = TRZCore.version_group;
+	public static final String mod_version = "0.0.7a";
+	public static final String mod_version_max = "0.1.0a";
+	public static final String mod_dependencies = TRZLib.version_group;
 	
 	public static final String version_group = "required-after:" + mod_id + "@[" + mod_version + "," + mod_version_max + "];";
 
@@ -69,6 +70,8 @@ public class DimensionalPockets{
 		
 		DimensionType.register("Pocket Dimension", "_pocket", dimension_id, PocketWorldProvider.class, true);
 		DimensionManager.registerDimension(dimension_id, DimensionType.getById(dimension_id));
+		
+		PocketBiomeHandler.init();
 		
 		if(this.keep_pockets_chunkloaded) {
 			ForgeChunkManager.setForcedChunkLoadingCallback(this, new PocketChunkLoaderHandler());

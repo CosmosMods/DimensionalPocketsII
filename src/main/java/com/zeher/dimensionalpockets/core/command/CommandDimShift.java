@@ -1,28 +1,21 @@
 package com.zeher.dimensionalpockets.core.command;
 
-import java.awt.Dimension;
-
 import org.apache.commons.lang3.StringUtils;
 
-import com.zeher.dimensionalpockets.core.dimshift.DimensionalShifter;
 import com.zeher.dimensionalpockets.DimensionalPockets;
 import com.zeher.dimensionalpockets.core.dimshift.DimensionalShiftUtils;
-import com.zeher.dimensionalpockets.core.util.DimUtils;
-import com.zeher.trzcore.api.TRZTextUtil;
+import com.zeher.dimensionalpockets.core.dimshift.DimensionalShifter;
+import com.zeher.trzlib.api.TRZTextUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.Teleporter;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.DimensionManager;
@@ -65,7 +58,7 @@ public class CommandDimShift extends CommandBase {
 						return;
 					}
 					
-					WorldServer world_server = server.getWorld(dim_id);
+					WorldServer world_server = server.worldServerForDimension(dim_id);
 					WorldInfo world_info = world_server.getWorldInfo();
 					
 					BlockPos spawn_point = world_server.getSpawnPoint();
@@ -97,7 +90,7 @@ public class CommandDimShift extends CommandBase {
 					String args1 = args[0].substring(1);
 					int dim_id = Integer.parseInt(args1);
 					
-					WorldServer world_server = server.getWorld(-dim_id);
+					WorldServer world_server = server.worldServerForDimension(-dim_id);
 					BlockPos spawn_point = DimensionManager.getWorld(-dim_id).getSpawnPoint();
 					
 					DimensionType dimension = DimensionType.getById(-dim_id);

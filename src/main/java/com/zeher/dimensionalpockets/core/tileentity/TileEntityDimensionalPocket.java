@@ -1,11 +1,5 @@
 package com.zeher.dimensionalpockets.core.tileentity;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.zeher.dimensionalpockets.DimensionalPockets;
 import com.zeher.dimensionalpockets.core.handlers.BlockHandler;
 import com.zeher.dimensionalpockets.core.pocket.Pocket;
 import com.zeher.dimensionalpockets.core.pocket.PocketRegistry;
@@ -13,32 +7,21 @@ import com.zeher.dimensionalpockets.core.pocket.PocketShiftPreparation;
 import com.zeher.dimensionalpockets.core.pocket.PocketShiftPreparation.Direction;
 import com.zeher.dimensionalpockets.core.pocket.handlers.PocketChunkLoaderHandler;
 import com.zeher.dimensionalpockets.core.util.DimUtils;
-import com.zeher.trzcore.api.interfaces.IBlockInteract;
-import com.zeher.trzcore.api.interfaces.IBlockNotifier;
+import com.zeher.trzlib.api.interfaces.IBlockInteract;
+import com.zeher.trzlib.api.interfaces.IBlockNotifier;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

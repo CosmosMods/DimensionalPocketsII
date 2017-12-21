@@ -32,11 +32,11 @@ public class PocketRegistry {
 	}
 
 	public static WorldServer getWorldForPockets() {
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getServer().getWorld(DimensionalPockets.dimension_id);
+		return FMLCommonHandler.instance().getMinecraftServerInstance().getServer().worldServerForDimension(DimensionalPockets.dimension_id);
 	}
 
 	public static Pocket getPocket(BlockPos chunkPos) {
-		DimLogger.debug(backLinkMap + " __ " + chunkPos);
+		System.out.println(backLinkMap + " -- " +  chunkPos);
 		
 		DimUtils.enforceServer();
 		if (backLinkMap.containsKey(chunkPos))
@@ -90,7 +90,7 @@ public class PocketRegistry {
 		
 		saveData();
 		
-		DimLogger.debug(backLinkMap);
+		System.out.println(backLinkMap);
 
 		return pocket;
 	}

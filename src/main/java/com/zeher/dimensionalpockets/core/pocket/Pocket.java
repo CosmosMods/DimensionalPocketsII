@@ -9,27 +9,22 @@ import com.google.gson.annotations.SerializedName;
 import com.zeher.dimensionalpockets.DimensionalPockets;
 import com.zeher.dimensionalpockets.core.block.BlockDimensionalPocket;
 import com.zeher.dimensionalpockets.core.block.BlockDimensionalPocketWall;
-import com.zeher.dimensionalpockets.core.dimshift.DimensionalShifter;
 import com.zeher.dimensionalpockets.core.dimshift.DimensionalShiftUtils;
+import com.zeher.dimensionalpockets.core.dimshift.DimensionalShifter;
 import com.zeher.dimensionalpockets.core.handlers.BlockHandler;
 import com.zeher.dimensionalpockets.core.util.DimLogger;
-import com.zeher.dimensionalpockets.core.util.DimUtils;
 import com.zeher.dimensionalpockets.core.util.TeleportDirection;
-import com.zeher.trzcore.api.TRZTextUtil;
+import com.zeher.trzlib.api.TRZTextUtil;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class Pocket {
@@ -107,7 +102,13 @@ public class Pocket {
 		int worldX = chunkPos.getX() * 16;
 		int worldY = chunkPos.getY() * 16;
 		int worldZ = chunkPos.getZ() * 16;
+
+		Chunk chunk = world.getChunkFromChunkCoords(chunkPos.getX(), chunkPos.getZ());
 		
+		//System.out.println("Pocket.class" + " - Generated pocket.");
+		//System.out.println("Pocket.class" + " - World Pos: " + worldX + " __ " + worldY + " __ " + worldZ + " Chunk data:" + chunk);
+		//System.out.println("Pocket.class" + " - Chunk Pos: " + this.chunkPos);
+
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 16; y++) {
 				for (int z = 0; z < 16; z++) {
@@ -208,7 +209,7 @@ public class Pocket {
 	}
 
 	public World getBlockWorld() {
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getServer().getWorld(blockDim);
+		return FMLCommonHandler.instance().getMinecraftServerInstance().getServer().worldServerForDimension(blockDim);
 	}
 
 	public Block getBlock() {

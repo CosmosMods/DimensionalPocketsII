@@ -1,24 +1,13 @@
 package com.zeher.dimensionalpockets.core.command;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.zeher.dimensionalpockets.core.dimshift.DimensionalShifter;
-import com.zeher.dimensionalpockets.core.dimshift.DimensionalShiftUtils;
-import com.zeher.dimensionalpockets.core.util.DimUtils;
-import com.zeher.trzcore.api.TRZTextUtil;
+import com.zeher.trzlib.api.TRZTextUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.Teleporter;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 
 public class CommandDimHelp extends CommandBase {
 
