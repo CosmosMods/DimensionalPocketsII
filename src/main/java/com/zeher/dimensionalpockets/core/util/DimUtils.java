@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.zeher.dimensionalpockets.DimensionalPockets;
-import com.zeher.trzlib.api.TRZTextUtil;
+import com.zeher.zeherlib.api.util.TextUtil;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,12 +19,15 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 
@@ -57,22 +61,22 @@ public class DimUtils {
 		FD_COLOURS.put(EnumFacing.EAST,  red);
 		// @formatter:on
 
-		chatColours.put("BLACK", TRZTextUtil.BLACK);
-		chatColours.put("BLUE", TRZTextUtil.BLUE);
-		chatColours.put("GREEN", TRZTextUtil.GREEN);
-		chatColours.put("TEAL", TRZTextUtil.TEAL);
-		chatColours.put("RED", TRZTextUtil.RED);
-		chatColours.put("PURPLE", TRZTextUtil.PURPLE);
-		chatColours.put("ORANGE", TRZTextUtil.ORANGE);
-		chatColours.put("LIGHT_GRAY", TRZTextUtil.LIGHT_GRAY);
-		chatColours.put("GRAY", TRZTextUtil.GRAY);
-		chatColours.put("LIGHT_BLUE", TRZTextUtil.LIGHT_BLUE);
-		chatColours.put("BRIGHT_GREEN", TRZTextUtil.BRIGHT_GREEN);
-		chatColours.put("BRIGHT_BLUE", TRZTextUtil.BRIGHT_BLUE);
-		chatColours.put("RED", TRZTextUtil.RED);
-		chatColours.put("PINK", TRZTextUtil.PINK);
-		chatColours.put("YELLOW", TRZTextUtil.YELLOW);
-		chatColours.put("WHITE", TRZTextUtil.WHITE);
+		chatColours.put("BLACK", TextUtil.BLACK);
+		chatColours.put("BLUE", TextUtil.BLUE);
+		chatColours.put("GREEN", TextUtil.GREEN);
+		chatColours.put("TEAL", TextUtil.TEAL);
+		chatColours.put("RED", TextUtil.RED);
+		chatColours.put("PURPLE", TextUtil.PURPLE);
+		chatColours.put("ORANGE", TextUtil.ORANGE);
+		chatColours.put("LIGHT_GRAY", TextUtil.LIGHT_GRAY);
+		chatColours.put("GRAY", TextUtil.GRAY);
+		chatColours.put("LIGHT_BLUE", TextUtil.LIGHT_BLUE);
+		chatColours.put("BRIGHT_GREEN", TextUtil.BRIGHT_GREEN);
+		chatColours.put("BRIGHT_BLUE", TextUtil.BRIGHT_BLUE);
+		chatColours.put("RED", TextUtil.RED);
+		chatColours.put("PINK", TextUtil.PINK);
+		chatColours.put("YELLOW", TextUtil.YELLOW);
+		chatColours.put("WHITE", TextUtil.WHITE);
 	}
 
 	public static EnumFacing getDirectionFromBitMask(int num) {
@@ -114,7 +118,7 @@ public class DimUtils {
 		}
 
 		NBTTagCompound modTag;
-		String modID = DimensionalPockets.mod_id;
+		String modID = DimensionalPockets.MOD_ID;
 
 		if (persistTag.hasKey(modID)) {
 			modTag = persistTag.getCompoundTag(modID);
@@ -125,11 +129,7 @@ public class DimUtils {
 
 		return modTag;
 	}
-
-	/**
-	 * This method will write the given name and lore to the itemStack's
-	 * "display"-nbt tag. (Thanks to oku)
-	 */
+	
 	public static ItemStack generateItem(ItemStack itemStack, String name, boolean forceCleanName, String... loreStrings) {
 		NBTTagCompound nbt = itemStack.getTagCompound();
 		NBTTagCompound display;
@@ -147,7 +147,7 @@ public class DimUtils {
 			NBTTagList lore = new NBTTagList();
 			for (String s : loreStrings) {
 				if (s != null) {
-					lore.appendTag(new NBTTagString(TRZTextUtil.GRAY + s));
+					lore.appendTag(new NBTTagString(TextUtil.GRAY + s));
 				}
 			}
 			display.setTag("Lore", lore);
@@ -156,7 +156,7 @@ public class DimUtils {
 		if (name != null) {
 			StringBuilder sb = new StringBuilder();
 			if (forceCleanName) {
-				sb.append(TRZTextUtil.END);
+				sb.append(TextUtil.END);
 			}
 			sb.append(name);
 
@@ -165,37 +165,26 @@ public class DimUtils {
 
 		return itemStack;
 	}
-
-	/**
-	 * Spawns an itemStack in the world.
-	 */
+	
 	public static void spawnItemStack(ItemStack itemStack, World world, double d, double e, double f, int delayBeforePickup) {
 		EntityItem entityItem = new EntityItem(world, d, e, f, itemStack);
 		entityItem.setPickupDelay(delayBeforePickup);
 
 		world.spawnEntity(entityItem);
 	}
-
-	/**
-	 * Tries to check if this is a server side call. If it is a remote call, this
-	 * throws an exception.
-	 */
+	
 	public static void enforceServer() {
-			Minecraft mc = Minecraft.getMinecraft();
-			if (!mc.isIntegratedServerRunning() && (mc.world != null && mc.world.isRemote))
-				throw new RuntimeException("DONT YOU DARE CALL THIS METHOD ON A CLIENT!");
+		//Minecraft mc = Minecraft.getMinecraft();
+		//if (!mc.isIntegratedServerRunning() && (mc.world != null && mc.world.isRemote))
+		//throw new RuntimeException("DONT YOU DARE CALL THIS METHOD ON A CLIENT!");
 	}
-
-	/**
-	 * Tries to check if this is a client side call. If it is a non remote call,
-	 * this throws an exception.
-	 */
+	
 	public static void enforceClient() {
 			Minecraft mc = Minecraft.getMinecraft();
 			if (mc.world != null && !mc.world.isRemote)
 				throw new RuntimeException("DONT YOU DARE CALL THIS METHOD ON A CLIENT!");
 	}
-
+	
 	public static boolean isOreDictItem(ItemStack stack, String oreDictName) {
 		int targetOreDictID = OreDictionary.getOreID(oreDictName);
 		for (int stackOreDictID : OreDictionary.getOreIDs(stack)) {
@@ -230,15 +219,7 @@ public class DimUtils {
 		style.setColor(color);
 		return link;
 	}
-
-	/**
-	 * Ensures that the given inventory is the full inventory, i.e. takes double
-	 * chests into account.<br>
-	 * <i>METHOD COPIED FROM BUILDCRAFT</i>
-	 *
-	 * @param inv
-	 * @return Modified inventory if double chest, unmodified otherwise.
-	 */
+	
 	public static IInventory getInventory(ILockableContainer inv) {
 		if (inv instanceof TileEntityChest) {
 			TileEntityChest chest = (TileEntityChest) inv;
@@ -267,18 +248,18 @@ public class DimUtils {
 		}
 		return inv;
 	}
-
-	/**
-	 * Gets the {@link TRZTextUtil} colour for the given name. (which must
-	 * match the unobuscated name of the enum value exactly)
-	 *
-	 * @param colourName
-	 * @return the ECF colour for the given name, or
-	 *         {@link TRZTextUtil#WHITE} if not found
-	 */
+	
 	public static String getColourByName(String colourName) {
 		String colour = chatColours.get(colourName);
-		return colour != null ? colour : TRZTextUtil.WHITE;
+		return colour != null ? colour : TextUtil.WHITE;
 	}
 	
+	public static final void syncBlockAndRerender(World world, BlockPos pos) {
+		if (world == null || pos == null)
+			return;
+
+		IBlockState state = world.getBlockState(pos);
+
+		world.markAndNotifyBlock(pos, null, state, state, 2);
+	}
 }

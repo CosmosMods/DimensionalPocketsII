@@ -1,10 +1,13 @@
 package com.zeher.dimensionalpockets.core.dimshift;
 
+import com.zeher.dimensionalpockets.core.handler.BlockHandler;
 import com.zeher.dimensionalpockets.core.util.DimUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
@@ -35,8 +38,10 @@ public class DimensionalShifter extends Teleporter {
 		double posY = targetSet.getY() + 1;
 		double posZ = targetSet.getZ() + 0.5F;
 
-		player.setPosition(posX, posY, posZ);
+		player.setPositionAndUpdate(posX, posY, posZ);
 		player.connection.setPlayerLocation(posX, posY, posZ, this.spawnYaw, this.spawnPitch);
 		player.fallDistance = 0;
+		
+		DimUtils.enforceServer();
 	}
 }

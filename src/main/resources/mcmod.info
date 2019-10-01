@@ -1,16 +1,16 @@
 [
 {
-  "modid": "dimensionalpockets",
+  "modid": "dimensionalpocketsii",
   "name": "Dimensional Pockets II",
-  "description": "Adding pocket dimensions to Minecraft",
-  "version": "0.0.2a",
-  "mcversion": "${mcversion}",
+  "description": "Create pocket dimensions!",
+  "version": "1.2.10-beta",
+  "mcversion": "1.12.2",
   "url": "",
   "updateUrl": "",
   "authorList": ["TheRealZeher"],
-  "credits": "NPException for the original Dimensional Pockets",
+  "credits": "NPException",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": ["TRZCore 2.0.0r"]
+  "dependencies": []
 }
 ]

@@ -1,8 +1,8 @@
 package com.zeher.dimensionalpockets.core.creativetab;
 
 import com.zeher.dimensionalpockets.DimensionalPockets;
-import com.zeher.dimensionalpockets.core.handlers.BlockHandler;
-import com.zeher.dimensionalpockets.core.handlers.ItemHandler;
+import com.zeher.dimensionalpockets.core.handler.BlockHandler;
+import com.zeher.dimensionalpockets.core.handler.ItemHandler;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

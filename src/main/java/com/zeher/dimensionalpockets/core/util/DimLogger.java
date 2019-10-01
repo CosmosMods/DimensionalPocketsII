@@ -10,8 +10,7 @@ public class DimLogger {
 
 	private Logger logger;
 
-	private DimLogger() {
-	}
+	private DimLogger() { }
 
 	public static void init(Logger logger) {
 		INSTANCE.logger = logger;

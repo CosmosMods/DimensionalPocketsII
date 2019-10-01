@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.zeher.dimensionalpockets.DimensionalPockets;
 import com.zeher.dimensionalpockets.core.dimshift.DimensionalShiftUtils;
 import com.zeher.dimensionalpockets.core.dimshift.DimensionalShifter;
-import com.zeher.trzlib.api.TRZTextUtil;
+import com.zeher.zeherlib.api.util.TextUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -52,33 +52,31 @@ public class CommandDimShift extends CommandBase {
 				if(StringUtils.isNumeric(args[0])) {
 					int dim_id = Integer.parseInt(args[0]);
 					
-					if((DimensionalPockets.can_teleport_to_dim) && dim_id == 98) {
-						TextComponentString string = new TextComponentString(TRZTextUtil.RED + "You cannot teleport to that dimension.");
+					if((DimensionalPockets.CAN_TELEPORT_TO_DIM) && dim_id == 98 && !player.isCreative()) {
+						TextComponentString string = new TextComponentString(TextUtil.RED + "You cannot teleport to that dimension.");
 						player.sendMessage(string);
 						return;
 					}
 					
-					WorldServer world_server = server.worldServerForDimension(dim_id);
+					WorldServer world_server = server.getWorld(dim_id);
 					WorldInfo world_info = world_server.getWorldInfo();
 					
 					BlockPos spawn_point = world_server.getSpawnPoint();
 					BlockPos new_spawn = new BlockPos(spawn_point.getX(), world_server.getHeight(spawn_point.getX() - 1, spawn_point.getZ()), spawn_point.getZ());
+					BlockPos dim_pos = DimensionManager.getProvider(dim_id).getRandomizedSpawnPoint();
 					
-					BlockPos dim_pos = DimensionManager.getProvider(dim_id).getSpawnPoint();
-					
-					//System.out.println("PRO" + dim_pos + " -- ");
 					DimensionType dimension = DimensionType.getById(dim_id);
 					String dim_name = dimension.getName();
 					
-					DimensionalShifter teleporter = DimensionalShiftUtils.createTeleporter(dim_id, new_spawn, 0, 0);
+					DimensionalShifter teleporter = DimensionalShiftUtils.createTeleporter(dim_id, dim_pos, 0, 0);
 					
 					if(player.dimension == dim_id) {
-						TextComponentString comp = new TextComponentString(TRZTextUtil.RED + "You are already in that dimension!");
+						TextComponentString comp = new TextComponentString(TextUtil.RED + "You are already in that dimension!");
 						player.sendMessage(comp);
 						
 						//player.setPositionAndUpdate(spawn_point.getX(), spawn_point.getY(), spawn_point.getZ());
 					} else {
-						TextComponentString comp = new TextComponentString(TRZTextUtil.TEAL + "Shifted: " + TRZTextUtil.GREEN + player.getName() + TRZTextUtil.TEAL + " to dimension: " + dim_id + ".");
+						TextComponentString comp = new TextComponentString(TextUtil.TEAL + "Shifted: " + TextUtil.GREEN + player.getName() + TextUtil.TEAL + " to dimension: " + dim_id + ".");
 						player.sendMessage(comp);
 						
 						DimensionalShiftUtils.shiftPlayerToDimension(player, dim_id, teleporter);
@@ -90,7 +88,7 @@ public class CommandDimShift extends CommandBase {
 					String args1 = args[0].substring(1);
 					int dim_id = Integer.parseInt(args1);
 					
-					WorldServer world_server = server.worldServerForDimension(-dim_id);
+					WorldServer world_server = server.getWorld(-dim_id);
 					BlockPos spawn_point = DimensionManager.getWorld(-dim_id).getSpawnPoint();
 					
 					DimensionType dimension = DimensionType.getById(-dim_id);
@@ -98,10 +96,10 @@ public class CommandDimShift extends CommandBase {
 					DimensionalShifter teleporter = DimensionalShiftUtils.createTeleporter(-dim_id, spawn_point, 0, 0);
 					
 					if(player.dimension == -dim_id) {
-						TextComponentString comp = new TextComponentString(TRZTextUtil.RED + "You are already in that dimension!");
+						TextComponentString comp = new TextComponentString(TextUtil.RED + "You are already in that dimension!");
 						player.sendMessage(comp);
 					} else {
-						TextComponentString comp = new TextComponentString(TRZTextUtil.TEAL + "Shifted: " + TRZTextUtil.GREEN + player.getName() + TRZTextUtil.TEAL + " to dimension: " + dim_id + ".");
+						TextComponentString comp = new TextComponentString(TextUtil.TEAL + "Shifted: " + TextUtil.GREEN + player.getName() + TextUtil.TEAL + " to dimension: " + dim_id + ".");
 						player.sendMessage(comp);
 						
 						DimensionalShiftUtils.shiftPlayerToDimension(player, -dim_id, teleporter);

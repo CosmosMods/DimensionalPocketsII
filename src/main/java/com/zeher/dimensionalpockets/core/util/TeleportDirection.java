@@ -1,13 +1,10 @@
 package com.zeher.dimensionalpockets.core.util;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public enum TeleportDirection {
-	
-	/** -Y  */
-	DOWN(0, -2, 0),
-
 	/** +Y  */
 	UP(0, 1, 0),
 
@@ -39,7 +36,7 @@ public enum TeleportDirection {
 	//@formatter:on
 
 	public static final TeleportDirection[] VALID_DIRECTIONS = {
-			UP, DOWN, NORTH, SOUTH, WEST, EAST,
+			UP, NORTH, SOUTH, WEST, EAST,
 			NORTH_MINUS_ONE, SOUTH_MINUS_ONE, WEST_MINUS_ONE, EAST_MINUS_ONE,
 			NORTHWEST, NORTHEAST, SOUTHWEST, SOUTHEAST,
 			NORTHWEST_MINUS_ONE, NORTHEAST_MINUS_ONE, SOUTHWEST_MINUS_ONE, SOUTHEAST_MINUS_ONE
@@ -55,19 +52,20 @@ public enum TeleportDirection {
 		offsetZ = z;
 	}
 
-	private static boolean isAir(World world, int x, int y, int z) {
-		return world.isAirBlock(new BlockPos(x, y, z)) && world.isAirBlock(new BlockPos(x, y + 1, z));
+	private static boolean isAir(World world, BlockPos pos) {
+		return world.isAirBlock(pos);
 	}
 
 	public static TeleportDirection getValidTeleportLocation(World world, BlockPos pos) {
-		for (TeleportDirection direction : VALID_DIRECTIONS)
-			if (isAir(world, pos.getX() + direction.offsetX, pos.getY() + direction.offsetY, pos.getZ() + direction.offsetZ))
+		for (TeleportDirection direction : VALID_DIRECTIONS) {
+			if (isAir(world, new BlockPos(pos.getX() + direction.offsetX, (pos.getY() + 1) + direction.offsetY, pos.getZ() + direction.offsetZ))) {
 				return direction;
-
+			}
+		}
 		return UNKNOWN;
 	}
 
-	public BlockPos toCoordSet() {
+	public BlockPos toBlockPos() {
 		return new BlockPos(offsetX, offsetY, offsetZ);
 	}
 }

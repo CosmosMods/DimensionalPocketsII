@@ -1,6 +1,6 @@
 package com.zeher.dimensionalpockets.core.command;
 
-import com.zeher.trzlib.api.TRZTextUtil;
+import com.zeher.zeherlib.api.util.TextUtil;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -31,15 +31,14 @@ public class CommandDimHelp extends CommandBase {
 		EntityPlayerMP player = getCommandSenderAsPlayer(sender);
 		
 		if (args.length < 1) {
-			TextComponentString header = new TextComponentString(TRZTextUtil.GREEN + "--- Showing help for Dimensional Pockets ---");
+			TextComponentString header = new TextComponentString(TextUtil.GREEN + "--- Showing help for Dimensional Pockets ---");
 			
-			TextComponentString command_one = new TextComponentString(TRZTextUtil.LIGHT_GRAY + "/dimshift" + TRZTextUtil.LIGHT_RED + " <destination dimension>");
-			TextComponentString command_one_desc = new TextComponentString(TRZTextUtil.TEAL + " -- Teleports you into the selected dimension using its ID.");
+			TextComponentString command_one = new TextComponentString(TextUtil.LIGHT_GRAY + "/dimshift" + TextUtil.LIGHT_RED + " <destination dimension>");
+			TextComponentString command_one_desc = new TextComponentString(TextUtil.TEAL + " -- Teleports you into the selected dimension using its ID.");
 			
 			player.sendMessage(header);
 			player.sendMessage(command_one);
 			player.sendMessage(command_one_desc);
-		
 		}
 	}
 

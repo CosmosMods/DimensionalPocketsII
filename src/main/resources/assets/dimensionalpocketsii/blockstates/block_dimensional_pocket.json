@@ -1,27 +1,10 @@
 {
      "variants": {
         "inventory": {
-            "model": "dimensionalpocketsii:block_dimensional_pocket_inventory"
+            "model": "dimensionalpocketsii:block_dimensional_pocket"
+        },
+        "normal": {
+            "model": "dimensionalpocketsii:block_dimensional_pocket"
         }
-    },
-    "multipart": [ 
-        {
-            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket", "uvlock": true }
-        },
-        {
-            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket", "y": 90, "uvlock": true }
-        },
-        {
-            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket", "y": 180, "uvlock": true }
-        },
-        {
-            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket", "y": 270 ,"uvlock": true }
-        },
-        {
-            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket", "x": 270, "uvlock": true }
-        },
-        {
-            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket", "x": 90, "uvlock": true }
-        }
-    ]
+    }
 }
