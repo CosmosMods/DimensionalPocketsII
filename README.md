@@ -22,4 +22,4 @@ If you wish to view the original DimensionalPockets code, please refer to [NPExc
 ## Mod Page
 [Curse-Forge](https://minecraft.curseforge.com/projects/dimensional-pockets-ii)
 
-2017 @ TheRealZeher | TRZ | All Rights Reserved.
+2017-19 @ TheRealZeher | TRZ | All Rights Reserved.
