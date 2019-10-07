@@ -20,6 +20,6 @@ This repo does not have a licence. This means that by default, it is All Rights 
 If you wish to view the original DimensionalPockets code, please refer to [NPException's GitHub](https://github.com/NPException/Dimensional-Pockets).
 
 ## Mod Page
-[Curse-Forge](https://minecraft.curseforge.com/projects/dimensional-pockets-ii)
+[Dimensional Pockets II on CurseForge](https://minecraft.curseforge.com/projects/dimensional-pockets-ii)
 
-2017-19 @ TheRealZeher | TRZ | All Rights Reserved.
+| 2017-19 @ TheRealZeher | TRZ | All Rights Reserved |
