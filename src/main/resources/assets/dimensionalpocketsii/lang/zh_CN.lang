@@ -1,0 +1,23 @@
+#zh_cn
+itemGroup.tab_dimensionalpockets=维度口袋
+
+item.dimensional_shard.name=维度碎片
+item.dimensional_ingot.name=维度锭
+
+item.dimensional_wrench.name=维度扳手
+
+tile.block_dimensional_ore.name=维度矿石
+tile.block_dimensional.name=维度块
+
+tile.block_dimensional_pocket.name=维度口袋
+tile.block_dimensional_pocket_wall.name=维度墙
+tile.block_dimensional_pocket_wall_edge.name=维度墙
+
+#commands
+command.dimshift.usage=/dimshift <目标维度>
+
+commands.dimhelp.header=--- 查看维度口袋的帮助 ---
+commands.dimhelp.usage=/dimhelp [第|页命令名]
+
+#gui
+gui.allowed_players.name=允许的玩家
