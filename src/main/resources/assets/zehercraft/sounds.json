@@ -1,0 +1,46 @@
+{ 
+	"grinder": { 
+	   "category" : "block", 
+	   "sounds": [ "zehercraft:grinder" ]
+    },
+    "crusher": { 
+       "category" : "block", 
+       "sounds": [ "zehercraft:crusher" ]
+    },
+    "laserhum": { 
+       "category" : "block", 
+       "sounds": [ "zehercraft:laserhum" ]
+    },
+    "compressor": { 
+       "category" : "block", 
+       "sounds": [ "zehercraft:compressor" ]
+    },
+    "extractor": {
+       "category" : "block", 
+       "sounds": [ "zehercraft:extractor" ]
+    },
+	"danger": {
+		"category": "block",
+		"sounds": [ "zehercraft:danger" ]
+	},
+	"digital_alien": {
+		"category": "block",
+		"sounds": [ "zehercraft:digital_alien" ]
+	},
+	"digital_alien_slow": {
+		"category": "block",
+		"sounds": [ "zehercraft:digital_alien_slow" ]
+	},
+	"digital_harsh": {
+		"category": "block",
+		"sounds": [ "zehercraft:digital_harsh" ]
+	},
+	"digital_wailing": {
+		"category": "block",
+		"sounds": [ "zehercraft:digital_wailing" ]
+	},
+	"agency": {
+		"category": "block",
+		"sounds": [ "zehercraft:agency" ]
+	}
+}

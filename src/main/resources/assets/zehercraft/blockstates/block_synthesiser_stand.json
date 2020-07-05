@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "normal": { "model": "zehercraft:block_synthesiser_stand" },
+        "inventory": { "model": "zehercraft:block_synthesiser_stand" }
+    }
+}

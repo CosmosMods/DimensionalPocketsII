@@ -1,0 +1,13 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "all": "zehercraft:base/blocks/decor/wither_brick"
+        }
+    },
+    
+    "variants": {
+        "inventory": { "model": "zeherlib:modblock" },
+        "normal": { "model" : "zeherlib:modblock" }
+    }
+}

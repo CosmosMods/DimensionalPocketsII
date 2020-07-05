@@ -1,0 +1,32 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"IWI",
+		"ECE",
+		"SPS"
+	],
+	"key": {
+		"I": {
+			"item": "minecraft:iron_ingot"
+		},
+		"W": {
+			"item": "zehercraft:energy_wafer"
+		},
+		"E": {
+			"item": "zehercraft:energy_ingot"
+		},
+		"C": {
+			"item": "zehercraft:circuit_one"
+		},
+		"S": {
+			"item": "zehercraft:block_steel"
+		},
+		"P": {
+			"item": "zehercraft:block_synthesiser_stand"
+		}
+	},
+	"result": {
+		"item": "zehercraft:block_synthesiser"
+	}
+}

@@ -1,0 +1,13 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "all": "zehercraft:base/blocks/world/ore/block_ore_tin"
+        }
+    },
+    
+    "variants": {
+        "inventory": { "model": "zeherlib:modblock" },
+        "normal": { "model" : "zeherlib:modblock" }
+    }
+}

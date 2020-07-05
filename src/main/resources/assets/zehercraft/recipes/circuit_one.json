@@ -1,0 +1,29 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"RWD",
+		"IGI",
+		"DWR"
+	],
+	"key": {
+		"G": {
+			"item": "zehercraft:circuit_one_raw"
+		},
+		"R": {
+			"item": "minecraft:redstone"
+		},
+		"I": {
+			"item": "zehercraft:energy_ingot"
+		},
+		"W": {
+			"item": "zehercraft:energy_wafer"
+		},
+		"D": {
+			"item": "zehercraft:energy_dust"
+		}
+	},
+	"result": {
+		"item": "zehercraft:circuit_one"
+	}
+}

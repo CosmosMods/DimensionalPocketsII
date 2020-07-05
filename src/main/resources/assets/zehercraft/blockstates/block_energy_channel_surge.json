@@ -1,0 +1,28 @@
+{
+    "variants": {
+        "inventory": {
+            "model": "zehercraft:block_energy_channel_surge_inventory",
+            "transform": "forge:default-block"
+        }
+    },
+    "multipart": [
+        {   "when": { "north": "true" },
+            "apply": { "model": "zehercraft:block_energy_channel_surge"}
+        },
+        {   "when": { "east": "true" },
+            "apply": { "model": "zehercraft:block_energy_channel_surge"}
+        },
+        {   "when": { "south": "true" },
+            "apply": { "model": "zehercraft:block_energy_channel_surge"}
+        },
+        {   "when": { "west": "true" },
+            "apply": { "model": "zehercraft:block_energy_channel_surge"}
+        },
+        {   "when": { "up": "true" },
+            "apply": { "model": "zehercraft:block_energy_channel_surge"}
+        },
+        {   "when": { "down": "true" },
+            "apply": { "model": "zehercraft:block_energy_channel_surge"}
+        }
+    ]
+}

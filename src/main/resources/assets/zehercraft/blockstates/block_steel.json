@@ -1,0 +1,13 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "all": "zehercraft:base/blocks/world/block/block_steel"
+        }
+    },
+    
+    "variants": {
+        "inventory": { "model": "zeherlib:modblock" },
+        "normal": { "model" : "zeherlib:modblock" }
+    }
+}

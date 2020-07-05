@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"CCC",
+		"CIC",
+		"CCC"
+	],
+	"key": {
+		"I": {
+			"item": "minecraft:iron_ingot"
+		},
+		"C": {
+			"item": "minecraft:coal",
+			"data": 0
+		}
+	},
+	"result": {
+		"item": "zehercraft:steel_ingot"
+	}
+}

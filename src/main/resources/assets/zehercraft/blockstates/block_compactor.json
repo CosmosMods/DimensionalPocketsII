@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "facing=north": { "model": "zehercraft:block_compactor_model" },
+        "facing=south": { "model": "zehercraft:block_compactor_model", "y": 180 },
+        "facing=west":  { "model": "zehercraft:block_compactor_model", "y": 270 },
+        "facing=east":  { "model": "zehercraft:block_compactor_model", "y": 90 },
+        
+        "inventory": {
+            "model": "zehercraft:block_compactor_model"
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"RRR",
+		"RGR",
+		"RRR"
+	],
+	"key": {
+		"G": {
+			"item": "minecraft:glowstone_dust"
+		},
+		"R": {
+			"item": "minecraft:redstone"
+		}
+	},
+	"result": {
+		"item": "zehercraft:energy_dust"
+	}
+}

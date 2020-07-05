@@ -1,0 +1,150 @@
+#en_us
+
+#JEI Integration
+jei.recipe.grinder=Grinder
+jei.recipe.compactor=Compactor
+jei.recipe.kiln=Kiln
+jei.recipe.separator=Seperator
+jei.recipe.synthesiser=Synthesiser
+
+#Processing
+tile.block_kiln.name=Kiln
+gui.processing.kiln.name=Kiln
+
+tile.block_grinder.name=Grinder
+gui.processing.grinder.name=Grinder
+
+tile.block_charger.name=Charger
+gui.processing.charger.name=Charger
+
+tile.block_compactor.name=Compactor
+gui.processing.compactor.name=Compactor
+
+tile.block_processing_structure.name=Machine Structure
+
+tile.block_synthesiser.name=Synthesiser
+tile.block_synthesiser_stand.name=Synthesiser Stand
+gui.processing.synthesiser.name=Synthesiser
+
+#Transport
+tile.block_energy_channel.name=Energy Channel
+tile.block_energy_channel_transparent.name=Transparent Energy Channel
+tile.block_energy_channel_surge.name=Surge Energy Channel
+tile.block_energy_channel_transparent_surge.name=Transparent Surge Energy Channel
+
+
+#Base
+tile.null.name=FIX BLOCK
+
+fluid.coolant=Coolant
+fluid.energized_redstone=Energized Redstone
+fluid.glowstone_infused_magma=Glowstone Infused Magma
+
+#Ores
+tile.block_ore_copper.name=Copper Ore
+tile.block_ore_tin.name=Tin Ore
+tile.block_ore_silver.name=Silver Ore
+tile.block_ore_silicon.name=Silicon Ore
+
+tile.block_copper.name=Block of Copper
+tile.block_tin.name=Block of Tin
+tile.block_silver.name=Block of Silver
+tile.block_silicon.name=Block of Silicon
+
+tile.block_steel.name=Block of Steel
+tile.block_bronze.name=Block of Bronze
+tile.block_brass.name=Block of Brass
+
+tile.block_basaltcobblestone.name=Basalt Cobblestone
+tile.block_basalt.name=Basalt
+tile.block_basaltbrick.name=Basalt Bricks
+tile.block_basaltsmooth.name=Smooth Basaslt
+
+tile.block_marblecobblestone.name=Marble Cobblestone
+tile.block_marble.name=Marble
+tile.block_marblebrick.name=Marble Bricks
+tile.block_marblesmooth.name=Smooth Marble
+
+tile.block_glass_black.name=Black Glass
+
+tile.block_reinforcedstone.name=Reinforced Stone
+tile.block_reinforcedbrick.name=Reinforced Bricks
+tile.block_reinforcedglass.name=Reinforced Glass
+
+tile.block_witherstone.name=Wither Stone
+tile.block_witherbrick.name=Wither Bricks
+tile.block_witherglass.name=Wither Glass
+
+#Items
+item.null.name=FIX ITEM
+
+#Materials
+item.copper_ingot.name=Copper Ingot
+item.tin_ingot.name=Tin Ingot
+item.silver_ingot.name=Silver Ingot
+item.silicon_ingot.name=Silicon Ingot
+item.steel_ingot.name=Steel Ingot
+item.steel_ingot_unrefined.name=Unrefined Steel Ingot
+item.bronze_ingot.name=Bronze Ingot
+item.brass_ingot.name=Brass Ingot
+item.lapis_ingot.name=Lapis Ingot
+
+item.copper_dust.name=Copper Dust
+item.tin_dust.name=Tin Dust
+item.silver_dust.name=Silver Dust
+item.diamond_dust.name=Diamond Dust
+item.gold_dust.name=Gold Dust
+item.iron_dust.name=Iron Dust
+
+item.bronze_dust.name=Bronze Dust
+item.steel_dust.name=Steel Dust
+item.brass_dust.name=Brass Dust
+
+item.iron_dust_refine.name=Refined Iron Dust
+item.gold_dust_refine.name=Refined Gold Dust
+
+item.energy_ingot.name=Energy Ingot
+item.energy_wafer.name=Energy Wafer
+item.energy_dust.name=Energy Dust
+
+item.copper_plate.name=Copper Plate
+item.tin_plate.name=Tin Plate
+item.silver_plate.name=Silver Plate
+
+item.bronze_plate.name=Bronze Plate
+item.steel_plate.name=Steel Plate
+item.brass_plate.name=Brass Plate
+
+item.iron_plate.name=Iron Plate
+item.gold_plate.name=Gold Plate
+item.diamond_plate.name=Diamond Plate
+
+#Energy
+item.circuit_one_raw.name=Standard Circuit (Unfinished)
+item.circuit_one.name=Standard Circuit
+item.circuit_three_raw.name=Surge Circuit (Unfinished)
+item.circuit_three.name=Surge Circuit
+
+item.silicon.name=Silicon
+item.silicon_refined.name=Refined Silicon
+item.silicon_wafer.name=Wafer
+
+item.upgrade_base.name=Upgrade Base
+item.upgrade_speed.name=Speed Upgrade
+item.upgrade_capacity.name=Capacity Upgrade
+item.upgrade_efficiency.name=Efficiency Upgrade
+
+item.upgrade_fluid_speed.name=Fluid Speed Upgrade
+item.upgrade_fluid_capacity.name=Fluid Capacity Upgrade
+item.upgrade_fluid_efficiency.name=Fluid Efficiency Upgrade
+
+item.rubber.name=Rubber
+item.rubber_insulation.name=Rubber Insulation
+item.steel_rod.name=Steel Rod
+item.tool_rod.name=Tool Rod
+
+#Tools
+item.machine_wrench.name=Machine Wrench
+
+#Gui
+gui.alarm.name=Alarm Sounds

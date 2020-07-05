@@ -1,0 +1,32 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern": [
+		"IGI",
+		"CSC",
+		"EWE"
+	],
+	"key": {
+		"I": {
+			"item": "minecraft:iron_ingot"
+		},
+		"G": {
+			"item": "minecraft:glass"
+		},
+		"C": {
+			"item": "zehercraft:circuit_one"
+		},
+		"S": {
+			"item": "zehercraft:block_steel"
+		},
+		"E": {
+			"item": "zehercraft:energy_ingot"
+		},
+		"W": {
+			"item": "zehercraft:energy_wafer"
+		}
+	},
+	"result": {
+		"item": "zehercraft:block_processing_structure"
+	}
+}
