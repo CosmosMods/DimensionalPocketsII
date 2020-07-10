@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "inventory": { "model": "zehercraft:block_processing_base_model" },
-        "normal": { "model" : "zehercraft:block_processing_base_model" }
-    }
-}

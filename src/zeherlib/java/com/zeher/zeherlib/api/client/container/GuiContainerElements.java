@@ -24,12 +24,19 @@ public class GuiContainerElements extends GuiContainer {
 	}
 	
 	@Override
+	protected void drawGuiContainerForegroundLayer(int mouse_x, int mouse_y) {
+		int[] screen_coords = new int[] { ((this.width - this.xSize) / 2), (this.height - this.ySize) / 2 };
+
+		for (int i = 0; i < this.elementlist_array.size(); ++i) {
+            this.elementlist_array.get(i).drawElement(this.mc, this.fontRenderer, screen_coords, mouse_x, mouse_y);
+        }
+		
+		//super.drawGuiContainerForegroundLayer(mouse_x, mouse_y);
+	}
+	
+	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		super.drawScreen(mouseX, mouseY, partialTicks);
-		
-		for (int i = 0; i < this.elementlist_array.size(); ++i) {
-            ((GuiListElement)this.elementlist_array.get(i)).drawElement(this.mc, mouseX, mouseY, partialTicks);
-        }
 	}
 	
 	@Override
@@ -62,9 +69,7 @@ public class GuiContainerElements extends GuiContainer {
     }
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		
-	}
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) { }
 
 	public <T extends GuiListElement> T addListElement(T element) {
 		this.elementlist_array.add(element);
@@ -80,42 +85,16 @@ public class GuiContainerElements extends GuiContainer {
 	}
 	
 	public void selected(int index) {
-		if (index == -1) {
-			for (int j = 0; j < this.elementlist_array.size(); j++) {
-				GuiListElement element = this.elementlist_array.get(j);
-				
-				if (element.getSelected()) {
-					element.switchSelected();
-				}
-			}
-		} else {
-			for (int i = 0; i < this.elementlist_array.size(); i++) {
-				if (i == index) {
-					return;
-				} else {
-					GuiListElement element = this.elementlist_array.get(i);
-					
-					if (element.getSelected()) {
-						element.switchSelected();	
-					}
-				}
-			}
-			
-			for (int i = (this.elementlist_array.size() - 1); i >= 0; i--) {
-				if (i == index) {
-					return;
-				} else {
-					GuiListElement element = this.elementlist_array.get(i);
-					
-					if (element.getSelected()) {
-						element.switchSelected();	
-					}
-				}
-			}
+		for (int i = 0; i < this.elementlist_array.size(); i++) {
+			GuiListElement element = this.elementlist_array.get(i);
+			element.deselect();
 		}
+		
+		GuiListElement element_focused = this.elementlist_array.get(index);
+		element_focused.setSelectedState(true);
 	}
 	
-	public int getCurrentlySelected() {
+	public int getCurrentlySelectedInt() {
 		for (int i = 0; i < this.elementlist_array.size(); i++) {
 			GuiListElement element = this.elementlist_array.get(i);
 			

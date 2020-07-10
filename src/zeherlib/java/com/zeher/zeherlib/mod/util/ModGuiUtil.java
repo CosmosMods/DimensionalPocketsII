@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.zeher.zeherlib.ZLReference;
 import com.zeher.zeherlib.api.client.container.GuiContainerElements;
 import com.zeher.zeherlib.api.client.container.GuiContainerElementsSound;
@@ -225,7 +227,7 @@ public class ModGuiUtil {
 		
 		public static class LIST {
 			public static class DRAW {
-				public static void drawListWithElementsSmall(GuiContainerElements container, FontRenderer fontRenderer, int[] screen_coords, int draw_x, int draw_y, int width, int index_from, ArrayList<String> list) {
+				public static void drawListWithElementsSmall(GuiContainerElements container, FontRenderer fontRenderer, int draw_x, int draw_y, int width, int index_from, @Nullable ResourceLocation skin, ArrayList<String> list) {
 					int height = 14;
 					int spacing_y = height + 2;
 					int index_from_clamped = MathHelper.clamp(index_from, 0, list.size());
@@ -253,7 +255,7 @@ public class ModGuiUtil {
 					
 					for (int i = 0; i < list.size(); i++) {
 						String display_string = list.get(i);
-						GuiListElement element = new GuiListElement(i, screen_coords[0] + draw_x, screen_coords[1] + draw_y + (spacing_y * i), width, height, display_string, DEFAULT_COLOUR_FONT_LIST);
+						GuiListElement element = new GuiListElement(i, draw_x, draw_y + (spacing_y * i), width, height, skin, display_string, DEFAULT_COLOUR_FONT_LIST);
 						
 						if (new_list.size() < 1) {
 							new_list.add(element);
@@ -309,14 +311,14 @@ public class ModGuiUtil {
 					container.setElementList(new_list);
 				}
 				
-				public static void drawListWithElementsLarge(GuiContainerElements container, FontRenderer fontRenderer, int[] screen_coords, int draw_x, int draw_y, int width, ArrayList<String> list) {
+				public static void drawListWithElementsLarge(GuiContainerElements container, FontRenderer fontRenderer, int[] screen_coords, int draw_x, int draw_y, int width, @Nullable ResourceLocation skin, ArrayList<String> list) {
 					int height = 20;
 					int spacing_y = height + 2;
 					
 					for (int i = 0; i < list.size(); i++) {
 						String display_string = list.get(i);
 						
-						container.getElementList().add(new GuiListElement(i, screen_coords, draw_x, draw_y + (spacing_y * i), width, height, display_string, DEFAULT_COLOUR_FONT_LIST));
+						container.getElementList().add(new GuiListElement(i, screen_coords, draw_x, draw_y + (spacing_y * i), width, height, skin, display_string, DEFAULT_COLOUR_FONT_LIST));
 					}
 				}
 			}
@@ -418,8 +420,17 @@ public class ModGuiUtil {
 				font.drawString(I18n.format(draw_text), screen_coords[0] + draw_x, screen_coords[1] + draw_y, colour);
 			}
 			
+			@Deprecated
 			public static void drawInventoryString(FontRenderer font, int[] screen_coords, int draw_x, int draw_y) {
 				font.drawString(I18n.format("container.inventory"), screen_coords[0] + draw_x, screen_coords[1] + draw_y, DEFAULT_COLOUR_BACKGROUND);
+			}
+			
+			public static void drawInventoryString(FontRenderer font, int[] screen_coords, int draw_x, int draw_y, boolean draw_from) {
+				if (draw_from) {
+					font.drawString(I18n.format("container.inventory"), screen_coords[0] + draw_x, screen_coords[1] + draw_y, DEFAULT_COLOUR_BACKGROUND);
+				} else {
+					font.drawString(I18n.format("container.inventory"), draw_x, draw_y, DEFAULT_COLOUR_BACKGROUND);
+				}
 			}
 			
 			public static void drawInventoryString(FontRenderer font, int[] screen_coords, int draw_x, int draw_y, int colour) {

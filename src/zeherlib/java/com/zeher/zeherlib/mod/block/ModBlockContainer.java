@@ -1,7 +1,7 @@
 package com.zeher.zeherlib.mod.block;
 
-import com.zeher.zeherlib.api.azrf.ISidedTile;
-import com.zeher.zeherlib.api.azrf.AZRFUtil;
+import com.zeher.zeherlib.api.compat.core.interfaces.ISidedTile;
+import com.zeher.zeherlib.api.compat.util.CompatUtil;
 import com.zeher.zeherlib.mod.util.ModUtil;
 
 import net.minecraft.block.BlockContainer;

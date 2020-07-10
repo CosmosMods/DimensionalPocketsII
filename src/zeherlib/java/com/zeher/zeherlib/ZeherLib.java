@@ -18,7 +18,7 @@ public class ZeherLib {
 
 	public static final String MOD_ID = "zeherlib";
 	public static final String MOD_NAME = "ZeherLib";
-	public static final String MOD_VERSION = "7.0.14";
+	public static final String MOD_VERSION = "7.0.20";
 	public static final String MOD_VERSION_MAX = "7.1.0";
 	public static final String MOD_DEPENDENCIES = ZLReference.DEPENDENCY.FORGE_DEP;
 	

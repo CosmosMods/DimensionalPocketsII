@@ -1,4 +1,5 @@
 #en_us
+#ZEHERLIB
 
 #JEI_Integration
 jei.experience=XP
@@ -39,6 +40,11 @@ side_state.interface_normal.name=Interface Normal
 side_state.interface_output.name=Interface Output
 side_state.interface_input.name=Interface Input
 side_state.disabled.name=Disabled
+
+connection_type.blank.name=Blank
+connection_type.energy.name=Energy
+connection_type.fluid.name=Fluid
+connection_type.item.name=Item
 
 channel_state.no_conn.name=No Connection
 channel_state.cable.name=Cable
