@@ -1,0 +1,37 @@
+#en_us
+#creative_tab
+itemGroup.tab_dimensionalpockets=Dimensional Pockets
+
+#items
+item.dimensional_shard.name=Dimensional Shard
+item.dimensional_ingot.name=Dimensional Ingot
+
+item.dimensional_key.name=Dimensional Key
+item.dimensional_wrench.name=Dimensional Wrench
+
+item.modifier_general.name=General Modifier
+item.modifier_energy.name=Energy Modifier
+item.modifier_fluid.name=Fluid Modifier
+item.modifier_item.name=Item Modifier
+
+#blocks
+tile.block_dimensional_ore.name=Dimensional Ore
+tile.block_dimensional.name=Block of Dimensional Material
+
+tile.block_dimensional_pocket.name=Dimensional Pocket
+tile.block_dimensional_pocket_wall.name=Dimensional Wall
+tile.block_dimensional_pocket_wall_edge.name=Dimensional Wall
+tile.block_dimensional_pocket_wall_connector.name=Dimensional Wall
+
+#commands
+commands.dimshift.usage=/dimshift <destination dimension>(As a number, Eg: 0 [Overworld])
+
+commands.dimhelp.header=--- Showing help for Dimensional Pockets ---
+commands.dimhelp.usage=/dimhelp [ page | command name ]
+
+#gui
+gui.main.dimensional_pocket.name=Dimensional Pocket
+gui.header.allowed_players.name=Allowed Players:
+gui.header.owner.name=Pocket Owner:
+gui.header.config.name=Configuration
+gui.header.legend.name=Legend:

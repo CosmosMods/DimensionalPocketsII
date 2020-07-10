@@ -1,0 +1,26 @@
+{
+    "forge_marker": 1,
+    "variants": {
+        "inventory": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector" },
+        
+        "mode=0,type=0": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector" },
+        "mode=1,type=0": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector" },
+        "mode=2,type=0": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector" },
+        "mode=3,type=0": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector" },
+        
+        "mode=0,type=1": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_energy" },
+        "mode=1,type=1": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_energy_output" },
+        "mode=2,type=1": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_energy_input" },
+        "mode=3,type=1": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_energy_disabled" },
+        
+        "mode=0,type=2": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_fluid" },
+        "mode=1,type=2": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_fluid_output" },
+        "mode=2,type=2": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_fluid_input" },
+        "mode=3,type=2": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_fluid_disabled" },
+        
+        "mode=0,type=3": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_item" },
+        "mode=1,type=3": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_item_output" },
+        "mode=2,type=3": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_item_input" },
+        "mode=3,type=3": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_item_disabled" }
+    }
+}

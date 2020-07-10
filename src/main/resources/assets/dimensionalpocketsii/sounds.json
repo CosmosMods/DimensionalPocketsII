@@ -1,0 +1,10 @@
+{ 
+	"portal_in": { 
+	   "category" : "block", 
+	   "sounds": [ "dimensionalpocketsii:portal_in" ]
+    },
+    "portal_out": { 
+       "category" : "block", 
+       "sounds": [ "dimensionalpocketsii:portal_out" ]
+    }
+}

@@ -1,0 +1,97 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "normal": "dimensionalpocketsii:blocks/connected/glass/normal",
+            "u": "dimensionalpocketsii:blocks/connected/glass/u",
+            "r": "dimensionalpocketsii:blocks/connected/glass/r",
+            "ud": "dimensionalpocketsii:blocks/connected/glass/ud",
+            "ul": "dimensionalpocketsii:blocks/connected/glass/ul",
+            "ur": "dimensionalpocketsii:blocks/connected/glass/ur",
+            "lr": "dimensionalpocketsii:blocks/connected/glass/lr",
+            "udr": "dimensionalpocketsii:blocks/connected/glass/udr",
+            "udl": "dimensionalpocketsii:blocks/connected/glass/udl",
+            "ulr": "dimensionalpocketsii:blocks/connected/glass/ulr",
+            "udlr": "dimensionalpocketsii:blocks/connected/glass/udlr"
+        }
+    },
+    
+    "variants": {
+        "inventory": { "model": "zeherlib:connected_0" },
+        "down=false,east=false,north=false,south=false,up=false,west=false": { "model": "zeherlib:connected_0" },
+
+        "down=false,east=false,north=false,south=false,up=true,west=false": { "model": "zeherlib:connected_1" },
+        "down=true,east=false,north=false,south=false,up=false,west=false": { "model": "zeherlib:connected_1","x": 180 },
+        "down=false,east=false,north=true,south=false,up=false,west=false": { "model": "zeherlib:connected_1","x": 90 },
+        "down=false,east=false,north=false,south=true,up=false,west=false": { "model": "zeherlib:connected_1","x": -90 },
+        "down=false,east=false,north=false,south=false,up=false,west=true": { "model": "zeherlib:connected_1","x": 90,"y": -90 },
+        "down=false,east=true,north=false,south=false,up=false,west=false": { "model": "zeherlib:connected_1","x": 90,"y": 90 },
+
+        "down=false,east=true,north=false,south=false,up=true,west=false": { "model": "zeherlib:connected_2_angle" },
+        "down=false,east=false,north=false,south=false,up=true,west=true": { "model": "zeherlib:connected_2_angle","y": 180 },
+        "down=true,east=true,north=false,south=false,up=false,west=false": { "model": "zeherlib:connected_2_angle","x": 180 },
+        "down=true,east=false,north=false,south=false,up=false,west=true": { "model": "zeherlib:connected_2_angle","x": 180,"y": 180 },
+        "down=false,east=false,north=true,south=false,up=true,west=false": { "model": "zeherlib:connected_2_angle","y": -90 },
+        "down=false,east=false,north=false,south=true,up=true,west=false": { "model": "zeherlib:connected_2_angle","y": 90 },
+        "down=true,east=false,north=true,south=false,up=false,west=false": { "model": "zeherlib:connected_2_angle","x": 180,"y": -90 },
+        "down=true,east=false,north=false,south=true,up=false,west=false": { "model": "zeherlib:connected_2_angle","x": 180,"y": 90 },
+        "down=false,east=true,north=true,south=false,up=false,west=false": { "model": "zeherlib:connected_2_angle","x": 90 },
+        "down=false,east=true,north=false,south=true,up=false,west=false": { "model": "zeherlib:connected_2_angle","x": -90 },
+        "down=false,east=false,north=true,south=false,up=false,west=true": { "model": "zeherlib:connected_2_angle","x": 90,"y": -90 },
+        "down=false,east=false,north=false,south=true,up=false,west=true": { "model": "zeherlib:connected_2_angle","x": -90,"y": 90 },
+
+        "down=true,east=false,north=false,south=false,up=true,west=false": { "model": "zeherlib:connected_2" },
+        "down=false,east=true,north=false,south=false,up=false,west=true": { "model": "zeherlib:connected_2","x": -90,"y": 90  },
+        "down=false,east=false,north=true,south=true,up=false,west=false": { "model": "zeherlib:connected_2","x": -90 },
+
+        "down=true,east=false,north=false,south=false,up=true,west=true": { "model": "zeherlib:connected_3_t1" },
+        "down=true,east=false,north=false,south=true,up=true,west=false": { "model": "zeherlib:connected_3_t1","y": -90 },
+        "down=true,east=true,north=false,south=false,up=true,west=false": { "model": "zeherlib:connected_3_t1","y": -180 },
+        "down=true,east=false,north=true,south=false,up=true,west=false": { "model": "zeherlib:connected_3_t1","y": 90 },
+        "down=false,east=false,north=true,south=true,up=false,west=true": { "model": "zeherlib:connected_3_t1","x": -90 },
+        "down=false,east=true,north=true,south=true,up=false,west=false": { "model": "zeherlib:connected_3_t1","x": -90,"y": 180 },
+
+        "down=false,east=true,north=false,south=false,up=true,west=true": { "model": "zeherlib:connected_3_t2" },
+        "down=false,east=true,north=false,south=true,up=false,west=true": { "model": "zeherlib:connected_3_t2","x": -90 },
+        "down=true,east=true,north=false,south=false,up=false,west=true": { "model": "zeherlib:connected_3_t2","x": 180 },
+        "down=false,east=true,north=true,south=false,up=false,west=true": { "model": "zeherlib:connected_3_t2","x": 90 },
+        "down=false,east=false,north=true,south=true,up=true,west=false": { "model": "zeherlib:connected_3_t2","y": 90 },
+        "down=true,east=false,north=true,south=true,up=false,west=false": { "model": "zeherlib:connected_3_t2","x": 180,"y": 90 },
+
+        "down=false,east=true,north=false,south=true,up=true,west=false": { "model": "zeherlib:connected_3_angle" },
+        "down=false,east=false,north=false,south=true,up=true,west=true": { "model": "zeherlib:connected_3_angle","y": 90 },
+        "down=false,east=true,north=true,south=false,up=true,west=false": { "model": "zeherlib:connected_3_angle","x": 90 },
+        "down=true,east=true,north=true,south=false,up=false,west=false": { "model": "zeherlib:connected_3_angle","x": 180 },
+        "down=true,east=true,north=false,south=true,up=false,west=false": { "model": "zeherlib:connected_3_angle","x": 270 },
+
+        "down=true,east=false,north=false,south=true,up=false,west=true": { "model": "zeherlib:connected_3_angle","x": 180,"y": -180 },
+        "down=true,east=false,north=true,south=false,up=false,west=true": { "model": "zeherlib:connected_3_angle","x": -90,"y": -180 },
+        "down=false,east=false,north=true,south=false,up=true,west=true": { "model": "zeherlib:connected_3_angle","x": 90,"y": -90 },
+
+        "down=true,east=true,north=false,south=false,up=true,west=true": { "model": "zeherlib:connected_4_cross" },
+        "down=false,east=true,north=true,south=true,up=false,west=true": { "model": "zeherlib:connected_4_cross","x": 90 },
+        "down=true,east=false,north=true,south=true,up=true,west=false": { "model": "zeherlib:connected_4_cross","y": 90 },
+
+        "down=true,east=false,north=true,south=false,up=true,west=true": { "model": "zeherlib:connected_4_angle" },
+        "down=true,east=false,north=true,south=true,up=false,west=true": { "model": "zeherlib:connected_4_angle","x": 90 },
+        "down=false,east=false,north=true,south=true,up=true,west=true": { "model": "zeherlib:connected_4_angle","x": -90 },
+        "down=true,east=false,north=false,south=true,up=true,west=true": { "model": "zeherlib:connected_4_angle","y": -90 },
+        "down=true,east=true,north=true,south=false,up=true,west=false": { "model": "zeherlib:connected_4_angle","y": 90 },
+        "down=true,east=true,north=false,south=true,up=true,west=false": { "model": "zeherlib:connected_4_angle","y": 180 },
+        "down=false,east=true,north=true,south=true,up=true,west=false": { "model": "zeherlib:connected_4_angle","x": -90,"y": 180 },
+        "down=true,east=true,north=true,south=true,up=false,west=false": { "model": "zeherlib:connected_4_angle","x": 90,"y": 180 },
+        "down=false,east=true,north=false,south=true,up=true,west=true": { "model": "zeherlib:connected_4_angle","x": -90,"y": -90 },
+        "down=true,east=true,north=false,south=true,up=false,west=true": { "model": "zeherlib:connected_4_angle","x": -270,"y": -90 },
+        "down=false,east=true,north=true,south=false,up=true,west=true": { "model": "zeherlib:connected_4_angle","x": -90,"y": 90 },
+        "down=true,east=true,north=true,south=false,up=false,west=true": { "model": "zeherlib:connected_4_angle","x": -270,"y": -270 },
+
+        "down=true,east=true,north=true,south=true,up=false,west=true": { "model": "zeherlib:connected_4_cross" },
+        "down=true,east=true,north=false,south=true,up=true,west=true": { "model": "zeherlib:connected_4_cross" },
+        "down=true,east=false,north=true,south=true,up=true,west=true": { "model": "zeherlib:connected_4_cross" },
+        "down=true,east=true,north=true,south=true,up=true,west=false": { "model": "zeherlib:connected_4_cross" },
+        "down=true,east=true,north=true,south=false,up=true,west=true": { "model": "zeherlib:connected_4_cross" },
+        "down=false,east=true,north=true,south=true,up=true,west=true": { "model": "zeherlib:connected_4_cross" },
+
+        "down=true,east=true,north=true,south=true,up=true,west=true": { "model": "zeherlib:connected_4_cross" }
+    }
+}
