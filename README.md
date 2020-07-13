@@ -30,6 +30,6 @@ If you wish to view the original DimensionalPockets code, please refer to [NPExc
 ## Development Team:
 - TheRealZeher (Main Author)
 - Apolybrium (Texture Artist)
-- @Rechalow (Chinese Translation)
+- Rechalow (Chinese Translation)
 
 | 2020 @ TheRealZeher | TRZ | All Rights Reserved |
