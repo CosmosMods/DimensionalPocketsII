@@ -1,0 +1,8 @@
+{
+    "parent": "zeherlib:block/sides_diff",
+    "textures": {
+        "particle": "dimensionalpocketsii:blocks/pocket/wall/wall",
+        "side": "dimensionalpocketsii:blocks/pocket/wall/display/energy/display_28",
+        "other": "dimensionalpocketsii:blocks/pocket/wall/wall"
+    }
+}

@@ -2,17 +2,17 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "normal": "dimensionalpocketsii:blocks/connected/edge/normal",
-            "u": "dimensionalpocketsii:blocks/connected/edge/u",
-            "r": "dimensionalpocketsii:blocks/connected/edge/r",
-            "ud": "dimensionalpocketsii:blocks/connected/edge/ud",
-            "ul": "dimensionalpocketsii:blocks/connected/edge/ul",
-            "ur": "dimensionalpocketsii:blocks/connected/edge/ur",
-            "lr": "dimensionalpocketsii:blocks/connected/edge/lr",
-            "udr": "dimensionalpocketsii:blocks/connected/edge/udr",
-            "udl": "dimensionalpocketsii:blocks/connected/edge/udl",
-            "ulr": "dimensionalpocketsii:blocks/connected/edge/ulr",
-            "udlr": "dimensionalpocketsii:blocks/connected/edge/udlr"
+            "normal": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/normal",
+            "u": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/u",
+            "r": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/r",
+            "ud": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/ud",
+            "ul": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/ul",
+            "ur": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/ur",
+            "lr": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/lr",
+            "udr": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/udr",
+            "udl": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/udl",
+            "ulr": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/ulr",
+            "udlr": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/udlr"
         }
     },
     

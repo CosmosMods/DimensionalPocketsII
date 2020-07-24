@@ -13,8 +13,8 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/pocket/wall/interface/energy/energy_disabled",
-        "default": "dimensionalpocketsii:blocks/pocket/wall/interface/energy/energy_disabled"
+        "particle": "dimensionalpocketsii:blocks/pocket/wall/connector/interface/energy/energy_disabled",
+        "default": "dimensionalpocketsii:blocks/pocket/wall/connector/interface/energy/energy_disabled"
     },
     "elements": [
         {

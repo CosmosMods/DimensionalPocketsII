@@ -1,5 +1,4 @@
 #en_us
-#DIMPOCK2
 
 #creative_tab
 itemGroup.tab_dimensionalpockets=Dimensional Pockets
@@ -8,7 +7,6 @@ itemGroup.tab_dimensionalpockets=Dimensional Pockets
 item.dimensional_shard.name=Dimensional Shard
 item.dimensional_ingot.name=Dimensional Metal Ingot
 
-item.dimensional_key.name=Dimensional Key
 item.dimensional_wrench.name=Dimensional Wrench
 
 item.modifier_general.name=General Modifier
@@ -26,20 +24,30 @@ tile.block_dimensional_core.name=Dimensional Core
 tile.block_dimensional_pocket_wall.name=Dimensional Wall
 tile.block_dimensional_pocket_wall_edge.name=Dimensional Wall
 tile.block_dimensional_pocket_wall_connector.name=Dimensional Wall Connector
+tile.block_dimensional_pocket_wall_energy_display.name=Dimensional Energy Display
+tile.block_dimensional_pocket_wall_fluid_display.name=Dimensional Fluid Display
+
 
 #commands
-commands.dimshift.usage=/dimshift <destination dimension>(As a number, Eg: 0 [Overworld])
+command.dimshift.usage=/dimshift <destination dimension>(As a number, Eg: 0 [Overworld])
 
-commands.dimhelp.header=--- Showing help for Dimensional Pockets ---
-commands.dimhelp.usage=/dimhelp [ page | command name ]
+command.dimhelp.header=--- Showing help for Dimensional Pockets ---
+command.dimhelp.usage=/dimhelp [ page ]
 
-commands.recoverpocket.usage=/recoverpocket <pocket number> (Specifies the pocket to recover) / [length] (This will show how many pockets exist in the registry)
-commands.recoverpocket.too.usage=Pocket number specified is more than the amount of pockets in the registry.
-commands.recoverpocket.wrong_name=You cannot recover this pocket as it does not belong to you.
-commands.recoverpocket.creative=You must be in Creative mode to use this command.
+command.recoverpocket.usage=/recoverpocket <pocket number> (Specifies the pocket to recover) / "length" (This will show how many pockets exist in the registry)
+command.recoverpocket.too.usage=Pocket number specified is more than the amount of pockets in the registry.
+command.recoverpocket.wrong_name=You cannot recover this pocket as it does not belong to you.
+command.recoverpocket.creative=You must be in Creative mode to use this command.
+
+command.recoverpocket_admin.usage=/recoverpocketadmin <pocket number> (Specifies the pocket to recover) / "length" (This will show how many pockets exist in the registry)
+command.recoverpocket_admin.too.usage=Pocket number specified is more than the amount of pockets in the registry.
+
+command.setspawn.usage=/setspawn (Sets the current position you are standing to the entry point when you enter this pocket.)
 
 #gui
 gui.main.dimensional_pocket.name=Dimensional Pocket
+gui.main.connector.name=Connector Configuration
+
 gui.header.allowed_players.name=Allowed Players:
 gui.header.owner.name=Pocket Owner:
 gui.header.config.name=Configuration:
@@ -48,7 +56,7 @@ gui.header.layout.name=Layout:
 gui.header.internal.name=Internals:
 gui.comp.null_creator.name=Null Creator!
 gui.header.surrounding.name=Surrounding:
-gui.header.stacks.name=Items:
+gui.header.pocket_inv.name=Pocket Items:
 
 #pocket
 pocket.status.locked.name=[Locked]

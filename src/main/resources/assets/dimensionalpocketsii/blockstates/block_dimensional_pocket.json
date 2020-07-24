@@ -114,6 +114,24 @@
         },
         { "when": { "locked": "false" },
             "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket_frame_unlocked", "x": 90, "uvlock": true }
+        },
+        { "when": { "sides": "true" },
+            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket_sides_north", "uvlock": true }
+        },
+        { "when": { "sides": "true" },
+            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket_sides_east", "y": 90, "uvlock": true }
+        },
+        { "when": { "sides": "true" },
+            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket_sides_south", "y": 180, "uvlock": true }
+        },
+        { "when": { "sides": "true" },
+            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket_sides_west", "y": 270, "uvlock": true }
+        },
+        { "when": { "sides": "true" },
+            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket_sides_up", "x": 270, "uvlock": true }
+        },
+        { "when": { "sides": "true" },
+            "apply": { "model": "dimensionalpocketsii:block_dimensional_pocket_sides_down", "x": 90, "uvlock": true }
         }
     ]
 }

@@ -13,8 +13,8 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/pocket/wall/interface/fluid/fluid_input",
-        "default": "dimensionalpocketsii:blocks/pocket/wall/interface/fluid/fluid_input"
+        "particle": "dimensionalpocketsii:blocks/pocket/wall/connector/interface/fluid/fluid_input",
+        "default": "dimensionalpocketsii:blocks/pocket/wall/connector/interface/fluid/fluid_input"
     },
     "elements": [
         {

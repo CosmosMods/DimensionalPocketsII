@@ -1,7 +1,7 @@
 {
     "forge_marker": 1,
     "variants": {
-        "inventory": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector" },
+        "inventory": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector_inventory" },
         
         "mode=0,type=0": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector" },
         "mode=1,type=0": { "model": "dimensionalpocketsii:block_dimensional_pocket_wall_connector" },

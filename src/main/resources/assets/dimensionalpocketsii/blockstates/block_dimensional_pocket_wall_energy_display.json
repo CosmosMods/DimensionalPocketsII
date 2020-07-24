@@ -1,0 +1,36 @@
+{
+    "forge_marker": 1,
+    "variants": {
+        "inventory": { "model": "dimensionalpocketsii:display/energy/display_0" },
+        
+        "energy=0": { "model": "dimensionalpocketsii:display/energy/display_0" },
+        "energy=1": { "model": "dimensionalpocketsii:display/energy/display_1" },
+        "energy=2": { "model": "dimensionalpocketsii:display/energy/display_2" },
+        "energy=3": { "model": "dimensionalpocketsii:display/energy/display_3" },
+        "energy=4": { "model": "dimensionalpocketsii:display/energy/display_4" },
+        "energy=5": { "model": "dimensionalpocketsii:display/energy/display_5" },
+        "energy=6": { "model": "dimensionalpocketsii:display/energy/display_6" },
+        "energy=7": { "model": "dimensionalpocketsii:display/energy/display_7" },
+        "energy=8": { "model": "dimensionalpocketsii:display/energy/display_8" },
+        "energy=9": { "model": "dimensionalpocketsii:display/energy/display_9" },
+        "energy=10": { "model": "dimensionalpocketsii:display/energy/display_10" },
+        "energy=11": { "model": "dimensionalpocketsii:display/energy/display_11" },
+        "energy=12": { "model": "dimensionalpocketsii:display/energy/display_12" },
+        "energy=13": { "model": "dimensionalpocketsii:display/energy/display_13" },
+        "energy=14": { "model": "dimensionalpocketsii:display/energy/display_14" },
+        "energy=15": { "model": "dimensionalpocketsii:display/energy/display_15" },
+        "energy=16": { "model": "dimensionalpocketsii:display/energy/display_16" },
+        "energy=17": { "model": "dimensionalpocketsii:display/energy/display_17" },
+        "energy=18": { "model": "dimensionalpocketsii:display/energy/display_18" },
+        "energy=19": { "model": "dimensionalpocketsii:display/energy/display_19" },
+        "energy=20": { "model": "dimensionalpocketsii:display/energy/display_20" },
+        "energy=21": { "model": "dimensionalpocketsii:display/energy/display_21" },
+        "energy=22": { "model": "dimensionalpocketsii:display/energy/display_22" },
+        "energy=23": { "model": "dimensionalpocketsii:display/energy/display_23" },
+        "energy=24": { "model": "dimensionalpocketsii:display/energy/display_24" },
+        "energy=25": { "model": "dimensionalpocketsii:display/energy/display_25" },
+        "energy=26": { "model": "dimensionalpocketsii:display/energy/display_26" },
+        "energy=27": { "model": "dimensionalpocketsii:display/energy/display_27" },
+        "energy=28": { "model": "dimensionalpocketsii:display/energy/display_28" }
+    }
+}
