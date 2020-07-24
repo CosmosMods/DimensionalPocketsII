@@ -1,5 +1,4 @@
 # DimensionalPocketsII
-
 Due to having a similiar idea to NPException's Dimensional Pockets, I have created DimensionalPocketsII with some features carried over, but with my own twist. Currently using MinecraftForge for 1.12.2.
 
 ## Licence
@@ -19,6 +18,7 @@ This repo does not have a licence. This means that by default, it is All Rights 
 - Post download links to the mod that are not the links provided by CurseForge, especially those which make money, such as ad.fly.
 - Copy / use any artwork, textures or images for your own purpose.
 
+## The Original
 If you wish to view the original DimensionalPockets code, please refer to [NPException's GitHub](https://github.com/NPException/Dimensional-Pockets).
 
 ## Mod Page
@@ -32,4 +32,4 @@ If you wish to view the original DimensionalPockets code, please refer to [NPExc
 - Apolybrium (Texture Artist)
 - Rechalow (Chinese Translation)
 
-| 2020 @ TheRealZeher | TRZ | All Rights Reserved |
+| 2020 @ TheRealZeher | All Rights Reserved |
