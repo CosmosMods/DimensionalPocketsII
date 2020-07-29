@@ -13,8 +13,8 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/pocket/wall/connector/connector_screen_",
-        "default": "dimensionalpocketsii:blocks/pocket/wall/connector/connector_screen_"
+        "particle": "dimensionalpocketsii:blocks/pocket/wall/connector/connector",
+        "default": "dimensionalpocketsii:blocks/pocket/wall/connector/connector"
     },
     "elements": [
         {

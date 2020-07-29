@@ -3,95 +3,82 @@ package com.zeher.dimpockets.pocket.core.block;
 import com.zeher.dimpockets.pocket.core.tileentity.TilePocket;
 import com.zeher.zeherlib.api.compat.core.impl.BlockContainerRemovableNBT;
 
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockPocket extends BlockContainerRemovableNBT implements ITileEntityProvider {
+public class BlockPocket extends BlockContainerRemovableNBT {
 	
-	public static final PropertyInteger NORTH = PropertyInteger.create("north", 0, 3);
-	public static final PropertyInteger EAST = PropertyInteger.create("east", 0, 3);
-	public static final PropertyInteger SOUTH = PropertyInteger.create("south", 0, 3);
-	public static final PropertyInteger WEST = PropertyInteger.create("west", 0, 3);
-	public static final PropertyInteger UP = PropertyInteger.create("up", 0, 3);
-	public static final PropertyInteger DOWN = PropertyInteger.create("down", 0, 3);
-	public static final PropertyBool LOCKED = PropertyBool.create("locked");
-	public static final PropertyBool SIDES = PropertyBool.create("sides");
+	public static final IntegerProperty NORTH = IntegerProperty.create("north", 0, 3);
+	public static final IntegerProperty EAST = IntegerProperty.create("east", 0, 3);
+	public static final IntegerProperty SOUTH = IntegerProperty.create("south", 0, 3);
+	public static final IntegerProperty WEST = IntegerProperty.create("west", 0, 3);
+	public static final IntegerProperty UP = IntegerProperty.create("up", 0, 3);
+	public static final IntegerProperty DOWN = IntegerProperty.create("down", 0, 3);
+	public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
 
-	public BlockPocket(String name, Material arg0, String tool, int harvest, int hardness, int resistance, CreativeTabs tab) {
-		super(name, arg0, tool, harvest, hardness, resistance, tab);
+	public BlockPocket(Block.Properties prop) {
+		super(prop);
 		
-		this.setBlockUnbreakable();
-		this.setTickRandomly(true);
-		
-		this.setDefaultState(this.blockState.getBaseState().withProperty(NORTH, 0).withProperty(EAST, 0)
-				.withProperty(SOUTH, 0).withProperty(WEST, 0).withProperty(UP, 0).withProperty(DOWN, 0).withProperty(LOCKED, false).withProperty(SIDES, false));
+		this.setDefaultState(this.getDefaultState()
+				.with(NORTH, 0).with(EAST, 0)
+				.with(SOUTH, 0).with(WEST, 0)
+				.with(UP, 0).with(DOWN, 0)
+				.with(LOCKED, false));
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
+	public TileEntity createTileEntity(BlockState state, IBlockReader worldIn) {
 		return new TilePocket();
 	}
-
-	@Override
-	public boolean canBeReplacedByLeaves(IBlockState state, IBlockAccess world, BlockPos pos) {
-		return false;
-	}
 	
 	@Override
-	public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity) {
-		return false;
-    }
-	
-	@Override
-	public void onBlockClicked(World world, BlockPos pos, EntityPlayer player) {
+	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 		TileEntity tileEntity = world.getTileEntity(pos);
 		
 		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).onBlockClicked(world, pos, player);
+			((TilePocket) tileEntity).onBlockClicked(state, world, pos, player);
 		}
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		TileEntity tileEntity = world.getTileEntity(pos);
+	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
+		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		
 		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).onBlockActivated(world, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+			((TilePocket) tileEntity).onBlockActivated(state, worldIn, pos, playerIn, handIn, hit);
 		}
 		return false;
 	}
 	
 	@Override
-	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-		TileEntity tileEntity = world.getTileEntity(pos);
+	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		
 		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).onBlockAdded(world, pos, state);
+			((TilePocket) tileEntity).onBlockAdded(state, worldIn, pos, oldState, isMoving);
 		}
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		
 		if (tileEntity instanceof TilePocket) {
@@ -100,87 +87,65 @@ public class BlockPocket extends BlockContainerRemovableNBT implements ITileEnti
 	}
 
 	@Override
-	public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) {
+	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		
 		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).onBlockDestroyedByPlayer(worldIn, pos, state);
+			((TilePocket) tileEntity).onBlockHarvested(worldIn, pos, state, player);
 		}
 	}
 
 	@Override
-	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) {
-		TileEntity tileEntity = world.getTileEntity(pos);
+	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+	TileEntity tileEntity = worldIn.getTileEntity(pos);
 		
 		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).onNeighborChange(world, pos, neighbor);
+			((TilePocket) tileEntity).neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
 		}
 	}
-
+	
 	@Override
-	public boolean isOpaqueCube(IBlockState state) {
-		return false;
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.MODEL;
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState state) {
-		return false;
-	}
-
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
-		return EnumBlockRenderType.MODEL;
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public BlockRenderLayer getBlockLayer() {
+	@OnlyIn(Dist.CLIENT)
+	public BlockRenderLayer getRenderLayer() {
 		return BlockRenderLayer.CUTOUT_MIPPED;
 	}
 
 	@Override
-	public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
+	public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
 		return (layer == BlockRenderLayer.CUTOUT_MIPPED || layer == BlockRenderLayer.TRANSLUCENT);
 	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
+	@OnlyIn(Dist.CLIENT)
+	public static boolean shouldSideBeRendered(BlockState adjacentState, IBlockReader blockState, BlockPos blockAccess, Direction pos) {
 		return false;
 	}
 	
 	@Override
-	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] { NORTH, EAST, WEST, SOUTH, UP, DOWN, LOCKED, SIDES });
-	}
-	
-	@Override
-	public int getMetaFromState(IBlockState state) {
-		return 0;
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		builder.add(NORTH, EAST, WEST, SOUTH, UP, DOWN, LOCKED);
 	}
 
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-		TileEntity tile_in = worldIn.getTileEntity(pos);
+	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {	
+		TileEntity tile_in = worldIn.getTileEntity(currentPos);
 		
 		if (tile_in instanceof TilePocket) {
-			TilePocket tile = (TilePocket) worldIn.getTileEntity(pos);
+			TilePocket tile = (TilePocket) worldIn.getTileEntity(currentPos);
 
-			return state.withProperty(NORTH, tile.getSide(EnumFacing.NORTH).getIndex())
-					.withProperty(EAST, tile.getSide(EnumFacing.EAST).getIndex())
-					.withProperty(SOUTH, tile.getSide(EnumFacing.SOUTH).getIndex())
-					.withProperty(WEST, tile.getSide(EnumFacing.WEST).getIndex())
-					.withProperty(UP, tile.getSide(EnumFacing.UP).getIndex())
-					.withProperty(DOWN, tile.getSide(EnumFacing.DOWN).getIndex())
-					.withProperty(LOCKED, tile.getLockState())
-					.withProperty(SIDES, tile.getSidesState());
+			return stateIn.with(NORTH, tile.getSide(Direction.NORTH).getIndex())
+					.with(EAST, tile.getSide(Direction.EAST).getIndex())
+					.with(SOUTH, tile.getSide(Direction.SOUTH).getIndex())
+					.with(WEST, tile.getSide(Direction.WEST).getIndex())
+					.with(UP, tile.getSide(Direction.UP).getIndex())
+					.with(DOWN, tile.getSide(Direction.DOWN).getIndex())
+					.with(LOCKED, tile.getLockState());
 		} else {
 			return this.getDefaultState();
 		}
 	}
-	
-	@Override
-    public boolean requiresUpdates() {
-        return true;
-    }
 }

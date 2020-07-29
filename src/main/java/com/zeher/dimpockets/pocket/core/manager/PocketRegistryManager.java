@@ -3,15 +3,15 @@ package com.zeher.dimpockets.pocket.core.manager;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.zeher.dimpockets.DimReference;
-import com.zeher.dimpockets.core.log.ModLogger;
+import com.zeher.dimpockets.DimensionalPockets;
+import com.zeher.dimpockets.core.manager.ModDimensionManager;
 import com.zeher.dimpockets.pocket.core.Pocket;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PocketRegistryManager {
 	
@@ -22,23 +22,28 @@ public class PocketRegistryManager {
 
 	static class PocketGenParameters {
 		private BlockPos currentChunk = new BlockPos(0, 0, 0);
-		private EnumFacing nextPocketCoordsDirection = EnumFacing.NORTH;
+		private Direction nextPocketCoordsDirection = Direction.NORTH;
 	}
 
-	public static WorldServer getWorldForPockets() {
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getServer().getWorld(DimReference.CONSTANT.POCKET_DIMENSION_ID);
+	public static World getWorldForPockets() {
+		return ServerLifecycleHooks.getCurrentServer().getWorld(ModDimensionManager.POCKET_DIMENSION.getDimensionType());
 	}
 	
 	public static Map<BlockPos, Pocket> getMap() {
 		return backLinkMap;
 	}
+	
+	public static void clearMap() {
+		backLinkMap.clear();
+		
+		DimensionalPockets.LOGGER.info("Map Cleared");
+	}
 
 	public static Pocket getPocket(BlockPos chunkPos) {
-		if (backLinkMap.containsKey(chunkPos)) { 
+		if (backLinkMap.containsKey(chunkPos)) {
 			return backLinkMap.get(chunkPos);
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	public static BlockPos getNextPocketCoords(BlockPos currentCoords) {
@@ -50,7 +55,7 @@ public class PocketRegistryManager {
 			result = new BlockPos(result.getX(), 0, result.getZ()).add(offset.getX() * pocketChunkSpacing, offset.getY(), offset.getZ() * pocketChunkSpacing);
 		}
 		
-		EnumFacing clockwise = pocketGenParameters.nextPocketCoordsDirection.rotateY();
+		Direction clockwise = pocketGenParameters.nextPocketCoordsDirection.rotateY();
 		BlockPos probe = new BlockPos(0, 0, 0).offset(clockwise);
 		BlockPos probe2 = new BlockPos(probe.getX() * pocketChunkSpacing, probe.getY(), probe.getZ() * pocketChunkSpacing);
 		
@@ -64,10 +69,10 @@ public class PocketRegistryManager {
 	}
 	
 	public static BlockPos getChunkPosForPocket(World world, BlockPos pos) {
-		int dim = world.provider.getDimension();
+		DimensionType dimension_type = world.getDimension().getType();
 		
 		for(Pocket pocket : backLinkMap.values()) {
-			if (pocket.getSourceBlockDim() == dim && pocket.doesBlockMapContain(pos)) {
+			if (pocket.getSourceBlockDimensionType() == dimension_type && pocket.doesBlockMapContain(pos)) {
 				return pocket.getChunkPos();
 			}
 		}
@@ -76,13 +81,13 @@ public class PocketRegistryManager {
 	}
 	
 	public static Pocket getOrCreatePocket(World world, BlockPos coordSetSource) {
-		Integer dimIDSource = world.provider.getDimension();
+		DimensionType dimIDSource = world.getDimension().getType();
 		BlockPos chunk = getChunkPosForPocket(world, coordSetSource);
 		Pocket pocket = new Pocket();
 		
 		if (chunk.getY() >= 0 && getPocket(chunk) != null) {
 			pocket = getPocket(chunk);
-		} else {
+		} else if (coordSetSource.getY() > 0) {
 			if (!backLinkMap.isEmpty()) {
 				pocketGenParameters.currentChunk = getNextPocketCoords(pocketGenParameters.currentChunk);
 				
@@ -95,19 +100,18 @@ public class PocketRegistryManager {
 				saveData();
 			}
 		}
-		
 		return pocket;
 	}
 
-	public static void updatePocket(BlockPos chunkPos, int newBlockDimID, BlockPos newBlockCoords) {
+	public static void updatePocket(BlockPos chunkPos, DimensionType dimension_type, BlockPos pos) {
 		Pocket link = backLinkMap.get(chunkPos);
 		if (link == null) {
-			ModLogger.severe("No Pocket for chunkPos: " + chunkPos);
+			DimensionalPockets.LOGGER.warn("No Pocket for chunkPos: " + chunkPos);
 			return;
 		}
 
-		link.setSourceBlockDim(newBlockDimID);
-		link.addPosToBlockMap(newBlockCoords);
+		link.setSourceBlockDimensionType(dimension_type);
+		link.addPosToBlockMap(pos);
 
 		saveData();
 	}
@@ -116,19 +120,20 @@ public class PocketRegistryManager {
 		PocketConfigManager.saveBackLinkMap(backLinkMap);
 		PocketConfigManager.savePocketGenParams(pocketGenParameters);
 		
-		ModLogger.info("Pocket data saved to JSON", PocketRegistryManager.class);
+		DimensionalPockets.LOGGER.info("Pocket data saved to JSON", PocketRegistryManager.class);
 	}
 
 	public static void loadData() {
 		backLinkMap = PocketConfigManager.loadBackLinkMap();
 		pocketGenParameters = PocketConfigManager.loadPocketGenParams();
 		
-		ModLogger.info("Pocket data loaded from JSON", PocketRegistryManager.class);
+		DimensionalPockets.LOGGER.info("Pocket data loaded from JSON", PocketRegistryManager.class);
 	}
 
+	@SuppressWarnings("unused")
 	public static void initChunkLoading() {
 		for (Pocket pocket : backLinkMap.values()) {
-			ChunkLoaderManagerRoom.addPocketToChunkLoader(pocket);
+			//ChunkLoaderManagerRoom.addPocketToChunkLoader(pocket);
 		}
 	}
 }

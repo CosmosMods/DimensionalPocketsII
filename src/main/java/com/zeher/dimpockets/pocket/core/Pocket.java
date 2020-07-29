@@ -7,37 +7,37 @@ import java.util.Map;
 import com.google.common.base.Strings;
 import com.google.gson.annotations.SerializedName;
 import com.zeher.dimpockets.DimReference;
-import com.zeher.dimpockets.core.log.ModLogger;
-import com.zeher.dimpockets.core.manager.ModBlockManager;
+import com.zeher.dimpockets.DimensionalPockets;
+import com.zeher.dimpockets.core.manager.BusSubscriberMod;
+import com.zeher.dimpockets.core.manager.ModDimensionManager;
+import com.zeher.dimpockets.core.util.TeleportDirection;
 import com.zeher.dimpockets.pocket.core.block.BlockPocket;
 import com.zeher.dimpockets.pocket.core.block.BlockWall;
 import com.zeher.dimpockets.pocket.core.block.BlockWallEdge;
+import com.zeher.dimpockets.pocket.core.dimshift.Shifter;
+import com.zeher.dimpockets.pocket.core.dimshift.ShifterUtil;
 import com.zeher.dimpockets.pocket.core.manager.PocketRegistryManager;
-import com.zeher.dimpockets.pocket.core.shift.Shifter;
-import com.zeher.dimpockets.pocket.core.shift.ShifterUtil;
-import com.zeher.dimpockets.pocket.core.util.TeleportDirection;
-import com.zeher.dimpockets.pocket.network.packet.PacketConnector;
 import com.zeher.zeherlib.api.client.util.TextHelper;
 import com.zeher.zeherlib.api.compat.core.interfaces.EnumConnectionType;
 import com.zeher.zeherlib.mod.util.ModUtil;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.NibbleArray;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class Pocket {
 	
@@ -46,6 +46,7 @@ public class Pocket {
 	private static final String NBT_SPAWN_COORDS_YAW_KEY = "spawnYaw";
 	private static final String NBT_SPAWN_COORDS_PITCH_KEY = "spawnPitch";
 	private static final String NBT_BLOCK_DIMENSION_KEY = "blockDim";
+	private static final String NBT_BLOCK_DIMENSION_TYPE = "block_dim_type";
 	private static final String NBT_CHUNK_COORDS_KEY = "chunkPos";
 	private static final String NBT_BLOCK_MAP_KEY = "side_map";
 
@@ -60,6 +61,7 @@ public class Pocket {
 	private static final String NBT_LOCKED_KEY = "locked";
 	private static final String NBT_ITEMS_KEY = "Items";
 
+
 	@SerializedName(NBT_CREATOR_KEY)
 	private String creator;
 
@@ -70,8 +72,8 @@ public class Pocket {
 	private boolean locked = false;
 	
 	@SerializedName(NBT_BLOCK_DIMENSION_KEY)
-	private int blockDim;
-
+	private int blockDim = -99;
+	
 	@SerializedName(NBT_SPAWN_COORDS_YAW_KEY)
 	private float spawnYaw;
 	
@@ -92,6 +94,9 @@ public class Pocket {
 
 	@SerializedName("fill_level")
 	private int fill_level = 0;
+
+	@SerializedName(NBT_BLOCK_DIMENSION_TYPE)
+	private DimensionType block_dim_type;
 
 	@SerializedName(NBT_CHUNK_COORDS_KEY)
 	private BlockPos chunkPos;
@@ -119,17 +124,13 @@ public class Pocket {
 
 	public Pocket() {}
 
-	public Pocket(BlockPos chunkPos, int blockDim, BlockPos blockPos) {
-		this.setSourceBlockDim(blockDim);
+	public Pocket(BlockPos chunkPos, DimensionType block_dim_type, BlockPos blockPos) {
+		this.setSourceBlockDimensionType(block_dim_type);
 		this.addPosToBlockMap(blockPos);
 		this.setSpawnInPocket(new BlockPos(7, 1, 7), 0f, 0f);
 		this.chunkPos = chunkPos;
 	}
-
-	public World getSourceBlockWorld() {
-		return FMLCommonHandler.instance().getMinecraftServerInstance().getServer().getWorld(this.blockDim);
-	}
-
+	
 	public boolean isSourceBlockPlaced() {
 		return this.getSourceBlock() instanceof BlockPocket;
 	}
@@ -137,24 +138,40 @@ public class Pocket {
 	public Block getSourceBlock() {
 		World world = this.getSourceBlockWorld();
 		if (world == null) {
-			ModLogger.warning("[FAIL] getSourceBlock() { Dimension with ID: " + this.blockDim + " does not exist! (Mystcraft or GalactiCraft world?) } Pocket will return null...", Pocket.class);
+			DimensionalPockets.LOGGER.warn("[FAIL] getSourceBlock() { Dimension with ID: " + this.block_dim_type + " does not exist! (Mystcraft or GalactiCraft world?) } Pocket will return null...", Pocket.class);
 			return null;
 		}
-		return world.getBlockState(this.getLastPos()).getBlock();
+		return world.getBlockState(this.getLastBlockPos()).getBlock();
 	}
 
-	public int getSourceBlockDim() {
+	public DimensionType getSourceBlockDimensionType() {
+		return this.block_dim_type;
+	}
+	
+	public int getBlockDim() {
 		return this.blockDim;
 	}
 
-	public void setSourceBlockDim(int blockDim) {
-		this.blockDim = blockDim;
+	public void setSourceBlockDimensionType(DimensionType type) {
+		this.block_dim_type = type;
+	}
+
+	public void setCreator(String name) {
+		if (!this.isGenerated) {
+			this.creator = name;
+			this.addToPlayerMap(name);
+		}
 	}
 	
-	public BlockPos getLastPos() {
+	public World getSourceBlockWorld() {
+		return ServerLifecycleHooks.getCurrentServer().getWorld(block_dim_type);
+	}
+	
+	public BlockPos getLastBlockPos() {
 		return last_pos;
 	}
 	
+	@SuppressWarnings("unused")
 	private BlockPos getSpawnPos() {
 		return spawnPos;
 	}
@@ -166,24 +183,10 @@ public class Pocket {
 	public String getCreator() {
 		return creator;
 	}
-
-	public void setCreator(String name) {
-		if (!this.isGenerated) {
-			this.creator = name;
-			this.addToPlayerMap(name);
-		}
-		
-		PocketRegistryManager.saveData();
-	}
-	
-	/** TODO - BlockMap Methods - */
-	public Map<Integer, BlockPos> getBlockMap() {
-		return this.blockMap;
-	}
 	
 	public void addPosToBlockMap(BlockPos pos) {
 		if (blockMap.containsValue(pos)) {
-			ModLogger.info("Pocket: [" + this.chunkPos + "] Already contains that BlockPos. No update to the Map.");
+			DimensionalPockets.LOGGER.info("Pocket: [" + this.chunkPos + "] Already contains that BlockPos. No update to the Map.");
 		} else {
 			blockMap.put(blockMap.size(), pos);
 		}
@@ -247,6 +250,7 @@ public class Pocket {
 		return this.isGenerated;
 	}
 	
+
 	public Map<BlockPos, EnumConnectionType> getConnectorMap() {
 		return this.connectorMap;
 	}
@@ -254,10 +258,10 @@ public class Pocket {
 	/** TODO - Connector Stuff -  */
 	public void updateInConnectorMap(BlockPos put_pos, EnumConnectionType enum_state) {
 		if (connectorMap.containsKey(put_pos)) {
-			ModLogger.info("Connector already exists in Map. Updating...", Pocket.class);
+			DimensionalPockets.LOGGER.info("Connector already exists in Map. Updating...", Pocket.class);
 			connectorMap.replace(put_pos, enum_state);
 		} else {
-			ModLogger.info("Connector added to Map.", Pocket.class);
+			DimensionalPockets.LOGGER.info("Connector added to Map.", Pocket.class);
 			connectorMap.put(put_pos, enum_state);
 		}
 		
@@ -265,13 +269,11 @@ public class Pocket {
 	}
 	
 	public void removeFromConnectorMap(BlockPos pos) {
-		ModLogger.info("Connector removed from Map.", Pocket.class);
+		DimensionalPockets.LOGGER.info("Connector removed from Map.", Pocket.class);
 		connectorMap.remove(pos);
 		
 		PocketRegistryManager.saveData();
 	}
-	
-	/** TODO - Energy Methods - */
 	
 	public int getStored() {
 		return this.stored;
@@ -295,28 +297,32 @@ public class Pocket {
 	}
 
 	public int getMaxReceive() {
+
 		return max_receive;
 	}
 
 	public int getMaxExtract() {
+
 		return max_extract;
 	}
 	
 	public void setEnergyStored(int stored) {
+
 		this.stored = stored;
 
-		if (this.stored > DimReference.CONSTANT.POCKET_RF_CAP) {
-			this.stored = DimReference.CONSTANT.POCKET_RF_CAP;
+		if (this.stored > 1000000) {
+			this.stored = 1000000;
 		} else if (this.stored < 0) {
 			this.stored = 0;
 		}
 	}
 	
 	public void modifyEnergyStored(int stored) {
+
 		this.stored += stored;
 
-		if (this.stored > DimReference.CONSTANT.POCKET_RF_CAP) {
-			this.stored = DimReference.CONSTANT.POCKET_RF_CAP;
+		if (this.stored > 1000000) {
+			this.stored = 1000000;
 		} else if (this.stored < 0) {
 			this.stored = 0;
 		}
@@ -332,7 +338,6 @@ public class Pocket {
 		return storedReceived;
 	}
 
-	
 	public int extractEnergy(int max_extract, boolean simulate) {
 		int storedExtracted = Math.min(stored, Math.min(this.max_extract, max_extract));
 
@@ -348,14 +353,12 @@ public class Pocket {
 	}
 
 	public int getMaxEnergyStored() {
-		return DimReference.CONSTANT.POCKET_RF_CAP;
+		return 1000000;
 	}
 	
 	public boolean hasStored() {
 		return this.stored > 0;
 	}
-	
-	/** TODO - Locking - */
 	
 	public boolean getLockState() {
 		return this.locked;
@@ -365,8 +368,8 @@ public class Pocket {
 		this.locked = change;
 	}
 	
-	
-	/** TODO - Fluid Methods - */
+	/** - FluidHandler Start */
+/** TODO - Fluid Methods - */
 	
 	public int getFluidLevelScaled(int one) {
 		return this.fluid_tank.getFluidAmount() * one / this.fluid_tank.getCapacity();
@@ -389,7 +392,7 @@ public class Pocket {
 		if (isFluidTankEmpty()) {
 			return "Empty";
 		}
-		return this.fluid_tank.getFluid().getLocalizedName();
+		return this.fluid_tank.getFluid().getDisplayName().toString();
 	}
 
 	public boolean isFluidTankEmpty() {
@@ -420,38 +423,30 @@ public class Pocket {
 		}
 	}
 	
-	public int fill(FluidStack resource, boolean doFill) {
+	public int fill(FluidStack resource, FluidAction doFill) {
 		this.updateFluidFillLevel();
 		return fluid_tank.fill(resource, doFill);
 	}
 
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
+	public FluidStack drain(FluidStack resource, FluidAction doDrain) {
 		this.updateFluidFillLevel();
 		
-		return fluid_tank.drain(resource.amount, doDrain);
+		return fluid_tank.drain(resource.getAmount(), doDrain);
 	}
 
-	public FluidStack drain(int maxDrain, boolean doDrain) {
+	public FluidStack drain(int maxDrain, FluidAction doDrain) {
 		this.updateFluidFillLevel();
 		return this.fluid_tank.drain(maxDrain, doDrain);
 	}
 	
-	public boolean canFill(EnumFacing from, Fluid fluid) {
+	public boolean canFill(Direction from, Fluid fluid) {
 		return true;
 	}
 	
-	public boolean canDrain(EnumFacing from, Fluid fluid) {
+	public boolean canDrain(Direction from, Fluid fluid) {
 		return true;
 	}
 	
-	public FluidTankInfo[] getFluidTankInfo(EnumFacing from) {
-		return new FluidTankInfo[] { this.fluid_tank.getInfo() };
-	}
-	
-	public IFluidTankProperties[] getFluidTankProperties() {
-		return this.fluid_tank.getTankProperties();
-	}
-
 	public FluidTank getFluidTank() {
 		return this.fluid_tank;
 	}
@@ -471,14 +466,14 @@ public class Pocket {
 		int worldY = chunkPos.getY() * 16;
 		int worldZ = chunkPos.getZ() * 16;
 
-		Chunk chunk = world.getChunkFromChunkCoords(chunkPos.getX(), chunkPos.getZ());
+		Chunk chunk = world.getChunk(chunkPos.getX(), chunkPos.getZ());
 		
 		int l = worldY >> 4;
-		ExtendedBlockStorage storage = chunk.getBlockStorageArray()[l];
+		ChunkSection storage = chunk.getSections()[l]; //.getBlockStorageArray()[l];
 		
 		if (storage == null) {
-			storage = new ExtendedBlockStorage(worldY, !world.provider.hasSkyLight());
-			chunk.getBlockStorageArray()[l] = storage;
+			storage = new ChunkSection(worldY);
+			chunk.getSections()[l] = storage;
 		}
 		
 		//The interior size of the structure + 1. [Not a dynamic value. If different size pockets are required, extra dimensions will have to be added]
@@ -490,6 +485,8 @@ public class Pocket {
 					boolean flagX = x == 0 || x == (size - 1);
 					boolean flagY = y == 0 || y == (size - 1);
 					boolean flagZ = z == 0 || z == (size - 1);
+					
+					BlockPos pos = new BlockPos(x, y, z);
 
 					//Added those flags, so I could add these checks, almost halves the time.
 					if (!(flagX || flagY || flagZ) || flagX && (flagY || flagZ) || flagY && flagZ) {
@@ -498,18 +495,19 @@ public class Pocket {
 
 					//Creates the "edge" blocks first. Stylistic choice.
 					if (x == 1 || y == 1 || z == 1) {
-						storage.set(x, y, z, ModBlockManager.BLOCK_DIMENSIONAL_POCKET_WALL_EDGE.getDefaultState());
+						storage.setBlockState(x, y, z, BusSubscriberMod.BLOCK_DIMENSIONAL_POCKET_WALL_EDGE.getDefaultState());
 					} else if (x == (size - 2) || y == (size - 2) || z == (size - 2)) {
-						storage.set(x, y, z, ModBlockManager.BLOCK_DIMENSIONAL_POCKET_WALL_EDGE.getDefaultState());
+						storage.setBlockState(x, y, z, BusSubscriberMod.BLOCK_DIMENSIONAL_POCKET_WALL_EDGE.getDefaultState());
 					} else {
-						storage.set(x, y, z, ModBlockManager.BLOCK_DIMENSIONAL_POCKET_WALL.getDefaultState());
+						storage.setBlockState(x, y, z, BusSubscriberMod.BLOCK_DIMENSIONAL_POCKET_WALL.getDefaultState());
 					}
 					
 					//Update the structure so it displays.
 					//NOTE: Skylight is a required component. Without this, the game will crash.
-					storage.setSkyLight(new NibbleArray());
-					world.markBlockRangeForRenderUpdate(new BlockPos(x, y, z), new BlockPos(x, y, z));
-					world.scheduleUpdate(new BlockPos(x, y, z), ModBlockManager.BLOCK_DIMENSIONAL_POCKET_WALL, 0);
+					world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos).getBlock().getDefaultState(), 3);
+					world.markAndNotifyBlock(pos, chunk, world.getBlockState(pos), world.getBlockState(pos).getBlock().getDefaultState(), 3);
+					
+					chunk.markDirty();
 				}
 			}
 		}
@@ -517,7 +515,7 @@ public class Pocket {
 		//Added these checks to ensure correct pocket generation.
 		Block check_block_one = world.getBlockState(new BlockPos(worldX + 1, worldY, worldZ + 1)).getBlock();
 		Block check_block_two = world.getBlockState(new BlockPos(worldX + 2, worldY, worldZ + 2)).getBlock();
-
+		
 		this.isGenerated = check_block_one instanceof BlockWallEdge && check_block_two instanceof BlockWall;
 		
 		if (!Strings.isNullOrEmpty(creatorName)) {
@@ -526,66 +524,66 @@ public class Pocket {
 		
 		PocketRegistryManager.saveData();
 	}
-
-	/** TODO - Shift Methods*/
-	public void shiftToPocket(EntityPlayer entityPlayer) {
-		if (entityPlayer.world.isRemote || !(entityPlayer instanceof EntityPlayerMP)) {
+	
+	
+	public void shiftTo(PlayerEntity entityPlayer) {
+		if (entityPlayer.world.isRemote || !(entityPlayer instanceof ServerPlayerEntity)) {
 			return;
 		}
 		
 		World world = this.getSourceBlockWorld();
-		TeleportDirection teleportSide = TeleportDirection.getValidTeleportLocation(world, this.getLastPos());
+		TeleportDirection teleportSide = TeleportDirection.getValidTeleportLocation(world, this.getLastBlockPos());
 		if (teleportSide == TeleportDirection.UNKNOWN) {
-			ModUtil.sendPlayerMessage(world, entityPlayer, TextHelper.ITALIC + "Teleport Disabled. Pocket is blocked on all sides.");
+			StringTextComponent comp = new StringTextComponent(TextHelper.ITALIC + "Teleport Disabled. Pocket is blocked on all sides.");
+			entityPlayer.sendMessage(comp);
+			
 			return;
 		}
 
-		ModUtil.sendPlayerMessage(world, entityPlayer, TextHelper.TEAL + "Entering pocket dimension...");
-		
-		EntityPlayerMP player = (EntityPlayerMP) entityPlayer;
+		ServerPlayerEntity player = (ServerPlayerEntity) entityPlayer;
 
-		int dimID = player.dimension;
-		BlockPos tempSet = new BlockPos(chunkPos.getX() * 16, this.chunkPos.getY(), this.chunkPos.getZ() * 16).add(spawnPos);
-		
+		DimensionType dimID = player.dimension;
+		BlockPos tempSet = new BlockPos(chunkPos.getX() * 16, this.chunkPos.getY() * 16, this.chunkPos.getZ() * 16).add(spawnPos);
 		Shifter teleporter = ShifterUtil.createTeleporter(dimID, tempSet, spawnYaw, spawnPitch);
 
-		this.generatePocket(entityPlayer.getName());
+		this.generatePocket(entityPlayer.getDisplayName().getString());
 
-		if (dimID != DimReference.CONSTANT.POCKET_DIMENSION_ID) {
-			ShifterUtil.shiftPlayerToDimension(player, DimReference.CONSTANT.POCKET_DIMENSION_ID, teleporter);//, tempSet, true);
+		StringTextComponent comp = new StringTextComponent(TextHelper.TEAL + "Entering pocket dimension...");
+		if(!world.isRemote) {
+			entityPlayer.sendMessage(comp);
+		}
+		
+		if (dimID != ModDimensionManager.POCKET_DIMENSION.getDimensionType()) {
+			ShifterUtil.shiftPlayerToDimension(player, ModDimensionManager.POCKET_DIMENSION.getDimensionType(), teleporter);
 		} else {
-			ShifterUtil.shiftPlayerToDimension(player, DimReference.CONSTANT.POCKET_DIMENSION_ID, teleporter); //, tempSet, true);
+			ShifterUtil.shiftPlayerToDimension(player, ModDimensionManager.POCKET_DIMENSION.getDimensionType(), teleporter);
 		}
 	}
 
-	public void shiftFromPocket(EntityPlayer entityPlayer) {
-		if (entityPlayer.world.isRemote || !(entityPlayer instanceof EntityPlayerMP)) {
-			return;
-		}
-
-		EntityPlayerMP player = (EntityPlayerMP) entityPlayer;
+	public void shiftFrom(PlayerEntity entityPlayer) {
+		ServerPlayerEntity player = (ServerPlayerEntity) entityPlayer;
 		World world = getSourceBlockWorld();
 
 		if (this.isSourceBlockPlaced()) {
-			TeleportDirection teleportSide = TeleportDirection.getValidTeleportLocation(world, this.getLastPos());
+			TeleportDirection teleportSide = TeleportDirection.getValidTeleportLocation(world, this.getLastBlockPos());
 			if (teleportSide != TeleportDirection.UNKNOWN) {
-				ModUtil.sendPlayerMessage(world, entityPlayer, TextHelper.TEAL + "Leaving pocket dimension...");
-				
-				BlockPos tempBlockSet = new BlockPos(this.getLastPos()).add(teleportSide.toBlockPos());
+				BlockPos tempBlockSet = new BlockPos(this.getLastBlockPos()).add(teleportSide.toBlockPos());
 				BlockPos spawnPos = new BlockPos(tempBlockSet);
 				
-				Shifter teleporter = ShifterUtil.createTeleporter(blockDim, spawnPos, player.rotationYaw, player.rotationPitch);
+				Shifter teleporter = ShifterUtil.createTeleporter(block_dim_type, spawnPos, 0.0F, 0.0F); //player.rotationYaw, player.rotationPitch);
 
-				if (blockDim != DimReference.CONSTANT.POCKET_DIMENSION_ID) {
-					ShifterUtil.shiftPlayerToDimension(player, blockDim, teleporter); //, spawnPos, false);
+				if (block_dim_type != ModDimensionManager.POCKET_DIMENSION.getDimensionType()) {
+					ShifterUtil.shiftPlayerToDimension(player, block_dim_type, teleporter);
 				} else {
-					teleporter.placeInPortal(player, 0);
+					ShifterUtil.shiftPlayerToDimension(player, block_dim_type, teleporter);
 				}
+				
+				ModUtil.sendPlayerMessage(world, entityPlayer, TextHelper.TEAL + "Leaving pocket dimension...");
 			} else {
-				ModUtil.sendPlayerMessage(world, entityPlayer, TextHelper.ITALIC + "You're Trapped! Something is blocking your Pocket.");
+				ShifterUtil.sendPlayerToBedWithMessage(entityPlayer, world, TextHelper.ITALIC + "Something is blocking your Pocket. Sending you to your Bed!");
 			}
 		} else {
-			ModUtil.sendPlayerMessage(world, entityPlayer, TextHelper.ITALIC + "You're trapped! Someone broke your Pocket.");
+			ShifterUtil.sendPlayerToBedWithMessage(entityPlayer, world, TextHelper.ITALIC + "Someone broke your Pocket. Sending you to your Bed!");
 		}
 	}
 }

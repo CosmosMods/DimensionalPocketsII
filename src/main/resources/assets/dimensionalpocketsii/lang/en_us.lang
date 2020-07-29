@@ -1,31 +1,28 @@
 #en_us
 
 #creative_tab
-itemGroup.tab_dimensionalpockets=Dimensional Pockets
+itemGroup.dimensionalpocketsii=Dimensional Pockets
 
 #items
-item.dimensional_shard.name=Dimensional Shard
-item.dimensional_ingot.name=Dimensional Metal Ingot
+item.dimensionalpocketsii.dimensional_shard=Dimensional Shard
+item.dimensionalpocketsii.dimensional_ingot=Dimensional Metal Ingot
 
-item.dimensional_wrench.name=Dimensional Wrench
-
-item.modifier_general.name=General Modifier
-item.modifier_energy.name=Energy Modifier
-item.modifier_fluid.name=Fluid Modifier
-item.modifier_item.name=Item Modifier
+item.dimensionalpocketsii.dimensional_wrench=Dimensional Wrench
 
 #blocks
-tile.block_dimensional_ore.name=Dimensional Ore
-tile.block_dimensional.name=Block of Dimensional Material
-tile.block_dimensional_metal.name=Block of Dimensional Metal
+block.dimensionalpocketsii.block_dimensional_ore=Dimensional Ore
+block.dimensionalpocketsii.block_dimensional=Block of Dimensional Material
+block.dimensionalpocketsii.block_dimensional_metal=Block of Dimensional Metal
 
-tile.block_dimensional_pocket.name=Dimensional Pocket
-tile.block_dimensional_core.name=Dimensional Core
-tile.block_dimensional_pocket_wall.name=Dimensional Wall
-tile.block_dimensional_pocket_wall_edge.name=Dimensional Wall
-tile.block_dimensional_pocket_wall_connector.name=Dimensional Wall Connector
-tile.block_dimensional_pocket_wall_energy_display.name=Dimensional Energy Display
-tile.block_dimensional_pocket_wall_fluid_display.name=Dimensional Fluid Display
+block.dimensionalpocketsii.block_pocket=Dimensional Pocket
+block.dimensionalpocketsii.block_dimensional_core=Dimensional Core
+
+block.dimensionalpocketsii.block_dimensional_pocket_wall=Dimensional Wall
+block.dimensionalpocketsii.block_dimensional_pocket_wall_edge=Dimensional Wall
+
+block.dimensionalpocketsii.block_dimensional_pocket_wall_connector=Dimensional Wall Connector
+block.dimensionalpocketsii.block_dimensional_pocket_wall_energy_display=Dimensional Energy Display
+block.dimensionalpocketsii.block_dimensional_pocket_wall_fluid_display=Dimensional Fluid Display
 
 
 #commands

@@ -13,9 +13,11 @@ import org.apache.commons.io.FileUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.zeher.dimpockets.DimReference;
-import com.zeher.dimpockets.core.log.ModLogger;
+import com.zeher.dimpockets.DimensionalPockets;
+import com.zeher.dimpockets.core.manager.ModDimensionManager;
 import com.zeher.dimpockets.pocket.core.Pocket;
 import com.zeher.dimpockets.pocket.core.manager.PocketRegistryManager.PocketGenParameters;
+import com.zeher.zeherlib.api.compat.core.adapter.DimensionTypeAdapter;
 import com.zeher.zeherlib.api.compat.core.adapter.FluidTankAdapter;
 import com.zeher.zeherlib.api.compat.core.adapter.ItemStackAdapter;
 
@@ -23,23 +25,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PocketConfigManager {
 
 	private static Gson GSON = new GsonBuilder()
+			//.registerTypeAdapter(NonNullList.class, new NonNullListItemStackAdapter())
+			.registerTypeAdapter(DimensionType.class, new DimensionTypeAdapter())
 			.registerTypeAdapter(ItemStack.class, new ItemStackAdapter())
 			.registerTypeAdapter(FluidTank.class, new FluidTankAdapter())
 			.enableComplexMapKeySerialization().setPrettyPrinting().create();
 
 	private static final String currentBackLinkFile = "pocketRegistry";
 	private static final String legacyBackLinkFile = "teleportRegistry";
-	private static final String backupBackLinkFile = "backupRegistry";
 	private static final String pocketGenParamsFile = "pocketGenParameters";
 	
 	private static File getConfig(String fileName) throws IOException {
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance().getServer();
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		StringBuilder file_path = new StringBuilder();
 
 		if (server.isSinglePlayer()) {
@@ -60,17 +64,17 @@ public class PocketConfigManager {
 	}
 	
 	private static File getConfigLegacy(String file_name, String legacy_file_name) throws IOException {
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance().getServer();
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		StringBuilder file_path = new StringBuilder();
 		StringBuilder legacy_path = new StringBuilder();
 		StringBuilder backup_path = new StringBuilder();
 
-		if (server.isSinglePlayer()) {
+		if (!(server.isDedicatedServer())) {
 			file_path.append("saves/");
 			legacy_path.append("saves/");
 			backup_path.append("saves/");
 		}
-
+		
 		file_path.append(server.getFolderName());
 		file_path.append("/dimpockets/");
 		file_path.append(file_name);
@@ -83,7 +87,7 @@ public class PocketConfigManager {
 
 		backup_path.append(server.getFolderName());
 		backup_path.append("/dimpockets/");
-		backup_path.append(backupBackLinkFile);
+		backup_path.append("backupRegistry");
 		backup_path.append(".json");
 
 		File save_file = server.getFile(file_path.toString());
@@ -130,7 +134,7 @@ public class PocketConfigManager {
 			}
 
 		} catch (Exception e) {
-			ModLogger.severe("Error when saving backLinkFile", e);
+			DimensionalPockets.LOGGER.fatal("Error when saving backLinkFile", e);
 		}
 	}
 
@@ -146,18 +150,35 @@ public class PocketConfigManager {
 
 			if (tempArray != null) {
 				for (Pocket link : tempArray) {
-					
-					/** - Legacy Save Checks*/
+
+					/** - Legacy Save Checks - */
 					if (link.getFluidTank() == null) {
 						link.setFluidTank(new FluidTank(256000));
 						
-						ModLogger.warning("[LEGACY] Pocket {fluid_tank} null! Create new fluid_tank...", PocketConfigManager.class);
+						DimensionalPockets.LOGGER.warn("[LEGACY] Pocket {fluid_tank} null! Create new fluid_tank...", PocketConfigManager.class);
+					}
+					
+					if (!(link.getBlockDim() == -99) && link.getSourceBlockDimensionType() == null) {
+						switch (link.getBlockDim()) {
+							case 0:
+								link.setSourceBlockDimensionType(DimensionType.OVERWORLD);
+							case -1:
+								link.setSourceBlockDimensionType(DimensionType.THE_NETHER);
+							case 1:
+								link.setSourceBlockDimensionType(DimensionType.THE_END);
+							case 98:
+								link.setSourceBlockDimensionType(ModDimensionManager.POCKET_DIMENSION.getDimensionType());
+							default:
+								link.setSourceBlockDimensionType(DimensionType.OVERWORLD);
+						}
+						
+						DimensionalPockets.LOGGER.warn("[LEGACY] Pocket {block_dimension_type} null! Setting to legacy: [" + link.getBlockDim() + "]", PocketConfigManager.class);
 					}
 					
 					if (link.getMaxEnergyStored() != DimReference.CONSTANT.POCKET_RF_CAP) {
 						link.capacity = DimReference.CONSTANT.POCKET_RF_CAP;
 						
-						ModLogger.warning("[LEGACY] Pocket {energy_capacity} not equal! Correcting...", PocketConfigManager.class);
+						DimensionalPockets.LOGGER.warn("[LEGACY] Pocket {energy_capacity} not equal! Correcting...", PocketConfigManager.class);
 					}
 					
 					if (link.items.size() != DimReference.CONSTANT.POCKET_HELD_ITEMS_SIZE) {
@@ -168,18 +189,16 @@ public class PocketConfigManager {
 						}
 						
 						link.items = items_;
-						ModLogger.warning("[LEGACY] Pocket {items} not equal! Creating new <items> and replace...", PocketConfigManager.class);
+						DimensionalPockets.LOGGER.warn("[LEGACY] Pocket {items} not equal! Creating new <items> and replace...", PocketConfigManager.class);
 					}
 					
 					backLinkMap.put(link.getChunkPos(), link);
-					ModLogger.info("Pocket Loaded: " + link, PocketConfigManager.class);
+					DimensionalPockets.LOGGER.info("Pocket Loaded: {" + link + "}", PocketConfigManager.class);
 				}
 			}
-
 		} catch (Exception e) {
-			ModLogger.severe("Error when loading backLinkFile", e);
+			DimensionalPockets.LOGGER.fatal("Error when loading backLinkFile", e);
 		}
-
 		return backLinkMap;
 	}
 
@@ -191,7 +210,7 @@ public class PocketConfigManager {
 				GSON.toJson(pocketGenParameters, writer);
 			}
 		} catch (Exception e) {
-			ModLogger.severe("Error when saving pocketGenParamsFile", e);
+			DimensionalPockets.LOGGER.fatal("Error when saving pocketGenParamsFile", e);
 		}
 	}
 
@@ -207,7 +226,7 @@ public class PocketConfigManager {
 				}
 			}
 		} catch (Exception e) {
-			ModLogger.severe("Error when loading pocketGenParamsFile", e);
+			DimensionalPockets.LOGGER.fatal("Error when loading pocketGenParamsFile", e);
 		}
 		return new PocketGenParameters();
 	}

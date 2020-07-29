@@ -1,0 +1,6 @@
+{
+    "parent": "zeherlib:block/modblock",
+    "textures": {
+    	"all": "dimensionalpocketsii:blocks/block_dimensional"
+    }
+}

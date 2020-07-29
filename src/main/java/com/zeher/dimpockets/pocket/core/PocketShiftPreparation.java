@@ -1,6 +1,6 @@
 package com.zeher.dimpockets.pocket.core;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class PocketShiftPreparation {
 	public enum Direction {
@@ -8,11 +8,11 @@ public class PocketShiftPreparation {
 	}
 
 	private int ticksBeforeShift;
-	private final EntityPlayer player;
+	private final PlayerEntity player;
 	private final Pocket pocket;
 	private final Direction direction;
 
-	public PocketShiftPreparation(EntityPlayer player, int ticksBeforeShift, Pocket pocket, Direction direction) {
+	public PocketShiftPreparation(PlayerEntity player, int ticksBeforeShift, Pocket pocket, Direction direction) {
 		this.player = player;
 		this.ticksBeforeShift = ticksBeforeShift;
 		this.pocket = pocket;
@@ -27,9 +27,9 @@ public class PocketShiftPreparation {
 
 		if (ticksBeforeShift <= 0) {
 			if (direction == Direction.INTO_POCKET) {
-				pocket.shiftToPocket(player);
+				pocket.shiftTo(player);
 			} else {
-				pocket.shiftFromPocket(player);
+				pocket.shiftFrom(player);
 			}
 			return true;
 		}

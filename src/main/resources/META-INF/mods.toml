@@ -1,0 +1,96 @@
+#dimensionalpocketsii
+	modLoader="javafml" #mandatory
+	loaderVersion="[28,)" #mandatory
+	logoFile="dimensional_logo.png" #optional
+		
+	[[mods]] #mandatory
+		modId="dimensionalpocketsii" #mandatory
+		version="1.14.4-0.1.32" #mandatory
+		displayName="Dimensional Pockets II" #mandatory
+		credits="NPException, Apolybrium (Textures), Rechalow (Translation)" #optional
+		authors="TheRealZeher" #optional
+		description='''
+		Create pocket dimensions!
+		'''
+	
+	[[dependencies.dimensionalpocketsii]] #optional
+	    modId="zeherlib" #mandatory
+	    mandatory=true #mandatory
+	    versionRange="[1.14.4-1.0,)" #mandatory
+	    ordering="BEFORE"
+	    side="BOTH"
+	[[dependencies.dimensionalpocketsii]] #optional
+	    modId="forge" #mandatory
+	    mandatory=true #mandatory
+	    versionRange="[28,)" #mandatory
+	    ordering="NONE"
+	    side="BOTH"
+	[[dependencies.dimensionalpocketsii]]
+	    modId="minecraft"
+	    mandatory=true
+	    versionRange="[1.14.4]"
+	    ordering="NONE"
+	    side="BOTH"
+
+#zeherlib
+	modLoader="javafml" #mandatory
+	loaderVersion="[28,)" #mandatory
+	logoFile="zeherlib_logo.png" #optional
+
+	[[mods]] #mandatory
+		modId="zeherlib" #mandatory
+		version="1.14.4-1.0.10" #mandatory
+		displayName="ZeherLib" #mandatory
+		displayURL="http://github.com/TheRealZeher/ZeherLibII" #optional
+		credits="" #optional
+		authors="TheRealZeher" #optional
+		description='''
+		Library and API for TheRealZeher mods.
+		'''
+	
+	[[dependencies.zeherlib]] #optional
+	    modId="forge" #mandatory
+	    mandatory=true #mandatory
+	    versionRange="[28,)" #mandatory
+	    ordering="NONE"
+	    side="BOTH"
+	[[dependencies.zeherlib]]
+	    modId="minecraft"
+	    mandatory=true
+	    versionRange="[1.14.4]"
+	    ordering="NONE"
+	    side="BOTH"
+
+#zeherutilities
+	modLoader="javafml" #mandatory
+	loaderVersion="[28,)" #mandatory
+	logoFile="zeherutil_logo.png" #optional
+		
+	[[mods]] #mandatory
+		modId="zeherutilities" #mandatory
+		version="1.14.4-1.0.0" #mandatory
+		displayName="Zeher Utilities" #mandatory
+		credits="" #optional
+		authors="TheRealZeher" #optional
+		description='''
+		Development testing mod.
+		'''
+
+	[[dependencies.zeherutilities]] #optional
+	    modId="zeherlib" #mandatory
+	    mandatory=true #mandatory
+	    versionRange="[1.14.4-1.0,)" #mandatory
+	    ordering="BEFORE"
+	    side="BOTH"
+	[[dependencies.zeherutilities]] #optional
+	    modId="forge" #mandatory
+	    mandatory=true #mandatory
+	    versionRange="[28,)" #mandatory
+	    ordering="NONE"
+	    side="BOTH"
+	[[dependencies.zeherutilities]]
+	    modId="minecraft"
+	    mandatory=true
+	    versionRange="[1.14.4]"
+	    ordering="NONE"
+	    side="BOTH"

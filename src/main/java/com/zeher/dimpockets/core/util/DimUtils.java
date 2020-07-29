@@ -9,30 +9,24 @@ import org.lwjgl.opengl.GL11;
 import com.zeher.dimpockets.DimensionalPockets;
 import com.zeher.zeherlib.api.client.util.TextHelper;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryLargeChest;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class DimUtils {
 
-	public static EnumMap<EnumFacing, Colour> FD_COLOURS = new EnumMap<>(EnumFacing.class);
+	public static EnumMap<Direction, Colour> FD_COLOURS = new EnumMap<>(Direction.class);
 	private static Map<String, String> chatColours = new HashMap<>();
 	
 	static {
@@ -51,12 +45,12 @@ public class DimUtils {
 		Colour red = Colour.RED.copy();
 		red.a = alpha;
 
-		FD_COLOURS.put(EnumFacing.DOWN,  purple);
-		FD_COLOURS.put(EnumFacing.UP,    orange);
-		FD_COLOURS.put(EnumFacing.NORTH, yellow);
-		FD_COLOURS.put(EnumFacing.SOUTH, blue);
-		FD_COLOURS.put(EnumFacing.WEST,  green);
-		FD_COLOURS.put(EnumFacing.EAST,  red);
+		FD_COLOURS.put(Direction.DOWN,  purple);
+		FD_COLOURS.put(Direction.UP,    orange);
+		FD_COLOURS.put(Direction.NORTH, yellow);
+		FD_COLOURS.put(Direction.SOUTH, blue);
+		FD_COLOURS.put(Direction.WEST,  green);
+		FD_COLOURS.put(Direction.EAST,  red);
 		// @formatter:on
 
 		chatColours.put("BLACK", TextHelper.BLACK);
@@ -77,16 +71,16 @@ public class DimUtils {
 		chatColours.put("WHITE", TextHelper.WHITE);
 	}
 
-	public static EnumFacing getDirectionFromBitMask(int num) {
+	public static Direction getDirectionFromBitMask(int num) {
 		switch (num) {
 			case 0:
-				return EnumFacing.SOUTH;
+				return Direction.SOUTH;
 			case 1:
-				return EnumFacing.WEST;
+				return Direction.WEST;
 			case 2:
-				return EnumFacing.NORTH;
+				return Direction.NORTH;
 			case 3:
-				return EnumFacing.EAST;
+				return Direction.EAST;
 			default:
 				return null;
 		}
@@ -104,51 +98,51 @@ public class DimUtils {
 		return firstLetter + rest;
 	}
 
-	public static NBTTagCompound getPlayerPersistTag(EntityPlayer player) {
-		NBTTagCompound tag = player.getEntityData();
+	public static CompoundNBT getPlayerPersistTag(PlayerEntity player) {
+		CompoundNBT tag = player.serializeNBT();
 
-		NBTTagCompound persistTag;
-		if (tag.hasKey(EntityPlayer.PERSISTED_NBT_TAG)) {
-			persistTag = tag.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+		CompoundNBT persistTag;
+		if (tag.contains(PlayerEntity.PERSISTED_NBT_TAG)) {
+			persistTag = (CompoundNBT) tag.get(PlayerEntity.PERSISTED_NBT_TAG);
 		} else {
-			persistTag = new NBTTagCompound();
-			tag.setTag(EntityPlayer.PERSISTED_NBT_TAG, persistTag);
+			persistTag = new CompoundNBT();
+			tag.put(PlayerEntity.PERSISTED_NBT_TAG, persistTag);
 		}
 
-		NBTTagCompound modTag;
+		CompoundNBT modTag;
 		String modID = DimensionalPockets.MOD_ID;
 
-		if (persistTag.hasKey(modID)) {
-			modTag = persistTag.getCompoundTag(modID);
+		if (persistTag.contains(modID)) {
+			modTag = (CompoundNBT) persistTag.get(modID);
 		} else {
-			modTag = new NBTTagCompound();
-			persistTag.setTag(modID, modTag);
+			modTag = new CompoundNBT();
+			persistTag.put(modID, modTag);
 		}
 
 		return modTag;
 	}
 	
 	public static ItemStack generateItem(ItemStack itemStack, String name, boolean forceCleanName, String... loreStrings) {
-		NBTTagCompound nbt = itemStack.getTagCompound();
-		NBTTagCompound display;
+		CompoundNBT nbt = itemStack.getTag();
+		CompoundNBT display;
 		if (nbt == null) {
-			nbt = new NBTTagCompound();
-			itemStack.setTagCompound(nbt);
+			nbt = new CompoundNBT();
+			itemStack.setTag(nbt);
 		}
-		if (!itemStack.getTagCompound().hasKey("display")) {
-			itemStack.setTagInfo("display", new NBTTagCompound());
+		if (!itemStack.getTag().contains("display")) {
+			itemStack.setTagInfo("display", new CompoundNBT());
 		}
 
-		display = itemStack.getTagCompound().getCompoundTag("display");
+		display = (CompoundNBT) itemStack.getTag().get("display");
 
 		if (loreStrings != null && loreStrings.length > 0) {
-			NBTTagList lore = new NBTTagList();
+			ListNBT lore = new ListNBT();
 			for (String s : loreStrings) {
 				if (s != null) {
-					lore.appendTag(new NBTTagString(TextHelper.GRAY + s));
+					lore.add(new StringNBT(TextHelper.GRAY + s));
 				}
 			}
-			display.setTag("Lore", lore);
+			display.put("Lore", lore);
 		}
 
 		if (name != null) {
@@ -158,57 +152,21 @@ public class DimUtils {
 			}
 			sb.append(name);
 
-			display.setString("Name", sb.toString());
+			display.putString("Name", sb.toString());
 		}
 
 		return itemStack;
 	}
 	
 	public static void spawnItemStack(ItemStack itemStack, World world, double d, double e, double f, int delayBeforePickup) {
-		EntityItem entityItem = new EntityItem(world, d, e, f, itemStack);
+		ItemEntity entityItem = new ItemEntity(world, d, e, f, itemStack);
 		entityItem.setPickupDelay(delayBeforePickup);
 
-		world.spawnEntity(entityItem);
-	}
-	
-	public static void enforceServer() {
-		//Minecraft mc = Minecraft.getMinecraft();
-		//if (!mc.isIntegratedServerRunning() && (mc.world != null && mc.world.isRemote))
-		//throw new RuntimeException("DONT YOU DARE CALL THIS METHOD ON A CLIENT!");
-	}
-	
-	public static void enforceClient() {
-			Minecraft mc = Minecraft.getMinecraft();
-			if (mc.world != null && !mc.world.isRemote)
-				throw new RuntimeException("DONT YOU DARE CALL THIS METHOD ON A CLIENT!");
-	}
-	
-	public static boolean isOreDictItem(ItemStack stack, String oreDictName) {
-		int targetOreDictID = OreDictionary.getOreID(oreDictName);
-		for (int stackOreDictID : OreDictionary.getOreIDs(stack)) {
-			if (targetOreDictID == stackOreDictID)
-				return true;
-		}
-		return false;
+		world.addEntity(entityItem);
 	}
 
-	public static boolean isItemPocketWrench(ItemStack stack) {
-		if (!DimUtils.isOreDictItem(stack, "stickWood"))
-			return false;
-
-		if (!stack.hasTagCompound())
-			return false;
-
-		NBTTagCompound itemCompound = stack.getTagCompound();
-		if (!itemCompound.hasKey("display"))
-			return false;
-
-		String customName = itemCompound.getCompoundTag("display").getString("Name");
-		return "Pocket Wrench".equalsIgnoreCase(customName);
-	}
-
-	public static TextComponentString createChatLink(String text, String url, boolean bold, boolean underline, boolean italic, TextFormatting color) {
-		TextComponentString link = new TextComponentString(text);
+	public static StringTextComponent createChatLink(String text, String url, boolean bold, boolean underline, boolean italic, TextFormatting color) {
+		StringTextComponent link = new StringTextComponent(text);
 		Style style = link.getStyle();
 		style.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
 		style.setBold(Boolean.valueOf(bold));
@@ -216,35 +174,6 @@ public class DimUtils {
 		style.setItalic(Boolean.valueOf(italic));
 		style.setColor(color);
 		return link;
-	}
-	
-	public static IInventory getInventory(ILockableContainer inv) {
-		if (inv instanceof TileEntityChest) {
-			TileEntityChest chest = (TileEntityChest) inv;
-
-			TileEntityChest adjacent = null;
-
-			if (chest.adjacentChestXNeg != null) {
-				adjacent = chest.adjacentChestXNeg;
-			}
-
-			if (chest.adjacentChestXPos != null) {
-				adjacent = chest.adjacentChestXPos;
-			}
-
-			if (chest.adjacentChestZNeg != null) {
-				adjacent = chest.adjacentChestZNeg;
-			}
-
-			if (chest.adjacentChestZPos != null) {
-				adjacent = chest.adjacentChestZPos;
-			}
-
-			if (adjacent != null)
-				return new InventoryLargeChest("", inv, adjacent);
-			return inv;
-		}
-		return inv;
 	}
 	
 	public static String getColourByName(String colourName) {
@@ -256,7 +185,7 @@ public class DimUtils {
 		if (world == null || pos == null)
 			return;
 
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 
 		world.markAndNotifyBlock(pos, null, state, state, 2);
 	}

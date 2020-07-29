@@ -1,311 +1,95 @@
 package com.zeher.dimpockets.pocket.core.tileentity;
 
-import com.zeher.dimpockets.DimReference;
-import com.zeher.dimpockets.DimensionalPockets;
-import com.zeher.dimpockets.core.manager.ModBlockManager;
-import com.zeher.dimpockets.core.manager.ModSoundManager;
+import com.zeher.dimpockets.core.manager.BusSubscriberMod;
+import com.zeher.dimpockets.core.manager.ModDimensionManager;
+import com.zeher.dimpockets.core.manager.SoundHandler;
+import com.zeher.dimpockets.core.manager.TileEntityManager;
 import com.zeher.dimpockets.core.util.DimUtils;
 import com.zeher.dimpockets.pocket.core.Pocket;
-import com.zeher.dimpockets.pocket.core.manager.ChunkLoaderManagerBlock;
-import com.zeher.dimpockets.pocket.core.manager.ChunkLoaderManagerRoom;
 import com.zeher.dimpockets.pocket.core.manager.PocketRegistryManager;
 import com.zeher.zeherlib.api.client.util.TextHelper;
 import com.zeher.zeherlib.api.compat.client.interfaces.IClientUpdatedTile;
 import com.zeher.zeherlib.api.compat.core.interfaces.EnumSideState;
-import com.zeher.zeherlib.api.compat.core.interfaces.IFluidStorage;
 import com.zeher.zeherlib.api.compat.core.interfaces.ISidedTile;
 import com.zeher.zeherlib.api.core.interfaces.block.IBlockInteract;
 import com.zeher.zeherlib.api.core.interfaces.block.IBlockNotifier;
 import com.zeher.zeherlib.mod.util.ModUtil;
 
-import cofh.redstoneflux.api.IEnergyProvider;
-import cofh.redstoneflux.api.IEnergyReceiver;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ITickable;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class TilePocket extends TileBase implements IBlockNotifier, IBlockInteract, ITickable, ISidedInventory, IInventory, ISidedTile, IEnergyReceiver, IEnergyProvider, IClientUpdatedTile.Storage, IClientUpdatedTile.FluidTile, IFluidHandler, IFluidStorage {
+public class TilePocket extends TileBase implements IBlockNotifier, IBlockInteract, ITickableTileEntity, ISidedInventory, IInventory, ISidedTile, /**IEnergyReceiver, IEnergyProvider,*/ IClientUpdatedTile.Storage {
 	
+	public TilePocket() {
+		super(TileEntityManager.POCKET);
+	}
+
+	@SuppressWarnings("unused")
 	private static final String TAG_CUSTOM_DP_NAME = "customDPName";
 	private String customName;
 	
 	public EnumSideState[] SIDE_STATE_ARRAY = EnumSideState.getStandardArray();
 
-	private NonNullList<ItemStack> INVENTORY_STACKS = NonNullList.<ItemStack>withSize(51, ItemStack.EMPTY);
+	private NonNullList<ItemStack> INVENTORY_STACKS = NonNullList.<ItemStack>withSize(17, ItemStack.EMPTY);
 	
-	private boolean sides = false;
-	
-	@Override
-	public void update() {
-		if (this.getPocket().isGenerated()) {
-			this.setStacks();
-			this.checkFluidSlots();
-		}
-	}
-	
-	@Override
-	public Pocket getPocket() {
-		return PocketRegistryManager.getOrCreatePocket(this.world, this.getPos());
-	}
-	
-	@Override
-	public void onBlockDestroyedByPlayer(World worldIn, BlockPos pos, IBlockState state) { }
+	@OnlyIn(Dist.CLIENT)
+	private Pocket pocket;
 
 	@Override
-	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor) { }
-
-	@Override
-	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) { }
-
-	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		if (!worldIn.isRemote) {
-			if (stack.hasTagCompound() && placer.dimension != DimReference.CONSTANT.POCKET_DIMENSION_ID) {
-				NBTTagCompound compound = stack.getTagCompound();
-				
-				if (compound.hasKey("nbt_data")) {
-					NBTTagCompound nbt_tag = compound.getCompoundTag("nbt_data");
-					
-					int X = nbt_tag.getCompoundTag("chunk_set").getInteger("X");
-					int Y = nbt_tag.getCompoundTag("chunk_set").getInteger("Y");
-					int Z = nbt_tag.getCompoundTag("chunk_set").getInteger("Z");
-	
-					BlockPos chunkSet = new BlockPos(X, Y, Z);
-					boolean success = PocketRegistryManager.getPocket(chunkSet) != null;
-	
-					if (!success) {
-						throw new RuntimeException("YOU DESERVED THIS!");
-					}
-	
-					PocketRegistryManager.updatePocket(chunkSet, placer.dimension, this.getPos());
-	
-					if (nbt_tag.hasKey("display")) {
-						String tempString = nbt_tag.getCompoundTag("display").getString("Name");
-						if (!tempString.isEmpty()) {
-							customName = tempString;
-						}
-					}
-					
-					NBTTagCompound side_tag = nbt_tag.getCompoundTag("sides");
-					
-					for(EnumFacing c : EnumFacing.VALUES) {
-						this.setSide(c, EnumSideState.getStateFromIndex(side_tag.getInteger("index_" + c.getIndex())));
-					}
-					
-					if (placer instanceof EntityPlayer) {
-						EntityPlayerMP player = (EntityPlayerMP) placer;
-						if (player.getHeldItemMainhand() == stack) {
-							player.getHeldItemMainhand().setCount(0);
-						}
-					}
-	
-					Pocket pocket = this.getPocket();
-					pocket.generatePocket(placer.getName());
-					ChunkLoaderManagerRoom.addPocketToChunkLoader(pocket);
-					ChunkLoaderManagerBlock.addPocketBlockToChunkLoader(this.getPos(), placer.dimension);
-				}
-			} else if (stack.hasTagCompound() && placer.dimension == DimReference.CONSTANT.POCKET_DIMENSION_ID) {
-				if (placer.dimension == DimReference.CONSTANT.POCKET_DIMENSION_ID) {
-					NBTTagCompound stack_tag = stack.getTagCompound();
-
-					if (stack_tag.hasKey("nbt_data")) {
-						NBTTagCompound nbt_tag = stack_tag.getCompoundTag("nbt_data");
-						
-						int X = nbt_tag.getCompoundTag("chunk_set").getInteger("X");
-						int Y = nbt_tag.getCompoundTag("chunk_set").getInteger("Y");
-						int Z = nbt_tag.getCompoundTag("chunk_set").getInteger("Z");
-						
-						BlockPos chunk_set = new BlockPos(X, Y, Z);
-	
-						Pocket test_pocket = PocketRegistryManager.getPocket(chunk_set);
-	
-						if (test_pocket != null) {
-							if (test_pocket.equals(PocketRegistryManager.getPocket(new BlockPos(pos.getX() >> 4, pos.getY() >> 4, pos.getZ() >> 4)))) {
-								if (!world.isRemote) {
-									DimUtils.spawnItemStack(this.generateItemStackWithNBT(pos, X, Y, Z), world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0);
-									world.setBlockToAir(pos);
-								}
-							} else {
-								PocketRegistryManager.updatePocket(chunk_set, placer.dimension, getPos());
-	
-								if (nbt_tag.hasKey("display")) {
-									String tempString = nbt_tag.getCompoundTag("display").getString("Name");
-									if (!tempString.isEmpty()) {
-										customName = tempString;
-									}
-								}
-	
-								if (placer instanceof EntityPlayer) {
-									EntityPlayerMP player = (EntityPlayerMP) placer;
-									if (player.getHeldItemMainhand() == stack) {
-										player.getHeldItemMainhand().setCount(0);
-									}
-								}
-	
-								Pocket pocket = this.getPocket();
-								pocket.generatePocket(placer.getName());
-								//NetworkHandler.sendPocketSetCreator(placer.getName(), pos);
-								ChunkLoaderManagerRoom.addPocketToChunkLoader(pocket);
-								ChunkLoaderManagerBlock.addPocketBlockToChunkLoader(this.getPos(), placer.dimension);
-							}
-						}
-					}
+	public void tick() {
+		/**
+		for (int i = 0 ; i < 9; i++) {
+			if (this.getStackInSlot(i) != this.getPocket().items.get(i)) {
+				ItemStack pocket_stack = this.getPocket().items.get(i);
+				ItemStack copy = pocket_stack.copy();
+				if (!this.world.isRemote) {
+					this.INVENTORY_STACKS.set(i, copy);
 				}
 			}
-		}
-	}
-
-	@Override
-	public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
-		if (this.getPocket() != null) {
-			if (ModUtil.isHoldingHammer(playerIn) && playerIn.isSneaking()) {
-				ModUtil.sendPlayerMessage(worldIn, playerIn, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.creator_null.name"));
-			}
-		} 
-	}
-
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (playerIn.isSneaking() && playerIn.getHeldItem(EnumHand.MAIN_HAND).isEmpty() && !worldIn.isRemote) {
-			if (this.getPocket() != null) {
-				Pocket pocket = this.getPocket();
-				
-				if (pocket.getCreator() == null) {
-					pocket.setCreator(playerIn.getName());
-					this.markDirty();
-				} else {
-					String creator = pocket.getCreator();
-	
-					String player_name = playerIn.getName();
-					
-					this.markDirty();
-					
-					if (creator != null) {
-						if (this.getLockState()) {
-							if (player_name.equals(creator)) {
-								playerIn.playSound(ModSoundManager.GENERIC.PORTAL_IN, 1.0F, 1.0F);
-								this.shiftIntoPocket(playerIn, pos);
-							} else if (pocket.checkPlayerMap(player_name)) {
-								playerIn.playSound(ModSoundManager.GENERIC.PORTAL_IN, 1.0F, 1.0F);
-								this.shiftIntoPocket(playerIn, pos);
-							} else {
-								ModUtil.sendPlayerMessage(worldIn, playerIn, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.is_locked.name") + "[" + creator + "]");
-							}
-						} else {
-							playerIn.playSound(ModSoundManager.GENERIC.PORTAL_IN, 1.0F, 1.0F);
-							this.shiftIntoPocket(playerIn, pos);
-						}
-					}
-				}
-			}
-		} else if (!playerIn.isSneaking() && playerIn.getHeldItem(EnumHand.MAIN_HAND).isEmpty()) {
-			if (this.getPocket() != null) {
-				if(this.getPocket().getCreator() != null) {
-					String creator = this.getPocket().getCreator();
-					
-					if (creator != null) {
-						if (playerIn.getName().equals(creator)) {
-							if (!(worldIn.isRemote)) {
-								FMLNetworkHandler.openGui(playerIn, DimensionalPockets.INSTANCE, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
-							}
-						} else {
-							if (!(worldIn.isRemote)) {
-								ModUtil.sendPlayerMessage(worldIn, playerIn, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.access_set.name"));
-							}
-						}
-					}
-				}
-			} else {
-				ModUtil.sendPlayerMessage(worldIn, playerIn, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.null.name"));
-			}
-		} else if ((ModUtil.isHoldingHammer(playerIn)) && (playerIn.isSneaking())) {
-			playerIn.swingArm(EnumHand.MAIN_HAND);
-			if (!(worldIn.isRemote)) {
-
-				String creator = this.getPocket().getCreator();
-
-				if (creator != null) {
-					if (playerIn.getName().equals(creator)) {
-						if (this.getLockState()) {
-							ModUtil.sendPlayerMessage(worldIn, playerIn, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.remove_locked.name"));
-						} else {
-							DimUtils.spawnItemStack(this.generateItemStackOnRemoval(pos), world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0);
-							world.setBlockToAir(pos);
-							ChunkLoaderManagerRoom.removePocketFromChunkLoader(this.getPocket());
-							ChunkLoaderManagerBlock.removePocketBlockFromChunkLoader(this.getPos());
-						}
-					} else {
-						ModUtil.sendPlayerMessage(worldIn, playerIn, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.remove_not.name"));
-					}
-				}
-
-				return true;
-			}
-		} else if ((ModUtil.isHoldingHammer(playerIn)) && !(playerIn.isSneaking())) {
-			playerIn.swingArm(EnumHand.MAIN_HAND);
-			
-			String creator = this.getPocket().getCreator();
-
-			if (creator != null) {
-				if (playerIn.getName().equals(creator)) {
-					this.cycleSide(facing);
-					this.markDirty();
-					
-					ModUtil.sendPlayerMessage(worldIn, playerIn, TextHelper.LIGHT_GRAY + TextHelper.BOLD + I18n.format("pocket.status.cycle_side.name") + this.getSide(facing).getTextColour() + TextHelper.BOLD + " [" + this.getSide(facing).getDisplayName() + "]");
-				} else {
-					ModUtil.sendPlayerMessage(worldIn, playerIn, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.access_lock.name"));
-				}
-			}
-		}
-		return false;
+		}*/
 	}
 
 	public ItemStack generateItemStackOnRemoval(BlockPos pos) {
-		ItemStack itemStack = new ItemStack(ModBlockManager.BLOCK_DIMENSIONAL_POCKET);
+		ItemStack itemStack = new ItemStack(BusSubscriberMod.BLOCK_POCKET);
 
-		if (!itemStack.hasTagCompound()) {
-			itemStack.setTagCompound(new NBTTagCompound());
+		if (!itemStack.hasTag()) {
+			itemStack.setTag(new CompoundNBT());
 		}
 
 		BlockPos chunkSet = this.getPocket().getChunkPos();
 		
-		NBTTagCompound compound = new NBTTagCompound();
+		CompoundNBT compound = new CompoundNBT();
 		
 		//Saves the chunk data to NBT
-		NBTTagCompound chunk_tag = new NBTTagCompound();
-		chunk_tag.setInteger("X", chunkSet.getX());
-		chunk_tag.setInteger("Y", chunkSet.getY());
-		chunk_tag.setInteger("Z", chunkSet.getZ());
+		CompoundNBT chunk_tag = new CompoundNBT();
+		chunk_tag.putInt("X", chunkSet.getX());
+		chunk_tag.putInt("Y", chunkSet.getY());
+		chunk_tag.putInt("Z", chunkSet.getZ());
 
-		compound.setTag("chunk_set", chunk_tag);
+		compound.put("chunk_set", chunk_tag);
 
 		String creatorLore = null;
 		Pocket pocket = getPocket();
@@ -316,16 +100,22 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 		
 		//Saves the side data to NBT
 		if (this instanceof ISidedTile) {
-			NBTTagCompound side_tag = new NBTTagCompound();
+			CompoundNBT side_tag = new CompoundNBT();
 			
-			for (EnumFacing c : EnumFacing.VALUES) {
-				side_tag.setInteger("index_" + c.getIndex(), this.getSideArray()[c.getIndex()].getIndex());
+			for (Direction c : Direction.values()) {
+				side_tag.putInt("index_" + c.getIndex(), this.getSideArray()[c.getIndex()].getIndex());
 			}
 			
-			compound.setTag("sides", side_tag);
+			compound.put("sides", side_tag);
 		}
 		
-		itemStack.getTagCompound().setTag("nbt_data", compound);
+		/**
+		if (this.getEnergyStored(Direction.DOWN) > 0) {
+			compound.putInt("energy", this.getEnergyStored(Direction.DOWN));
+		}
+		*/
+		
+		itemStack.getTag().put("nbt_data", compound);
 		
 		BlockPos blockSet = new BlockPos(chunkSet.getX() << 4, chunkSet.getY() << 4, chunkSet.getZ() << 4);
 
@@ -335,22 +125,22 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 	}
 
 	public ItemStack generateItemStackWithNBT(BlockPos pos, int x, int y, int z) {
-		ItemStack item_stack = new ItemStack(ModBlockManager.BLOCK_DIMENSIONAL_POCKET);
+		ItemStack item_stack = new ItemStack(BusSubscriberMod.BLOCK_POCKET);
 
-		if (!item_stack.hasTagCompound()) {
-			item_stack.setTagCompound(new NBTTagCompound());
+		if (!item_stack.hasTag()) {
+			item_stack.setTag(new CompoundNBT());
 		}
 
-		NBTTagCompound compound = new NBTTagCompound();
+		CompoundNBT compound = new CompoundNBT();
 		
-		NBTTagCompound chunk_tag = new NBTTagCompound();
-		chunk_tag.setInteger("X", x);
-		chunk_tag.setInteger("Y", y);
-		chunk_tag.setInteger("Z", z);
+		CompoundNBT chunk_tag = new CompoundNBT();
+		chunk_tag.putInt("X", x);
+		chunk_tag.putInt("Y", y);
+		chunk_tag.putInt("Z", z);
 
-		compound.setTag("chunk_set", chunk_tag);
+		compound.put("chunk_set", chunk_tag);
 		
-		item_stack.getTagCompound().setTag("nbt_data", compound);
+		item_stack.getTag().put("nbt_data", compound);
 
 		String creatorLore = null;
 		Pocket pocket = getPocket();
@@ -365,48 +155,52 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
-		Pocket pocket = this.getPocket();
-		
+	public Pocket getPocket() {
+		return PocketRegistryManager.getOrCreatePocket(this.world, this.getPos());
+	}
+	
+	@Override
+	public CompoundNBT write(CompoundNBT compound) {
+		/**
 		if (this.SIDE_STATE_ARRAY != null) {
-			NBTTagCompound sides_tag = new NBTTagCompound();
+			CompoundNBT sides_tag = new CompoundNBT();
 			
-			for (EnumFacing c : EnumFacing.VALUES) {
+			for (Direction c : Direction.values()) {
 				int i = this.getSide(c).getIndex();
 				
-				sides_tag.setInteger(c.getName(), i);
+				sides_tag.putInt(c.getName(), i);
 			}
-			compound.setTag("sides", sides_tag);
-		}
-		if (customName != null) {
-			compound.setString(TAG_CUSTOM_DP_NAME, customName);
+			compound.put("sides", sides_tag);
 		}
 		
+		if (customName != null) {
+			compound.putString(TAG_CUSTOM_DP_NAME, customName);
+		}
+		*/
 		return compound;
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
-		
-		if (compound.hasKey("sides")) {
-			NBTTagCompound sides_tag = compound.getCompoundTag("sides");
+	public void read(CompoundNBT compound) {
+		super.read(compound);
+		/*
+		if (compound.contains("sides")) {
+			CompoundNBT sides_tag = compound.getCompound("sides");
 			
-			for (EnumFacing c : EnumFacing.VALUES) {
-				this.setSide(c, EnumSideState.getStateFromIndex(sides_tag.getInteger(c.getName())));
+			for (Direction c : Direction.values()) {
+				this.setSide(c, EnumSideState.getStateFromIndex(sides_tag.getInt(c.getName())));
 			}
 		}
 		
 		String tempString = compound.getString(TAG_CUSTOM_DP_NAME);
 		if (!tempString.isEmpty()) {
 			customName = tempString;
-		}
+		}*/
 	}
 
-	private void shiftIntoPocket(EntityPlayer player, BlockPos pos_) {
+	private void shiftIntoPocket(PlayerEntity player, BlockPos pos_) {
 		this.getPocket().addPosToBlockMap(this.getPos());
-		this.getPocket().shiftToPocket(player);
+		this.getPocket().shiftTo(player);
 	}
 
 	/**
@@ -430,13 +224,13 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 	 */
 	
 	@Override 
-	public EnumSideState getSide(EnumFacing facing) {
-		return SIDE_STATE_ARRAY[facing.getIndex()];
+	public EnumSideState getSide(Direction direction) {
+		return SIDE_STATE_ARRAY[direction.getIndex()];
 	}
 	
 	@Override
-	public void setSide(EnumFacing facing, EnumSideState side_state) {
-		SIDE_STATE_ARRAY[facing.getIndex()] = side_state;
+	public void setSide(Direction direction, EnumSideState side_state) {
+		SIDE_STATE_ARRAY[direction.getIndex()] = side_state;
 		
 		this.sendUpdates();
 	}
@@ -454,19 +248,19 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 	}
 
 	@Override
-	public void cycleSide(EnumFacing facing) {
-		EnumSideState state = SIDE_STATE_ARRAY[facing.getIndex()];
+	public void cycleSide(Direction direction) {
+		EnumSideState state = SIDE_STATE_ARRAY[direction.getIndex()];
 		
 		EnumSideState state2 = state.getNextState();
 		
-		SIDE_STATE_ARRAY[facing.getIndex()] = state2;
+		SIDE_STATE_ARRAY[direction.getIndex()] = state2;
 		
 		this.sendUpdates();
 	}
 
 	@Override
-	public boolean canConnect(EnumFacing facing) {
-		EnumSideState state = SIDE_STATE_ARRAY[facing.getIndex()];
+	public boolean canConnect(Direction direction) {
+		EnumSideState state = SIDE_STATE_ARRAY[direction.getIndex()];
 		
 		if (state.equals(EnumSideState.DISABLED)) {
 			return false;
@@ -476,9 +270,9 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 
 	@Override
 	public void sendUpdates() {
-		this.world.markBlockRangeForRenderUpdate(this.getPos(), this.getPos());
+		//this.world.markBlockRangeForRenderUpdate(this.getPos(), this.getPos());
 		this.world.notifyBlockUpdate(this.getPos(), world.getBlockState(this.getPos()), world.getBlockState(this.getPos()), 3);
-		this.world.scheduleBlockUpdate(this.getPos(), this.getBlockType(), 0, 0);		
+		//this.world.scheduleBlockUpdate(this.getPos(), this.getBlockType(), 0, 0);		
 		this.markDirty();
 	}
 	
@@ -486,18 +280,22 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 	 * Set the data once it has been received. [NBT > TE]
 	 */
 	@Override
-	public void handleUpdateTag(NBTTagCompound tag) {
-		this.readFromNBT(tag);
+	public void handleUpdateTag(CompoundNBT tag) {
+		System.out.println("READ TAG: index_1/up " + tag.getInt("index_1"));
+
+		this.read(tag);
 	}
 	
 	/**
 	 * Retrieve the data to be stored. [TE > NBT]
 	 */
 	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound tag = new NBTTagCompound();
+	public CompoundNBT getUpdateTag() {
+		CompoundNBT tag = new CompoundNBT();
 		
-		this.writeToNBT(tag);
+		System.out.println("WRITE TAG: index_1/up " + this.getSide(Direction.UP).getIndex());
+		
+		this.write(tag);
 		
 		return tag;
 	}
@@ -506,240 +304,25 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 	 * Actually sends the data to the server. [NBT > SER]
 	 */
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(this.getPos(), 3, this.getUpdateTag());
+	public SUpdateTileEntityPacket getUpdatePacket() {
+		return new SUpdateTileEntityPacket(this.getPos(), 3, this.getUpdateTag());
 	}
 	
 	/**
 	 * Method is called once packet has been received by the client. [SER > CLT]
 	 */
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
 		super.onDataPacket(net, pkt);
-		NBTTagCompound tag_ = pkt.getNbtCompound();
+		CompoundNBT tag_ = pkt.getNbtCompound();
 		
 		this.handleUpdateTag(tag_);
 		this.sendUpdates();
 	}
-
-	@Override
-	public String getName() {
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomName() {
-		return false;
-	}
-
-	@Override
-	public int getField(int id) {
-		switch (id) {
-		case 1:
-			return this.getEnergyStored(EnumFacing.DOWN);
-		default:
-			return 0;
-		}
-	}
-
-	@Override
-	public void setField(int id, int value) {
-		/**
-		switch (id) {
-		case 1:
-			this.setEnergy(value);
-			break;
-		}
-		*/
-	}
-
-	@Override
-	public int getFieldCount() {
-		return 1;
-	}
-
-	@Override
-	public int getEnergyStored(EnumFacing from) {
-		return this.getPocket().getEnergyStored();
-	}
-
-	@Override
-	public int getMaxEnergyStored(EnumFacing from) {
-		return this.getPocket().getMaxEnergyStored();
-	}
-
-	@Override
-	public boolean canConnectEnergy(EnumFacing from) {
-		if (this.getSide(from) == EnumSideState.DISABLED) {
-			return false;
-		}
-		return true;
-	}
-	
-	@Override
-	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate) {
-		if (this.getSide(from).equals(EnumSideState.INTERFACE_INPUT)) {
-
-			int receive = this.getPocket().receiveEnergy(maxReceive, simulate);
-			
-			this.markDirty();
-			return receive;
-		}
-		return 0;
-	}
-	
-	public void setEnergy(int set) {
-		this.markDirty();
-		this.getPocket().setEnergyStored(set);
-	}
-
-	@Override
-	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
-		if (this.getSide(from).equals(EnumSideState.INTERFACE_OUTPUT)) {
-			this.markDirty();
-			return this.getPocket().extractEnergy(maxExtract, simulate);
-		}
-		return 0;
-	}
-
-	@Override
-	public int getEnergyScaled(int scale) {
-		return this.getEnergyStored(EnumFacing.DOWN) * scale / this.getMaxEnergyStored(EnumFacing.DOWN);
-	}
-
-	@Override
-	public boolean hasEnergy() {
-		return this.getEnergyStored(EnumFacing.DOWN) > 0;
-	}
-	
-	/**
-	 * - TODO IFluid Start
-	 */
-
-	@Override
-	public int getFluidLevelScaled(int one) {
-		return this.getPocket().getFluidLevelScaled(one);
-	}
-	
-	@Override
-	public Fluid getCurrentStoredFluid() {
-		this.markDirty();
-		return this.getPocket().getCurrentStoredFluid();
-	}
-
-	@Override
-	public boolean isFluidEmpty() {
-		return this.getPocket().isFluidTankEmpty();
-	}
-
-	@Override
-	public int getCurrentFluidAmount() {
-		this.markDirty();
-		return this.getPocket().getCurrentFluidAmount();
-	}
-
-	public String getCurrentStoredFluidName() {
-		return this.getPocket().getCurrentStoredFluidName();
-	}
-
-	public int fill(FluidStack resource, boolean doFill) {
-		this.markDirty();
-		return this.getPocket().fill(resource, doFill);
-	}
-
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		this.markDirty();
-		return this.getPocket().drain(resource.amount, doDrain);
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		this.markDirty();
-		return this.getPocket().drain(maxDrain, doDrain);
-	}
-
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid) {
-		return true;
-	}
-
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid) {
-		return true;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from) {
-		return this.getPocket().getFluidTankInfo(from);
-	}
-
-	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		return this.getPocket().getFluidTankProperties();
-	}
-
-	@Override
-	public FluidTank getTank() {
-		return this.getPocket().getFluidTank();
-	}
-
-	@Override
-	public int getFluidCapacity() {
-		return this.getPocket().getFluidTankCapacity();
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
-		return true;
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) { }
-
-	@Override
-	public void closeInventory(EntityPlayer player) { }
-
-	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return true;
-	}
-	
-	@Override
-	public void clear() { }
-
-	@Override
-	public int[] getSlotsForFace(EnumFacing side) {
-		return new int[] { 0 };
-	}
-
-	@Override
-	public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-		return true;
-	}
-
-	@Override
-	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-		return true;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		for (ItemStack itemstack : this.INVENTORY_STACKS) {
-			if (!itemstack.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
 	
 	@Override
 	public int getSizeInventory() {
-		return this.INVENTORY_STACKS.size();
+		/**return this.INVENTORY_STACKS.size() + */ return this.INVENTORY_STACKS.size();
 	}
 
 	@Override
@@ -761,78 +344,322 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 	
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		ItemStack itemstack = (ItemStack) this.INVENTORY_STACKS.get(index);
 		this.INVENTORY_STACKS.set(index, stack);
 		if (stack.getCount() > this.getInventoryStackLimit()) {
 			stack.setCount(this.getInventoryStackLimit());
 		}
 		
-		if (index < DimReference.CONSTANT.POCKET_HELD_ITEMS_SIZE) {
-			this.getPocket().items.set(index, stack);
-		}
+		this.getPocket().items.set(index, stack);
+		
 		this.markDirty();
 	}
+
+	@Override
+	public int getInventoryStackLimit() {
+		return 64;
+	}
+
+	@Override
+	public boolean isUsableByPlayer(PlayerEntity player) {
+		return true;
+	}
+
+	@Override
+	public void openInventory(PlayerEntity player) { }
+
+	@Override
+	public void closeInventory(PlayerEntity player) { }
+
+	@Override
+	public boolean isItemValidForSlot(int index, ItemStack stack) {
+		return true;
+	}
 	
-	public void checkFluidSlots() {
-		if (!this.world.isRemote) {
-			if (!this.INVENTORY_STACKS.get(49).isEmpty()) {
-				if (this.INVENTORY_STACKS.get(49).getItem().equals(Items.BUCKET)) {
-					if (this.getCurrentFluidAmount() > 0) {
-						ItemStack fillStack = FluidUtil.tryFillContainer(this.INVENTORY_STACKS.get(49), this.getTank(), 1000, null, false).result;
-						if (this.INVENTORY_STACKS.get(50).isEmpty()) {
-							if (fillStack != null) {
-								this.drain(FluidUtil.getFluidContained(fillStack).amount, true);
-								this.INVENTORY_STACKS.get(49).shrink(1);
-								this.INVENTORY_STACKS.set(50, fillStack);
+	@Override
+	public void clear() { }
+
+	@Override
+	public int[] getSlotsForFace(Direction side) {
+		return new int[] { 0 };
+	}
+
+	@Override
+	public boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction) {
+		return true;
+	}
+
+	@Override
+	public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
+		return true;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		for (ItemStack itemstack : this.INVENTORY_STACKS) {
+			if (!itemstack.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
+		if (playerIn.isSneaking() && playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
+			if (this.getPocket() != null) {
+				Pocket pocket = this.getPocket();
+				
+				if (pocket.getCreator() == null) {
+					pocket.setCreator(playerIn.getDisplayName().getString());
+					//NetworkHandler.sendCreatorPacketToServer(playerIn.getName(), pos);
+					this.markDirty();
+				} else { 
+					String creator = pocket.getCreator();
+	
+					String player_name = playerIn.getDisplayName().getString();
+					
+					this.markDirty();
+					
+					if (creator != null) {
+						if (this.getLockState()) {
+							if (player_name.equals(creator)) {
+								playerIn.playSound(SoundHandler.GENERIC.PORTAL_IN, 1.0F, 1.0F);
+								this.shiftIntoPocket(playerIn, pos);
+							} else if (pocket.checkPlayerMap(player_name)) {
+								playerIn.playSound(SoundHandler.GENERIC.PORTAL_IN, 1.0F, 1.0F);
+								this.shiftIntoPocket(playerIn, pos);
+							} else {
+								StringTextComponent comp = new StringTextComponent(TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.is_locked.name") + "[" + creator + "]");
+								playerIn.sendMessage(comp);
+							}
+						} else {
+							playerIn.playSound(SoundHandler.GENERIC.PORTAL_IN, 1.0F, 1.0F);
+							this.shiftIntoPocket(playerIn, pos);
+						}
+					}
+				}
+			}
+		} else if (!playerIn.isSneaking() && playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
+			String creator = this.getPocket().getCreator();
+			String locked_comp;
+
+			if (this.getLockState()) {
+				locked_comp = TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.locked.name");
+			} else {
+				locked_comp = TextHelper.GREEN + TextHelper.BOLD + I18n.format("pocket.status.unlocked.name");
+			}
+
+			if (!worldIn.isRemote) {
+				StringTextComponent comp = new StringTextComponent(TextHelper.LIGHT_GRAY + TextHelper.BOLD + I18n.format("pocket.status.owner.name") + TextHelper.PURPLE + TextHelper.BOLD + " {" + creator + "} " + TextHelper.LIGHT_GRAY + TextHelper.BOLD + I18n.format("pocket.status.and.name") + locked_comp + ".");
+				playerIn.sendMessage(comp);
+				
+				return false;
+			}
+		} else if ((ModUtil.isHoldingHammer(playerIn)) && (playerIn.isSneaking())) {
+			playerIn.swingArm(Hand.MAIN_HAND);
+			if (!(worldIn.isRemote)) {
+
+				String creator = this.getPocket().getCreator();
+
+				if (creator != null) {
+					if (playerIn.getDisplayName().getString().equals(creator)) {
+						if (this.getLockState()) {
+							StringTextComponent comp = new StringTextComponent(TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.remove_locked.name"));
+							playerIn.sendMessage(comp);
+						} else {
+							//ChunkLoaderManagerRoom.removePocketFromChunkLoader(this.getPocket());
+							//ChunkLoaderManagerBlock.removePocketBlockFromChunkLoader(this.getPos());
+							DimUtils.spawnItemStack(this.generateItemStackOnRemoval(pos), world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0);
+							
+							world.setBlockState(pos, Blocks.AIR.getDefaultState());
+						}
+					} else {
+						StringTextComponent comp = new StringTextComponent(TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.remove_not.name"));
+						playerIn.sendMessage(comp);
+					}
+				}
+
+				return true;
+			}
+		} else if ((ModUtil.isHoldingHammer(playerIn)) && !(playerIn.isSneaking())) {
+			playerIn.swingArm(Hand.MAIN_HAND);
+			
+			String creator = this.getPocket().getCreator();
+
+			if (creator != null) {
+				if (playerIn.getDisplayName().getString().equals(creator)) {
+					this.cycleSide(hit.getFace());
+					this.markDirty();
+					
+					if (!(worldIn.isRemote)) {
+						StringTextComponent comp = new StringTextComponent(TextHelper.LIGHT_GRAY + TextHelper.BOLD + I18n.format("pocket.status.cycle_side.name") + this.getSide(hit.getFace()).getTextColour() + TextHelper.BOLD + " [" + this.getSide(hit.getFace()).getDisplayName() + "]");
+						playerIn.sendMessage(comp);
+					}
+					return false;
+				} else {
+					if (!(worldIn.isRemote)) {
+						StringTextComponent comp = new StringTextComponent(TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.access_lock.name"));
+						playerIn.sendMessage(comp);
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn) {
+		if (this.getPocket() != null) {
+			if (ModUtil.isHoldingHammer(playerIn) && playerIn.isSneaking()) {
+				if(this.getPocket().getCreator() != null) {
+					String creator = this.getPocket().getCreator();
+					
+					if (creator != null) {
+						if (playerIn.getDisplayName().getString().equals(creator)) {
+							if (!(worldIn.isRemote)) {
+								//FMLNetworkHandler.openGui(playerIn, DimensionalPockets.INSTANCE, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+							}
+						} else {
+							if (!(worldIn.isRemote)) {
+								StringTextComponent comp = new StringTextComponent(TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.access_set.name"));
+								playerIn.sendMessage(comp);
+							}
+						}
+					}
+				} else {
+					StringTextComponent comp = new StringTextComponent(TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.creator_null.name"));
+					playerIn.sendMessage(comp);
+				}
+			}
+		} else {
+			StringTextComponent comp = new StringTextComponent(TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.null.name"));
+			playerIn.sendMessage(comp);
+		}
+	}
+
+	@Override
+	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) { }
+
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		if (!worldIn.isRemote) {
+			if (stack.hasTag() && placer.dimension != ModDimensionManager.POCKET_DIMENSION.getDimensionType()) {
+				CompoundNBT compound = stack.getTag();
+				
+				if (compound.contains("nbt_data")) {
+					CompoundNBT nbt_tag = compound.getCompound("nbt_data");
+					
+					int X = nbt_tag.getCompound("chunk_set").getInt("X");
+					int Y = nbt_tag.getCompound("chunk_set").getInt("Y");
+					int Z = nbt_tag.getCompound("chunk_set").getInt("Z");
+	
+					BlockPos chunkSet = new BlockPos(X, Y, Z);
+					boolean success = PocketRegistryManager.getPocket(chunkSet) != null;
+	
+					if (!success) {
+						throw new RuntimeException("YOU DESERVED THIS!");
+					}
+	
+					PocketRegistryManager.updatePocket(chunkSet, placer.dimension, getPos());
+	
+					if (nbt_tag.contains("display")) {
+						String tempString = nbt_tag.getCompound("display").getString("Name");
+						if (!tempString.isEmpty()) {
+							customName = tempString;
+						}
+					}
+					
+					CompoundNBT side_tag = nbt_tag.getCompound("sides");
+					
+					for(Direction c : Direction.values()) {
+						this.setSide(c, EnumSideState.getStateFromIndex(side_tag.getInt("index_" + c.getIndex())));
+					}
+				}
+
+				if (placer instanceof PlayerEntity) {
+					ServerPlayerEntity player = (ServerPlayerEntity) placer;
+					if (player.getHeldItemMainhand() == stack) {
+						player.getHeldItemMainhand().setCount(0);
+					}
+				}
+
+				Pocket pocket = this.getPocket();
+				pocket.generatePocket(placer.getDisplayName().getString());
+				//NetworkHandler.sendPocketSetCreator(placer.getName(), pos);
+				//ChunkLoaderManagerRoom.addPocketToChunkLoader(pocket);
+				//ChunkLoaderManagerBlock.addPocketBlockToChunkLoader(this.getPos(), placer.dimension.getId());
+
+			} else if (stack.hasTag() && placer.dimension == ModDimensionManager.POCKET_DIMENSION.getDimensionType()) {
+				if (placer.dimension == ModDimensionManager.POCKET_DIMENSION.getDimensionType()) {
+					CompoundNBT stack_tag = stack.getTag();
+
+					if (stack_tag.contains("nbt_data")) {
+						CompoundNBT nbt_tag = stack_tag.getCompound("nbt_data");
+						
+						int X = nbt_tag.getCompound("chunk_set").getInt("X");
+						int Y = nbt_tag.getCompound("chunk_set").getInt("Y");
+						int Z = nbt_tag.getCompound("chunk_set").getInt("Z");
+						
+						BlockPos chunk_set = new BlockPos(X, Y, Z);
+	
+						Pocket test_pocket = PocketRegistryManager.getPocket(chunk_set);
+	
+						if (test_pocket != null) {
+							if (test_pocket.equals(PocketRegistryManager.getPocket(new BlockPos(pos.getX() >> 4, pos.getY() >> 4, pos.getZ() >> 4)))) {
+								if (!world.isRemote) {
+									DimUtils.spawnItemStack(this.generateItemStackWithNBT(pos, X, Y, Z), world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0);
+									
+									world.setBlockState(pos, Blocks.AIR.getDefaultState());
+								}
+							} else {
+								PocketRegistryManager.updatePocket(chunk_set, placer.dimension, getPos());
+	
+								if (nbt_tag.contains("display")) {
+									CompoundNBT nbt = nbt_tag.getCompound("display");
+									
+									String tempString = nbt.getString("name");
+									if (!tempString.isEmpty()) {
+										customName = tempString;
+									}
+								}
+	
+								if (placer instanceof PlayerEntity) {
+									ServerPlayerEntity player = (ServerPlayerEntity) placer;
+									if (player.getHeldItemMainhand() == stack) {
+										player.getHeldItemMainhand().setCount(0);
+									}
+								}
+	
+								Pocket pocket = this.getPocket();
+								pocket.generatePocket(placer.getDisplayName().getString());
+								//NetworkHandler.sendPocketSetCreator(placer.getName(), pos);
+								//ChunkLoaderManagerRoom.addPocketToChunkLoader(pocket);
+								//ChunkLoaderManagerBlock.addPocketBlockToChunkLoader(this.getPos(), placer.dimension.getId());
 							}
 						}
 					}
 				}
-				
-				FluidStack fluid = FluidUtil.getFluidContained(this.INVENTORY_STACKS.get(49));
-				
-				if (fluid != null) {
-					int amount = this.fill(fluid, false);
-					if (amount == fluid.amount) {
-						if (this.INVENTORY_STACKS.get(50).getItem().equals(Items.BUCKET) && this.INVENTORY_STACKS.get(50).getCount() < 17) {
-							this.fill(fluid, true);
-							this.INVENTORY_STACKS.get(49).shrink(1);
-							this.INVENTORY_STACKS.get(50).grow(1);
-						}
-						
-						if (this.INVENTORY_STACKS.get(50).isEmpty()) {
-							this.fill(fluid, true);
-							this.INVENTORY_STACKS.get(49).shrink(1);
-							this.INVENTORY_STACKS.set(50, new ItemStack(Items.BUCKET));
-						}
-					}
-				}
-				this.markDirty();
 			}
 		}
 	}
-	
-	public void setStacks() {
-		for (int i = 0 ; i < this.getPocket().items.size(); i++) {
-			if (this.getStackInSlot(i) != this.getPocket().items.get(i)) {
-				ItemStack pocket_stack = this.getPocket().items.get(i);
-				ItemStack copy = pocket_stack.copy();
-				if (!this.world.isRemote) {
-					this.INVENTORY_STACKS.set(i, copy);
-				}
-			}
-		}
+
+	@Override
+	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) { }
+
+	@Override
+	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) { }
+
+	@Override
+	public int getEnergyScaled(int scale) {
+		return 0;
+	}
+
+	@Override
+	public boolean hasEnergy() {
+		return false;
 	}
 	
-	public boolean getSidesState() {
-		return this.sides;
-	}
-	
-	public void setSidesState(boolean set) {
-		this.sides = set;
-	}
-	
-	public void toggleSidesState() {
-		this.sides = !this.sides;
+	public TileEntityType<?> getType() {
+		return TileEntityManager.POCKET;
 	}
 }

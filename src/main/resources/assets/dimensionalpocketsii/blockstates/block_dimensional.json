@@ -1,13 +1,7 @@
 {
-    "forge_marker": 1,
-    "defaults": {
-        "textures": {
-            "all": "dimensionalpocketsii:blocks/block_dimensional"
-        }
-    },
-    
-    "variants": {
-        "inventory": { "model": "zeherlib:modblock" },
-        "normal": { "model" : "zeherlib:modblock" }
-    }
+	"variants": {
+		"": {
+			"model": "dimensionalpocketsii:block/block_dimensional"
+		}
+	}
 }

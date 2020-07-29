@@ -1,8 +1,6 @@
 {
-    "parent": "zeherlib:block/sides_diff",
+    "parent": "zeherlib:block/modblock",
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/pocket/wall/wall",
-        "side": "dimensionalpocketsii:blocks/pocket/wall/display/energy/display_24",
-        "other": "dimensionalpocketsii:blocks/pocket/wall/wall"
+        "all": "dimensionalpocketsii:blocks/pocket/wall/display/energy/display_24"
     }
 }

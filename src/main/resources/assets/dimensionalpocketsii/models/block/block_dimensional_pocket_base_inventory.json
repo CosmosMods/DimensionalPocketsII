@@ -14,7 +14,7 @@
     },
     "textures": {
         "frame_face_invert": "dimensionalpocketsii:blocks/pocket/frame/frame_face_invert",
-        "frame_face": "dimensionalpocketsii:blocks/pocket/frame/frame_face_unlocked",
+        "frame_face": "dimensionalpocketsii:blocks/pocket/frame/frame_face",
         "mid_face": "dimensionalpocketsii:blocks/pocket/mid/mid_face",
         "core_face": "dimensionalpocketsii:blocks/pocket/core/core_face",
         "core_face_inside": "dimensionalpocketsii:blocks/pocket/core/core_face_inside",

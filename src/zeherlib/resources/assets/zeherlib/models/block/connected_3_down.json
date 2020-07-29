@@ -1,0 +1,13 @@
+{
+    "__comment": "Model for when three adjacent sides connected sides in a T shape.",
+	"parent": "zeherlib:block/tinted_cube",
+    "textures": {
+		"particle": "#normal",
+        "down": "#lr",
+		"up": "#udlr",
+		"north": "#dlr",
+		"south": "#dlr",
+		"west": "#udlr",
+		"east": "#udlr"
+    }
+}

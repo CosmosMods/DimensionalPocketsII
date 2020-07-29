@@ -1,0 +1,13 @@
+{
+    "__comment": "Model for when only one side is connected.",
+	"parent": "zeherlib:block/tinted_cube",
+    "textures": {
+		"particle": "#normal",
+        "down": "#d",
+		"up": "#u",
+		"north": "#udlr",
+		"south": "#normal",
+		"west": "#l",
+		"east": "#r"
+    }
+}
