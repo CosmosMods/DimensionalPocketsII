@@ -5,7 +5,7 @@
 		
 	[[mods]] #mandatory
 		modId="dimensionalpocketsii" #mandatory
-		version="1.14.4-0.1.32" #mandatory
+		version="1.14.4-0.1.40" #mandatory
 		displayName="Dimensional Pockets II" #mandatory
 		credits="NPException, Apolybrium (Textures), Rechalow (Translation)" #optional
 		authors="TheRealZeher" #optional

@@ -8,7 +8,6 @@ import com.zeher.dimpockets.core.util.DimUtils;
 import com.zeher.dimpockets.pocket.core.Pocket;
 import com.zeher.dimpockets.pocket.core.manager.PocketRegistryManager;
 import com.zeher.zeherlib.api.client.util.TextHelper;
-import com.zeher.zeherlib.api.compat.client.interfaces.IClientUpdatedTile;
 import com.zeher.zeherlib.api.compat.core.interfaces.EnumSideState;
 import com.zeher.zeherlib.api.compat.core.interfaces.ISidedTile;
 import com.zeher.zeherlib.api.core.interfaces.block.IBlockInteract;
@@ -22,145 +21,42 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class TilePocket extends TileBase implements IBlockNotifier, IBlockInteract, ITickableTileEntity, ISidedInventory, IInventory, ISidedTile, /**IEnergyReceiver, IEnergyProvider,*/ IClientUpdatedTile.Storage {
+public abstract class AbstractPocketTileEntity extends TileEntity implements IBlockNotifier, IBlockInteract, ITickableTileEntity, ISidedTile { //, IClientUpdatedTile.Storage {
 	
-	public TilePocket() {
-		super(TileEntityManager.POCKET);
-	}
-
-	@SuppressWarnings("unused")
-	private static final String TAG_CUSTOM_DP_NAME = "customDPName";
 	private String customName;
+	private EnumSideState[] SIDE_STATE_ARRAY = EnumSideState.getStandardArray();
 	
-	public EnumSideState[] SIDE_STATE_ARRAY = EnumSideState.getStandardArray();
-
-	private NonNullList<ItemStack> INVENTORY_STACKS = NonNullList.<ItemStack>withSize(17, ItemStack.EMPTY);
-	
-	@OnlyIn(Dist.CLIENT)
-	private Pocket pocket;
-
-	@Override
-	public void tick() {
-		/**
-		for (int i = 0 ; i < 9; i++) {
-			if (this.getStackInSlot(i) != this.getPocket().items.get(i)) {
-				ItemStack pocket_stack = this.getPocket().items.get(i);
-				ItemStack copy = pocket_stack.copy();
-				if (!this.world.isRemote) {
-					this.INVENTORY_STACKS.set(i, copy);
-				}
-			}
-		}*/
-	}
-
-	public ItemStack generateItemStackOnRemoval(BlockPos pos) {
-		ItemStack itemStack = new ItemStack(BusSubscriberMod.BLOCK_POCKET);
-
-		if (!itemStack.hasTag()) {
-			itemStack.setTag(new CompoundNBT());
-		}
-
-		BlockPos chunkSet = this.getPocket().getChunkPos();
-		
-		CompoundNBT compound = new CompoundNBT();
-		
-		//Saves the chunk data to NBT
-		CompoundNBT chunk_tag = new CompoundNBT();
-		chunk_tag.putInt("X", chunkSet.getX());
-		chunk_tag.putInt("Y", chunkSet.getY());
-		chunk_tag.putInt("Z", chunkSet.getZ());
-
-		compound.put("chunk_set", chunk_tag);
-
-		String creatorLore = null;
-		Pocket pocket = getPocket();
-		
-		if (pocket != null && pocket.getCreator() != null) {
-			creatorLore = TextHelper.LIGHT_BLUE + TextHelper.BOLD + I18n.format("pocket.desc.creator.name") + TextHelper.PURPLE + TextHelper.BOLD + " [" + pocket.getCreator() + "]";
-		}
-		
-		//Saves the side data to NBT
-		if (this instanceof ISidedTile) {
-			CompoundNBT side_tag = new CompoundNBT();
-			
-			for (Direction c : Direction.values()) {
-				side_tag.putInt("index_" + c.getIndex(), this.getSideArray()[c.getIndex()].getIndex());
-			}
-			
-			compound.put("sides", side_tag);
-		}
-		
-		/**
-		if (this.getEnergyStored(Direction.DOWN) > 0) {
-			compound.putInt("energy", this.getEnergyStored(Direction.DOWN));
-		}
-		*/
-		
-		itemStack.getTag().put("nbt_data", compound);
-		
-		BlockPos blockSet = new BlockPos(chunkSet.getX() << 4, chunkSet.getY() << 4, chunkSet.getZ() << 4);
-
-		itemStack = DimUtils.generateItem(itemStack, customName, false, TextHelper.LIGHT_GRAY + TextHelper.BOLD
-				+ "Pocket: [" + blockSet.getX() + " | " + blockSet.getY() + " | " + blockSet.getZ() + "]", creatorLore);
-		return itemStack;
-	}
-
-	public ItemStack generateItemStackWithNBT(BlockPos pos, int x, int y, int z) {
-		ItemStack item_stack = new ItemStack(BusSubscriberMod.BLOCK_POCKET);
-
-		if (!item_stack.hasTag()) {
-			item_stack.setTag(new CompoundNBT());
-		}
-
-		CompoundNBT compound = new CompoundNBT();
-		
-		CompoundNBT chunk_tag = new CompoundNBT();
-		chunk_tag.putInt("X", x);
-		chunk_tag.putInt("Y", y);
-		chunk_tag.putInt("Z", z);
-
-		compound.put("chunk_set", chunk_tag);
-		
-		item_stack.getTag().put("nbt_data", compound);
-
-		String creatorLore = null;
-		Pocket pocket = getPocket();
-		if (pocket != null && pocket.getCreator() != null) {
-			creatorLore = "Creator: [" + pocket.getCreator() + "]";
-		}
-
-		item_stack = DimUtils.generateItem(item_stack, customName, false,
-				"Pocket: [" + (x << 4) + "," + (y << 4) + "," + (z << 4) + "]", creatorLore);
-
-		return item_stack;
+	public AbstractPocketTileEntity(TileEntityType<?> type) {
+		super(type);
 	}
 
 	@Override
+	public TileEntityType<?> getType() {
+		return TileEntityManager.POCKET;
+	}
+	
+	@Override
+	public void tick() { }
+
 	public Pocket getPocket() {
 		return PocketRegistryManager.getOrCreatePocket(this.world, this.getPos());
 	}
 	
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
+		super.write(compound);
 		/**
 		if (this.SIDE_STATE_ARRAY != null) {
 			CompoundNBT sides_tag = new CompoundNBT();
@@ -197,32 +93,27 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 			customName = tempString;
 		}*/
 	}
-
+	
+	/*
+	 * - Lock Methods -
+	 */
 	private void shiftIntoPocket(PlayerEntity player, BlockPos pos_) {
 		this.getPocket().addPosToBlockMap(this.getPos());
 		this.getPocket().shiftTo(player);
 	}
-
-	/**
-	 * Check whether the pocket is locked.
-	 * @return boolean of the lock state
-	 */
+	
 	public boolean getLockState() {
 		return this.getPocket().getLockState();
 	}
 	
-	/**
-	 * Set the lock state of the pocket.
-	 */
 	public void setLockState(boolean change) {
 		this.getPocket().setLockState(change);
 		this.sendUpdates();
 	}
 
-	/**
-	 * ISidedTile Begin--
+	/*
+	 * - ISidedTile Methods
 	 */
-	
 	@Override 
 	public EnumSideState getSide(Direction direction) {
 		return SIDE_STATE_ARRAY[direction.getIndex()];
@@ -277,8 +168,7 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 	}
 	
 	/**
-	 * Set the data once it has been received. [NBT > TE]
-	 */
+	//Set the data once it has been received. [NBT > TE]
 	@Override
 	public void handleUpdateTag(CompoundNBT tag) {
 		System.out.println("READ TAG: index_1/up " + tag.getInt("index_1"));
@@ -286,9 +176,7 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 		this.read(tag);
 	}
 	
-	/**
-	 * Retrieve the data to be stored. [TE > NBT]
-	 */
+	//Retrieve the data to be stored. [TE > NBT]
 	@Override
 	public CompoundNBT getUpdateTag() {
 		CompoundNBT tag = new CompoundNBT();
@@ -300,17 +188,14 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 		return tag;
 	}
 	
-	/**
-	 * Actually sends the data to the server. [NBT > SER]
-	 */
+
+	//Actually sends the data to the server. [NBT > SER]
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
 		return new SUpdateTileEntityPacket(this.getPos(), 3, this.getUpdateTag());
 	}
 	
-	/**
-	 * Method is called once packet has been received by the client. [SER > CLT]
-	 */
+	//Method is called once packet has been received by the client. [SER > CLT]
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
 		super.onDataPacket(net, pkt);
@@ -319,89 +204,7 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 		this.handleUpdateTag(tag_);
 		this.sendUpdates();
 	}
-	
-	@Override
-	public int getSizeInventory() {
-		/**return this.INVENTORY_STACKS.size() + */ return this.INVENTORY_STACKS.size();
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int index) {
-		return this.INVENTORY_STACKS.get(index);
-	}
-
-	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		this.markDirty();
-		return ItemStackHelper.getAndSplit(this.INVENTORY_STACKS, index, count);
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		this.markDirty();
-		return ItemStackHelper.getAndRemove(this.INVENTORY_STACKS, index);
-	}
-	
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		this.INVENTORY_STACKS.set(index, stack);
-		if (stack.getCount() > this.getInventoryStackLimit()) {
-			stack.setCount(this.getInventoryStackLimit());
-		}
-		
-		this.getPocket().items.set(index, stack);
-		
-		this.markDirty();
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
-	public boolean isUsableByPlayer(PlayerEntity player) {
-		return true;
-	}
-
-	@Override
-	public void openInventory(PlayerEntity player) { }
-
-	@Override
-	public void closeInventory(PlayerEntity player) { }
-
-	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return true;
-	}
-	
-	@Override
-	public void clear() { }
-
-	@Override
-	public int[] getSlotsForFace(Direction side) {
-		return new int[] { 0 };
-	}
-
-	@Override
-	public boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction) {
-		return true;
-	}
-
-	@Override
-	public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
-		return true;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		for (ItemStack itemstack : this.INVENTORY_STACKS) {
-			if (!itemstack.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
+	*/
 	
 	@Override
 	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
@@ -649,17 +452,79 @@ public class TilePocket extends TileBase implements IBlockNotifier, IBlockIntera
 	@Override
 	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) { }
 
-	@Override
-	public int getEnergyScaled(int scale) {
-		return 0;
+	public ItemStack generateItemStackOnRemoval(BlockPos pos) {
+		ItemStack itemStack = new ItemStack(BusSubscriberMod.BLOCK_POCKET);
+
+		if (!itemStack.hasTag()) {
+			itemStack.setTag(new CompoundNBT());
+		}
+
+		BlockPos chunkSet = this.getPocket().getChunkPos();
+		
+		CompoundNBT compound = new CompoundNBT();
+		
+		//Saves the chunk data to NBT
+		CompoundNBT chunk_tag = new CompoundNBT();
+		chunk_tag.putInt("X", chunkSet.getX());
+		chunk_tag.putInt("Y", chunkSet.getY());
+		chunk_tag.putInt("Z", chunkSet.getZ());
+
+		compound.put("chunk_set", chunk_tag);
+
+		String creatorLore = null;
+		Pocket pocket = this.getPocket();
+		
+		if (pocket != null && pocket.getCreator() != null) {
+			creatorLore = TextHelper.LIGHT_BLUE + TextHelper.BOLD + I18n.format("pocket.desc.creator.name") + TextHelper.PURPLE + TextHelper.BOLD + " [" + pocket.getCreator() + "]";
+		}
+		
+		//Saves the side data to NBT
+		if (this instanceof ISidedTile) {
+			CompoundNBT side_tag = new CompoundNBT();
+			
+			for (Direction c : Direction.values()) {
+				side_tag.putInt("index_" + c.getIndex(), this.getSideArray()[c.getIndex()].getIndex());
+			}
+			
+			compound.put("sides", side_tag);
+		}
+		
+		itemStack.getTag().put("nbt_data", compound);
+		
+		BlockPos blockSet = new BlockPos(chunkSet.getX() << 4, chunkSet.getY() << 4, chunkSet.getZ() << 4);
+
+		itemStack = DimUtils.generateItem(itemStack, customName, false, TextHelper.LIGHT_GRAY + TextHelper.BOLD
+				+ "Pocket: [" + blockSet.getX() + " | " + blockSet.getY() + " | " + blockSet.getZ() + "]", creatorLore);
+		return itemStack;
 	}
 
-	@Override
-	public boolean hasEnergy() {
-		return false;
-	}
-	
-	public TileEntityType<?> getType() {
-		return TileEntityManager.POCKET;
+	public ItemStack generateItemStackWithNBT(BlockPos pos, int x, int y, int z) {
+		ItemStack item_stack = new ItemStack(BusSubscriberMod.BLOCK_POCKET);
+
+		if (!item_stack.hasTag()) {
+			item_stack.setTag(new CompoundNBT());
+		}
+
+		CompoundNBT compound = new CompoundNBT();
+		
+		CompoundNBT chunk_tag = new CompoundNBT();
+		chunk_tag.putInt("X", x);
+		chunk_tag.putInt("Y", y);
+		chunk_tag.putInt("Z", z);
+
+		compound.put("chunk_set", chunk_tag);
+		
+		item_stack.getTag().put("nbt_data", compound);
+
+		String creatorLore = null;
+		Pocket pocket = getPocket();
+		if (pocket != null && pocket.getCreator() != null) {
+			creatorLore = "Creator: [" + pocket.getCreator() + "]";
+		}
+
+		item_stack = DimUtils.generateItem(item_stack, customName, false,
+				"Pocket: [" + (x << 4) + "," + (y << 4) + "," + (z << 4) + "]", creatorLore);
+
+		return item_stack;
 	}
 }

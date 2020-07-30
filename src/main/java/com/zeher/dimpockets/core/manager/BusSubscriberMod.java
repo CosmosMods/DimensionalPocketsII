@@ -8,7 +8,7 @@ import com.zeher.dimpockets.DimensionalPockets;
 import com.zeher.dimpockets.pocket.core.block.BlockPocket;
 import com.zeher.dimpockets.pocket.core.block.BlockWall;
 import com.zeher.dimpockets.pocket.core.block.BlockWallEdge;
-import com.zeher.dimpockets.pocket.core.tileentity.TilePocket;
+import com.zeher.dimpockets.pocket.core.tileentity.PocketTileEntity;
 import com.zeher.zeherlib.api.compat.core.impl.ZLWrench;
 import com.zeher.zeherlib.mod.block.ModBlock;
 import com.zeher.zeherlib.mod.block.ModBlockModelUnplaceable;
@@ -118,7 +118,7 @@ public class BusSubscriberMod {
 	
 	@SubscribeEvent
 	public static void onTileEntityTypeRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
-		setupString("pocket", TileEntityType.Builder.create(TilePocket::new, BLOCK_POCKET).build(null));
+		setupString("pocket", TileEntityType.Builder.create(PocketTileEntity::new, BLOCK_POCKET).build(null));
 				
 		LOGGER.info("[onTileEntityTypeRegistry] TileEntityTypes Registered...", BusSubscriberMod.class);
 	}

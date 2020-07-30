@@ -1,7 +1,7 @@
 package com.zeher.dimpockets.pocket.core.block;
 
-import com.zeher.dimpockets.pocket.core.tileentity.TilePocket;
-import com.zeher.zeherlib.api.compat.core.impl.BlockContainerRemovableNBT;
+import com.zeher.dimpockets.pocket.core.tileentity.PocketTileEntity;
+import com.zeher.zeherlib.api.compat.core.impl.BlockRemovableNBT;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockPocket extends BlockContainerRemovableNBT {
+public class BlockPocket extends BlockRemovableNBT {
 	
 	public static final IntegerProperty NORTH = IntegerProperty.create("north", 0, 3);
 	public static final IntegerProperty EAST = IntegerProperty.create("east", 0, 3);
@@ -46,15 +46,20 @@ public class BlockPocket extends BlockContainerRemovableNBT {
 
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader worldIn) {
-		return new TilePocket();
+		return new PocketTileEntity();
+	}
+	
+	@Override
+	public boolean hasTileEntity(BlockState state) {
+		return true;
 	}
 	
 	@Override
 	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
 		TileEntity tileEntity = world.getTileEntity(pos);
 		
-		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).onBlockClicked(state, world, pos, player);
+		if (tileEntity instanceof PocketTileEntity) {
+			((PocketTileEntity) tileEntity).onBlockClicked(state, world, pos, player);
 		}
 	}
 
@@ -62,8 +67,8 @@ public class BlockPocket extends BlockContainerRemovableNBT {
 	public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		
-		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).onBlockActivated(state, worldIn, pos, playerIn, handIn, hit);
+		if (tileEntity instanceof PocketTileEntity) {
+			((PocketTileEntity) tileEntity).onBlockActivated(state, worldIn, pos, playerIn, handIn, hit);
 		}
 		return false;
 	}
@@ -72,8 +77,8 @@ public class BlockPocket extends BlockContainerRemovableNBT {
 	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		
-		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).onBlockAdded(state, worldIn, pos, oldState, isMoving);
+		if (tileEntity instanceof PocketTileEntity) {
+			((PocketTileEntity) tileEntity).onBlockAdded(state, worldIn, pos, oldState, isMoving);
 		}
 	}
 
@@ -81,8 +86,8 @@ public class BlockPocket extends BlockContainerRemovableNBT {
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		
-		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).onBlockPlacedBy(worldIn, pos, state, placer, stack);
+		if (tileEntity instanceof PocketTileEntity) {
+			((PocketTileEntity) tileEntity).onBlockPlacedBy(worldIn, pos, state, placer, stack);
 		}
 	}
 
@@ -90,8 +95,8 @@ public class BlockPocket extends BlockContainerRemovableNBT {
 	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
 		TileEntity tileEntity = worldIn.getTileEntity(pos);
 		
-		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).onBlockHarvested(worldIn, pos, state, player);
+		if (tileEntity instanceof PocketTileEntity) {
+			((PocketTileEntity) tileEntity).onBlockHarvested(worldIn, pos, state, player);
 		}
 	}
 
@@ -99,8 +104,8 @@ public class BlockPocket extends BlockContainerRemovableNBT {
 	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
 	TileEntity tileEntity = worldIn.getTileEntity(pos);
 		
-		if (tileEntity instanceof TilePocket) {
-			((TilePocket) tileEntity).neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
+		if (tileEntity instanceof PocketTileEntity) {
+			((PocketTileEntity) tileEntity).neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
 		}
 	}
 	
@@ -134,8 +139,8 @@ public class BlockPocket extends BlockContainerRemovableNBT {
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {	
 		TileEntity tile_in = worldIn.getTileEntity(currentPos);
 		
-		if (tile_in instanceof TilePocket) {
-			TilePocket tile = (TilePocket) worldIn.getTileEntity(currentPos);
+		if (tile_in instanceof PocketTileEntity) {
+			PocketTileEntity tile = (PocketTileEntity) worldIn.getTileEntity(currentPos);
 
 			return stateIn.with(NORTH, tile.getSide(Direction.NORTH).getIndex())
 					.with(EAST, tile.getSide(Direction.EAST).getIndex())

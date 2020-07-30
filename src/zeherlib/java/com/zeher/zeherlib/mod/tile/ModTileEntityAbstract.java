@@ -31,17 +31,13 @@ public abstract class ModTileEntityAbstract extends TileEntity {
 
     @Override
     public boolean receiveClientEvent(int id, int process) {
-        return false;
+        return true;
     }
 
     public BlockPos getCoordSet() {
         return this.pos;
     }
-
-    public void markForUpdate() {
-        //world.update.markBlockForUpdate(pos);
-    }
-
+    
     @Override
     public String toString() {
         return getClass().getSimpleName() + getCoordSet();
