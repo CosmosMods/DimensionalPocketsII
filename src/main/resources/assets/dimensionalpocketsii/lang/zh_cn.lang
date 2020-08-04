@@ -1,37 +1,55 @@
-#en_us
+#zh_cn
 #creative_tab
-itemGroup.tab_dimensionalpockets=Dimensional Pockets
+itemGroup.tab_dimensionalpockets=维度口袋2
 
 #items
-item.dimensional_shard.name=Dimensional Shard
-item.dimensional_ingot.name=Dimensional Ingot
+item.dimensional_shard.name=维度碎片
+item.dimensional_ingot.name=维度锭
 
-item.dimensional_key.name=Dimensional Key
-item.dimensional_wrench.name=Dimensional Wrench
+item.dimensional_key.name=维度钥匙
+item.dimensional_wrench.name=维度扳手
 
-item.modifier_general.name=General Modifier
-item.modifier_energy.name=Energy Modifier
-item.modifier_fluid.name=Fluid Modifier
-item.modifier_item.name=Item Modifier
+item.modifier_general.name=普通修改器
+item.modifier_energy.name=能量修改器
+item.modifier_fluid.name=流体修改器
+item.modifier_item.name=物品修改器
 
 #blocks
-tile.block_dimensional_ore.name=Dimensional Ore
-tile.block_dimensional.name=Block of Dimensional Material
+tile.block_dimensional_ore.name=维度矿石
+tile.block_dimensional.name=维度材料块
 
-tile.block_dimensional_pocket.name=Dimensional Pocket
-tile.block_dimensional_pocket_wall.name=Dimensional Wall
-tile.block_dimensional_pocket_wall_edge.name=Dimensional Wall
-tile.block_dimensional_pocket_wall_connector.name=Dimensional Wall
+tile.block_dimensional_pocket.name=维度口袋
+tile.block_dimensional_pocket_wall.name=维度墙
+tile.block_dimensional_pocket_wall_edge.name=维度墙
+tile.block_dimensional_pocket_wall_connector.name=维度墙
 
 #commands
-commands.dimshift.usage=/dimshift <destination dimension>(As a number, Eg: 0 [Overworld])
+commands.dimshift.usage=/dimshift <目标维度>(As a number, Eg: 0 [Overworld])
 
-commands.dimhelp.header=--- Showing help for Dimensional Pockets ---
-commands.dimhelp.usage=/dimhelp [ page | command name ]
+commands.dimhelp.header=--- 显示维度口袋的帮助 ---
+commands.dimhelp.usage=/dimhelp [ 页 | 命令名 ]
 
 #gui
-gui.main.dimensional_pocket.name=Dimensional Pocket
-gui.header.allowed_players.name=Allowed Players:
-gui.header.owner.name=Pocket Owner:
-gui.header.config.name=Configuration
-gui.header.legend.name=Legend:
+gui.main.dimensional_pocket.name=维度口袋
+gui.header.allowed_players.name=允许的玩家：
+gui.header.owner.name=口袋所有者：
+gui.header.config.name=配置
+gui.header.legend.name=说明：
+
+#pocket
+pocket.status.locked.name=[锁定]
+pocket.status.unlocked.name=[解锁]
+pocket.status.locked_.name=口袋锁定。
+pocket.status.unlocked_.name=口袋解锁。
+pocket.status.is_locked.name=这个口袋已被锁定，锁定者：
+pocket.status.owner.name=所有者：
+pocket.status.and.name=当前：
+pocket.status.remove_locked.name=这个口袋已被锁定。 你必须在移除它之前解锁它。
+pocket.status.remove_not.name=只有此口袋的所有者才能将其移除。
+pocket.status.access_set.name=您无法访问此口袋的设置。
+pocket.status.access_lock.name=您无法访问此口袋的设置。
+pocket.status.creator_null.name=创建者字段为空。
+pocket.status.cycle_side.name=侧面已循环。
+pocket.status.null.name=口袋空。向Mod Creator寻求帮助。
+
+pocket.desc.creator.name=创建者：
