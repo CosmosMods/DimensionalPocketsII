@@ -1,5 +1,6 @@
 {
     "parent": "block/block",
+    "ambientocclusion": false,
     "display": {
         "gui": {
             "rotation": [ 30, 135, 0 ],

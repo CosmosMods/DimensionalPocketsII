@@ -1,0 +1,36 @@
+{
+	"parent": "dimensionalpocketsii:pocket/core",
+	"display": {
+		"icon": {
+			"item": "dimensionalpocketsii:dimensional_shifter"
+		},
+		"title":"Portable Travel!",
+		"description": "Craft a Dimensional Shifter.",
+		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
+		"frame": "goal",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"shifter": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:dimensional_shifter",
+						"count": 1
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"shifter"
+		]
+	],
+	"rewards": {
+		"experience": 50
+	}
+}

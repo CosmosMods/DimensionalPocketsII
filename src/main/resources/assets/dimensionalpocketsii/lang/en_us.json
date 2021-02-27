@@ -1,10 +1,21 @@
 {
+	"advancements.dimensional.materials.title": "Dimensional Materials!",
+	"advancements.dimensional.materials.desc": "Mine some Dimensional Ore.",
+	"advancements.dimensional.pockets.title": "Pockets!",
+	"advancements.dimensional.pockets.desc": "Craft a Pocket for the first time.",
+	"advancements.dimensional.nether_star.title": "Splitting the Stars",
+	"advancements.dimensional.nether_star.desc": "Split a nether star into shards.",
+	"advancements.dimensional.ingot.title": "Gearing Up!",
+	"advancements.dimensional.ingot.desc": "Obtain some Dimensional Ingots.",
+	
 	"itemGroup.dimensionalpocketsii": "Dimensional Pockets",
 	
 	"item.dimensionalpocketsii.dimensional_shard": "Dimensional Shard",
 	"item.dimensionalpocketsii.dimensional_ingot": "Dimensional Metal Ingot",
 	
 	"item.dimensionalpocketsii.dimensional_wrench": "Dimensional Wrench",
+	"item.dimensionalpocketsii.nether_star_shard": "Nether Star Shard",
+	"item.dimensionalpocketsii.dimensional_shifter": "Dimensional Shifter",
 	
 	"block.dimensionalpocketsii.block_dimensional_ore": "Dimensional Ore",
 	"block.dimensionalpocketsii.block_dimensional": "Block of Dimensional Material",
@@ -47,6 +58,11 @@
 	"gui.comp.null_creator.name": "Null Creator!",
 	"gui.header.surrounding.name": "Surrounding:",
 	"gui.header.pocket_inv.name": "Pocket Items:",
+	
+	"gui.config.name": "Dimensional Pockets II Config",
+	"gui.done": "Done",
+	
+	"config.keep_chunks_loaded": "Keep Chunks Loaded",
 	
 	"pocket.status.locked.name": "[Locked]",
 	"pocket.status.unlocked.name": "[Unlocked]",

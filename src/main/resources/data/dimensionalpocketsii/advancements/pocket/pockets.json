@@ -1,0 +1,36 @@
+{
+	"parent": "dimensionalpocketsii:pocket/core",
+	"display": {
+		"icon": {
+			"item": "dimensionalpocketsii:block_pocket"
+		},
+		"title":"Pockets!",
+		"description": "Craft a Pocket for the first time.",
+		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
+		"frame": "goal",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"pocket": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:block_pocket",
+						"count": 1
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"pocket"
+		]
+	],
+	"rewards": {
+		"experience": 100
+	}
+}
