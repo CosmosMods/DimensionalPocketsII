@@ -10,9 +10,9 @@ This repo does not have a licence. This means that by default, it is All Rights 
 - Use the pull request feature.
 - Use/copy small portions of code for private use.
 - Use this code as a basis to create a new mod dependent on this one. (Add-on Mod)
-- Use this mod in a public ModPack, but you must link to the mod and ensure TheRealZeher is displayed as the author.
+- Use this mod in a public ModPack, but you must link to the mod and ensure TheCosmicNebula is displayed as the author.
 
-## You cannot (without express permission given by TheRealZeher):
+## You cannot (without express permission given by TheCosmicNebula):
 - Copy large chunks of code.
 - Copy entire class files.
 - Re-distribute the mod under a different name & author.
@@ -28,7 +28,7 @@ If you wish to view the original DimensionalPockets code, please refer to [NPExc
 [DimensionalPockets II Discord](https://discord.gg/8ydCtzm)
 
 ## Development Team:
-- TheRealZeher (Main Author)
+- TheCosmicNebula (Main Author)
 - Rechalow (Chinese Translation)
 
-| 2021 @ TheRealZeher | TRZ | All Rights Reserved |
+| 2021 @ TheCosmicNebula | TCN | All Rights Reserved |
