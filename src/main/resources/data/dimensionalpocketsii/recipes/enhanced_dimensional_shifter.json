@@ -1,0 +1,28 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"DID",
+		"NRN",
+		"DCD"
+	],
+	"key": {
+		"D": {
+			"item": "dimensionalpocketsii:dimensional_ingot"
+		},
+		"I": {
+			"item": "dimensionalpocketsii:dimensional_wrench"
+		},
+		"C": {
+			"item": "minecraft:diamond_block"
+		},
+		"R": {
+			"item": "dimensionalpocketsii:dimensional_shifter"
+		},
+		"N": {
+			"item": "minecraft:netherite_ingot"
+		}
+	},
+	"result": {
+		"item": "dimensionalpocketsii:enhanced_dimensional_shifter"
+	}
+}

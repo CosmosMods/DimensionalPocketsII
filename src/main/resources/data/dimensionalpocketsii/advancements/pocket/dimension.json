@@ -2,10 +2,10 @@
 	"parent": "dimensionalpocketsii:pocket/pockets",
 	"display": {
 		"icon": {
-			"item": "dimensionalpocketsii:block_dimensional_pocket_wall"
+			"item": "dimensionalpocketsii:block_wall"
 		},
-		"title": "Cross Dimensional Teleportaion!",
-		"description": "Enter the Pocket Dimension",
+		"title": "Cross Dimensional Teleportation!",
+		"description": "Enter the Pocket Dimension.",
 		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
 		"frame": "challenge",
 		"show_toast": true,

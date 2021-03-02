@@ -7,7 +7,7 @@
 		"title":"Portable Travel!",
 		"description": "Craft a Dimensional Shifter.",
 		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
-		"frame": "goal",
+		"frame": "task",
 		"show_toast": true,
 		"announce_to_chat": true,
 		"hidden": false

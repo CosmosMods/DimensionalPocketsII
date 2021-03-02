@@ -6,19 +6,19 @@ logoFile="dimensional_logo.png" #optional
 	
 [[mods]] #mandatory
 	modId="dimensionalpocketsii" #mandatory
-	version="1.16.3-0.7.30" #mandatory
+	version="1.16.3-0.9.90" #mandatory
 	displayName="Dimensional Pockets II" #mandatory
 	displayURL="https://www.curseforge.com/minecraft/mc-mods/dimensional-pockets-ii" #optional
 	credits="NPException, Rechalow (Translation)" #optional
-	authors="TheRealZeher" #optional
+	authors="TheCosmicNebula" #optional
 	description='''
-	Create pocket dimensions!
+    Create pocket dimensions!
 	'''
 
 [[dependencies.dimensionalpocketsii]] #optional
     modId="cosmoslibrary" #mandatory
     mandatory=true #mandatory
-    versionRange="[1.16.3-2.1,)" #mandatory
+    versionRange="[1.16.3-3.0,)" #mandatory
     ordering="BEFORE"
     side="BOTH"
 [[dependencies.dimensionalpocketsii]] #optional
@@ -42,12 +42,12 @@ logoFile="cosmos_logo.png" #optional
 
 [[mods]] #mandatory
 	modId="cosmoslibrary" #mandatory
-	version="1.16.3-2.1.65" #mandatory
+	version="1.16.3-3.0.10" #mandatory
 	displayName="Cosmos Library" #mandatory
 	displayURL="https://www.curseforge.com/minecraft/mc-mods/cosmoslibrary" #optional
-	authors="TheRealZeher" #optional
+	authors="TheCosmicNebula" #optional
 	description='''
-	Library and API for TheRealZeher Mods.
+    Library and API for TheCosmicNebula's Mods.
 	'''
 
 [[dependencies.cosmoslibrary]] #optional

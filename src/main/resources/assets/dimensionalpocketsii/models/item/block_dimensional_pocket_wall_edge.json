@@ -1,6 +1,0 @@
-{
-    "parent": "dimensionalpocketsii:block/block_dimensional_pocket_wall",
-    "textures": {
-    	 "normal": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/normal"
-    }
-}

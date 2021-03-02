@@ -16,6 +16,7 @@
 	"item.dimensionalpocketsii.dimensional_wrench": "Dimensional Wrench",
 	"item.dimensionalpocketsii.nether_star_shard": "Nether Star Shard",
 	"item.dimensionalpocketsii.dimensional_shifter": "Dimensional Shifter",
+	"item.dimensionalpocketsii.enhanced_dimensional_shifter": "Enhanced Dimensional Shifter",
 	
 	"block.dimensionalpocketsii.block_dimensional_ore": "Dimensional Ore",
 	"block.dimensionalpocketsii.block_dimensional": "Block of Dimensional Material",
@@ -24,12 +25,13 @@
 	"block.dimensionalpocketsii.block_pocket": "Dimensional Pocket",
 	"block.dimensionalpocketsii.block_dimensional_core": "Dimensional Core",
 	
-	"block.dimensionalpocketsii.block_dimensional_pocket_wall": "Dimensional Wall",
-	"block.dimensionalpocketsii.block_dimensional_pocket_wall_edge": "Dimensional Wall",
+	"block.dimensionalpocketsii.block_wall": "Dimensional Wall",
+	"block.dimensionalpocketsii.block_wall_edge": "Dimensional Wall Edge",
 	
-	"block.dimensionalpocketsii.block_dimensional_pocket_wall_connector": "Dimensional Wall Connector",
-	"block.dimensionalpocketsii.block_dimensional_pocket_wall_energy_display": "Dimensional Energy Display",
-	"block.dimensionalpocketsii.block_dimensional_pocket_wall_fluid_display": "Dimensional Fluid Display",
+	"block.dimensionalpocketsii.block_wall_connector": "Dimensional Connector",
+	"block.dimensionalpocketsii.block_wall_charger": "Dimensional Charger",
+	"block.dimensionalpocketsii.block_wall_energy_display": "Dimensional Energy Display",
+	"block.dimensionalpocketsii.block_wall_fluid_display": "Dimensional Fluid Display",
 	
 	"command.dimshift.usage": "/dimshift <destination dimension>(As a number, Eg: 0 [Overworld])",
 	

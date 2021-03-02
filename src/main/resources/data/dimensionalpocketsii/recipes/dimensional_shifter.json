@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"DID",
+		"DRD",
+		"DCD"
+	],
+	"key": {
+		"D": {
+			"item": "dimensionalpocketsii:dimensional_ingot"
+		},
+		"I": {
+			"item": "minecraft:diamond"
+		},
+		"C": {
+			"item": "dimensionalpocketsii:block_dimensional_core"
+		},
+		"R": {
+			"item": "minecraft:redstone"
+		}
+	},
+	"result": {
+		"item": "dimensionalpocketsii:dimensional_shifter"
+	}
+}

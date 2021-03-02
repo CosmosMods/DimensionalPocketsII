@@ -7,7 +7,7 @@
 		"title":"The Secret to Portal Travel!",
 		"description": "Craft a Dimensional Core.",
 		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
-		"frame": "task",
+		"frame": "goal",
 		"show_toast": true,
 		"announce_to_chat": true,
 		"hidden": false
