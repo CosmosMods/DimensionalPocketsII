@@ -38,4 +38,7 @@ If you wish to view the original DimensionalPockets code, please refer to [NPExc
 - TheCosmicNebula (Main Author)
 - Rechalow (Chinese Translation)
 
+### Development Team Applications:
+ - Please feel free to email: thecosmicnebula_@outlook.com
+
 | 2021 @ TheCosmicNebula | TCN | All Rights Reserved (Except Where Specified) |
