@@ -8,10 +8,10 @@ This repo does not have a licence. This means that by default, it is All Rights 
  - Modify the code for your own personal private use, so long as the modified code is significantly dissimilar from the original code.
  - Use the pull request feature.
  - Create a Fork of this repository if you satisfy the following conditions:
-   - You do not change the package base name. (com.tcn or com.tcn.cosmoscraft)
+   - You do not change the package base name. (com.tcn or com.tcn.dimensionalpocketsii)
    - You do not remove or change any references to the original Mod Author.
    - You do not remove or change any links to the public Mod page.
-   - Change the MOD_ID. (cosmoscraft)
+   - Change the MOD_ID. (dimensionalpocketsii)
    - You are fixing a bug within the code.
    - Or you intend to commit to any of the actions listed below under the "You Cannot" section.
  - Use or copy small portions of code (such as a single method) for personal private use.
