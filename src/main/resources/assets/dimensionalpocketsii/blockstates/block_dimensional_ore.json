@@ -1,5 +1,7 @@
 {
-    "variants": {
-        "normal": { "model": "dimensionalpocketsii:block_dimensional_ore" }
-    }
+	"variants": {
+		"": {
+			"model": "dimensionalpocketsii:block/block_dimensional_ore"
+		}
+	}
 }

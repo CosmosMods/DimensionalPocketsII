@@ -1,0 +1,24 @@
+{
+    "forge_marker": 1,
+    "variants": {
+        "mode=0,type=0": { "model": "dimensionalpocketsii:block/connector/screen" },
+        "mode=1,type=0": { "model": "dimensionalpocketsii:block/connector/screen" },
+        "mode=2,type=0": { "model": "dimensionalpocketsii:block/connector/screen" },
+        "mode=3,type=0": { "model": "dimensionalpocketsii:block/connector/screen" },
+        
+        "mode=0,type=1": { "model": "dimensionalpocketsii:block/connector/energy" },
+        "mode=1,type=1": { "model": "dimensionalpocketsii:block/connector/energy_output" },
+        "mode=2,type=1": { "model": "dimensionalpocketsii:block/connector/energy_input" },
+        "mode=3,type=1": { "model": "dimensionalpocketsii:block/connector/energy_disabled" },
+        
+        "mode=0,type=2": { "model": "dimensionalpocketsii:block/connector/fluid" },
+        "mode=1,type=2": { "model": "dimensionalpocketsii:block/connector/fluid_output" },
+        "mode=2,type=2": { "model": "dimensionalpocketsii:block/connector/fluid_input" },
+        "mode=3,type=2": { "model": "dimensionalpocketsii:block/connector/fluid_disabled" },
+        
+        "mode=0,type=3": { "model": "dimensionalpocketsii:block/connector/item" },
+        "mode=1,type=3": { "model": "dimensionalpocketsii:block/connector/item_output" },
+        "mode=2,type=3": { "model": "dimensionalpocketsii:block/connector/item_input" },
+        "mode=3,type=3": { "model": "dimensionalpocketsii:block/connector/item_disabled" }
+    }
+}

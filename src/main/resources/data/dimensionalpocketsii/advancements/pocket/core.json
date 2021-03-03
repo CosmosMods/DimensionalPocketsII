@@ -1,0 +1,36 @@
+{
+	"parent": "dimensionalpocketsii:pocket/nether_star",
+	"display": {
+		"icon": {
+			"item": "dimensionalpocketsii:block_dimensional_core"
+		},
+		"title":"The Secret to Portal Travel!",
+		"description": "Craft a Dimensional Core.",
+		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
+		"frame": "goal",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"core": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:block_dimensional_core",
+						"count": 1
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"core"
+		]
+	],
+	"rewards": {
+		"experience": 50
+	}
+}

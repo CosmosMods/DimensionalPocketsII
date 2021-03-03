@@ -1,0 +1,39 @@
+{
+	"parent": "dimensionalpocketsii:pocket/material",
+	"display": {
+		"icon": {
+			"item": "dimensionalpocketsii:dimensional_ingot"
+		},
+		"title":"Gearing Up!",
+		"description": "Obtain some Dimensional Ingots.",
+		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"ingot": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:dimensional_ingot",
+						"count": {
+							"min": 1,
+							"max": 64
+						}
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"ingot"
+		]
+	],
+	"rewards": {
+		"experience": 50
+	}
+}

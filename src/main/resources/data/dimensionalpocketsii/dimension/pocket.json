@@ -1,0 +1,42 @@
+{
+	"type": {
+		"name": "dimensionalpocketsii:pocket",
+		"ultrawarm": false,
+		"natural": true,
+		"piglin_safe": true,
+		"respawn_anchor_works": true,
+		"bed_works": true,
+		"has_raids": false,
+		"has_skylight": true,
+		"has_ceiling": false,
+		"coordinate_scale": 1,
+		"ambient_light": 1,
+		"fixed_time": 6000,
+		"logical_height": 256,
+		"infiniburn": "minecraft:infiniburn_overworld"
+	},
+	"generator": {
+		"type": "minecraft:flat",
+		"seed": 259029914,
+		"settings": {
+			"biome": "dimensionalpocketsii:pocket",
+			"lakes": false,
+			"features": false,
+			"layers": [
+				{
+					"block": "minecraft:bedrock",
+					"height": 1
+				},
+				{
+					"block": "minecraft:water",
+					"height": 1
+				}
+			],
+			"structures": {
+				"structures": {
+					
+				}
+			}
+		}
+	}
+}

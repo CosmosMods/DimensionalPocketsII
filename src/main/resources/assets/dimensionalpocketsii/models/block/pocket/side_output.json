@@ -1,0 +1,37 @@
+{
+    "parent": "block/block",
+    "ambientocclusion": false,
+    "display": {
+        "gui": {
+            "rotation": [ 30, 135, 0 ],
+            "translation": [ 0, 0, 0],
+            "scale":[ 0.625, 0.625, 0.625 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 90, 0 ],
+            "translation": [ 0, 0, 0],
+            "scale":[ 0.5, 0.5, 0.5 ]
+        }
+    },
+    "textures": {
+        "particle": "dimensionalpocketsii:blocks/pocket/mid/mid_face",
+        "mid_face": "dimensionalpocketsii:blocks/pocket/mid/mid_face_output",
+        "mid_face_blank": "dimensionalpocketsii:blocks/pocket/mid/mid_face"
+    },
+    "elements": [
+        {
+            "from": [1, 1, 1],
+            "to": [15, 15, 2.9],
+            "faces": {
+                "north": {
+                    "uv": [1,1,15,15],
+                    "texture": "#mid_face"
+                },
+                "south": {
+                    "uv": [1,1,15,15],
+                    "texture": "#mid_face_blank"
+                }
+            }
+        }
+    ]
+}

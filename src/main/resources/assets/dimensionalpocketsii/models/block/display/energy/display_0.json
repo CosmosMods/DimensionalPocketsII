@@ -1,0 +1,7 @@
+{
+    "parent": "cosmoslibrary:block/sides_diff",
+    "textures": {
+        "side": "dimensionalpocketsii:blocks/pocket/wall/display/energy/display_0",
+        "other": "dimensionalpocketsii:blocks/pocket/wall/wall"
+    }
+}

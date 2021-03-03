@@ -1,0 +1,84 @@
+{
+	"advancements.dimensional.materials.title": "Dimensional Materials!",
+	"advancements.dimensional.materials.desc": "Mine some Dimensional Ore.",
+	"advancements.dimensional.pockets.title": "Pockets!",
+	"advancements.dimensional.pockets.desc": "Craft a Pocket for the first time.",
+	"advancements.dimensional.nether_star.title": "Splitting the Stars",
+	"advancements.dimensional.nether_star.desc": "Split a nether star into shards.",
+	"advancements.dimensional.ingot.title": "Gearing Up!",
+	"advancements.dimensional.ingot.desc": "Obtain some Dimensional Ingots.",
+	
+	"itemGroup.dimensionalpocketsii": "Dimensional Pockets",
+	
+	"item.dimensionalpocketsii.dimensional_shard": "Dimensional Shard",
+	"item.dimensionalpocketsii.dimensional_ingot": "Dimensional Metal Ingot",
+	
+	"item.dimensionalpocketsii.dimensional_wrench": "Dimensional Wrench",
+	"item.dimensionalpocketsii.nether_star_shard": "Nether Star Shard",
+	"item.dimensionalpocketsii.dimensional_shifter": "Dimensional Shifter",
+	"item.dimensionalpocketsii.enhanced_dimensional_shifter": "Enhanced Dimensional Shifter",
+	
+	"block.dimensionalpocketsii.block_dimensional_ore": "Dimensional Ore",
+	"block.dimensionalpocketsii.block_dimensional": "Block of Dimensional Material",
+	"block.dimensionalpocketsii.block_dimensional_metal": "Block of Dimensional Metal",
+	
+	"block.dimensionalpocketsii.block_pocket": "Dimensional Pocket",
+	"block.dimensionalpocketsii.block_dimensional_core": "Dimensional Core",
+	
+	"block.dimensionalpocketsii.block_wall": "Dimensional Wall",
+	"block.dimensionalpocketsii.block_wall_edge": "Dimensional Wall Edge",
+	
+	"block.dimensionalpocketsii.block_wall_connector": "Dimensional Connector",
+	"block.dimensionalpocketsii.block_wall_charger": "Dimensional Charger",
+	"block.dimensionalpocketsii.block_wall_energy_display": "Dimensional Energy Display",
+	"block.dimensionalpocketsii.block_wall_fluid_display": "Dimensional Fluid Display",
+	
+	"command.dimshift.usage": "/dimshift <destination dimension>(As a number, Eg: 0 [Overworld])",
+	
+	"command.dimhelp.header": "--- Showing help for Dimensional Pockets ---",
+	"command.dimhelp.usage": "/dimhelp [ page ]",
+	
+	"command.recoverpocket.usage": "/recoverpocket <pocket number> (Specifies the pocket to recover) / length (This will show how many pockets exist in the registry)",
+	"command.recoverpocket.too.usage": "Pocket number specified is more than the amount of pockets in the registry.",
+	"command.recoverpocket.wrong_name": "You cannot recover this pocket as it does not belong to you.",
+	"command.recoverpocket.creative": "You must be in Creative mode to use this command.",
+	
+	"command.recoverpocket_admin.usage": "/recoverpocketadmin <pocket number> (Specifies the pocket to recover) / length (This will show how many pockets exist in the registry)",
+	"command.recoverpocket_admin.too.usage": "Pocket number specified is more than the amount of pockets in the registry.",
+	
+	"command.setspawn.usage": "/setspawn (Sets the current position you are standing to the entry point when you enter this pocket.)",
+
+	"gui.main.dimensional_pocket.name": "Dimensional Pocket",
+	"gui.main.connector.name": "Connector Configuration",
+	
+	"gui.header.allowed_players.name": "Allowed Players:",
+	"gui.header.owner.name": "Pocket Owner:",
+	"gui.header.config.name": "Configuration:",
+	"gui.header.legend.name": "Legend:",
+	"gui.header.layout.name": "Layout:",
+	"gui.header.internal.name": "Internals:",
+	"gui.comp.null_creator.name": "Null Creator!",
+	"gui.header.surrounding.name": "Surrounding:",
+	"gui.header.pocket_inv.name": "Pocket Items:",
+	
+	"gui.config.name": "Dimensional Pockets II Config",
+	"gui.done": "Done",
+	
+	"config.keep_chunks_loaded": "Keep Chunks Loaded",
+	
+	"pocket.status.locked.name": "[Locked]",
+	"pocket.status.unlocked.name": "[Unlocked]",
+	"pocket.status.locked_.name": "Pocket Locked.",
+	"pocket.status.unlocked_.name": "Pocket Unlocked.",
+	"pocket.status.is_locked.name": "This Pocket has been locked by: ",
+	"pocket.status.owner.name": "Owned by:",
+	"pocket.status.and.name": "Currently: ",
+	"pocket.status.remove_locked.name": "This Pocket is locked. You must unlock before removal.",
+	"pocket.status.remove_not.name": "Only the owner of this Pocket can remove it.",
+	"pocket.status.access_set.name": "You cannot access the settings of this pocket.",
+	"pocket.status.access_lock.name": "You cannot access the settings of this pocket.",
+	"pocket.status.creator_null.name": "The creator field is null.",
+	"pocket.status.null.name": "Pocket is null. Seek help from the Mod Creator.",
+	
+	"pocket.desc.creator.name": "Creator:"
+}

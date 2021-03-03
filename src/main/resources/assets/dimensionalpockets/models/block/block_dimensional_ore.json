@@ -1,6 +1,0 @@
-{
-    "parent": "block/cube_all",
-    "textures": {
-        "all": "dimensionalpockets:blocks/block_dimensional_ore"
-    }
-}

@@ -1,0 +1,74 @@
+#en_us
+
+#creative_tab
+itemGroup.dimensionalpocketsii=Dimensional Pockets
+
+#items
+item.dimensionalpocketsii.dimensional_shard=Dimensional Shard
+item.dimensionalpocketsii.dimensional_ingot=Dimensional Metal Ingot
+
+item.dimensionalpocketsii.dimensional_wrench=Dimensional Wrench
+
+#blocks
+block.dimensionalpocketsii.block_dimensional_ore=Dimensional Ore
+block.dimensionalpocketsii.block_dimensional=Block of Dimensional Material
+block.dimensionalpocketsii.block_dimensional_metal=Block of Dimensional Metal
+
+block.dimensionalpocketsii.block_pocket=Dimensional Pocket
+block.dimensionalpocketsii.block_dimensional_core=Dimensional Core
+
+block.dimensionalpocketsii.block_dimensional_pocket_wall=Dimensional Wall
+block.dimensionalpocketsii.block_dimensional_pocket_wall_edge=Dimensional Wall
+
+block.dimensionalpocketsii.block_dimensional_pocket_wall_connector=Dimensional Wall Connector
+block.dimensionalpocketsii.block_dimensional_pocket_wall_energy_display=Dimensional Energy Display
+block.dimensionalpocketsii.block_dimensional_pocket_wall_fluid_display=Dimensional Fluid Display
+
+
+#commands
+command.dimshift.usage=/dimshift <destination dimension>(As a number, Eg: 0 [Overworld])
+
+command.dimhelp.header=--- Showing help for Dimensional Pockets ---
+command.dimhelp.usage=/dimhelp [ page ]
+
+command.recoverpocket.usage=/recoverpocket <pocket number> (Specifies the pocket to recover) / "length" (This will show how many pockets exist in the registry)
+command.recoverpocket.too.usage=Pocket number specified is more than the amount of pockets in the registry.
+command.recoverpocket.wrong_name=You cannot recover this pocket as it does not belong to you.
+command.recoverpocket.creative=You must be in Creative mode to use this command.
+
+command.recoverpocket_admin.usage=/recoverpocketadmin <pocket number> (Specifies the pocket to recover) / "length" (This will show how many pockets exist in the registry)
+command.recoverpocket_admin.too.usage=Pocket number specified is more than the amount of pockets in the registry.
+
+command.setspawn.usage=/setspawn (Sets the current position you are standing to the entry point when you enter this pocket.)
+
+#gui
+gui.main.dimensional_pocket.name=Dimensional Pocket
+gui.main.connector.name=Connector Configuration
+
+gui.header.allowed_players.name=Allowed Players:
+gui.header.owner.name=Pocket Owner:
+gui.header.config.name=Configuration:
+gui.header.legend.name=Legend:
+gui.header.layout.name=Layout:
+gui.header.internal.name=Internals:
+gui.comp.null_creator.name=Null Creator!
+gui.header.surrounding.name=Surrounding:
+gui.header.pocket_inv.name=Pocket Items:
+
+#pocket
+pocket.status.locked.name=[Locked]
+pocket.status.unlocked.name=[Unlocked]
+pocket.status.locked_.name=Pocket Locked.
+pocket.status.unlocked_.name=Pocket Unlocked.
+pocket.status.is_locked.name=This Pocket has been locked by: 
+pocket.status.owner.name=Owned by:
+pocket.status.and.name=Currently: 
+pocket.status.remove_locked.name=This Pocket is locked. You must unlock before removal.
+pocket.status.remove_not.name=Only the owner of this Pocket can remove it.
+pocket.status.access_set.name=You cannot access the settings of this pocket.
+pocket.status.access_lock.name=You cannot access the settings of this pocket.
+pocket.status.creator_null.name=The creator field is null.
+pocket.status.cycle_side.name=Side has been cycled.
+pocket.status.null.name=Pocket is null. Seek help from the Mod Creator.
+
+pocket.desc.creator.name=Creator:

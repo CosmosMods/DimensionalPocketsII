@@ -1,0 +1,36 @@
+{
+    "parent": "block/block",
+    "ambientocclusion": false,
+    "display": {
+        "gui": {
+            "rotation": [ 30, 135, 0 ],
+            "translation": [ 0, 0, 0],
+            "scale":[ 0.625, 0.625, 0.625 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 90, 0 ],
+            "translation": [ 0, 0, 0],
+            "scale":[ 0.5, 0.5, 0.5 ]
+        }
+    },
+    "textures": {
+        "particle": "dimensionalpocketsii:blocks/pocket/mid/mid_face",
+        "frame_face": "dimensionalpocketsii:blocks/pocket/frame/frame_face_unlocked"
+    },
+    "elements": [
+        {
+            "from": [0, 0, 0],
+            "to": [16, 16, 0],
+            "faces": {
+                "north": {
+                    "uv": [0,0,16,16],
+                    "texture": "#frame_face"
+                },
+                "south": {
+                    "uv": [0,0,16,16],
+                    "texture": "#frame_face"
+                }
+            }
+        }
+    ]
+}

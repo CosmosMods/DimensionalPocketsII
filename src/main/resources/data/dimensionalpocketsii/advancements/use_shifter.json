@@ -1,0 +1,36 @@
+{
+	"parent": "dimensionalpocketsii:pocket/shifter",
+	"display": {
+		"icon": {
+			"item": "dimensionalpocketsii:dimensional_shifter"
+		},
+		"title":"The Power of The Universe!",
+		"description": "Use a Dimensional Shifter.",
+		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
+		"frame": "goal",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"use_shifter": {
+			"trigger": "dimensionalpocketsii:use_shifter",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:dimensional_shifter",
+						"count": 1
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"use_shifter"
+		]
+	],
+	"rewards": {
+		"experience": 50
+	}
+}

@@ -1,0 +1,6 @@
+{
+    "parent": "cosmoslibrary:block/modblock",
+    "textures": {
+        "all": "dimensionalpocketsii:blocks/pocket/wall/display/energy/display_26"
+    }
+}

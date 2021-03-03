@@ -1,0 +1,36 @@
+{
+	"parent": "dimensionalpocketsii:pocket/shifter",
+	"display": {
+		"icon": {
+			"item": "dimensionalpocketsii:enhanced_dimensional_shifter"
+		},
+		"title":"Unlimited Powaaaa!",
+		"description": "Upgrade a Dimensional Shifter.",
+		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
+		"frame": "challenge",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"enhanced_shifter": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:enhanced_dimensional_shifter",
+						"count": 1
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"enhanced_shifter"
+		]
+	],
+	"rewards": {
+		"experience": 100
+	}
+}

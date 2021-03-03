@@ -1,0 +1,31 @@
+{
+	"display": {
+		"icon": {
+			"item": "dimensionalpocketsii:block_pocket"
+		},
+		"title": "DimensionalPockets!",
+		"description": "Welcome to Dimensional Pockets!",
+		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
+		"frame": "task",
+		"show_toast": false,
+		"announce_to_chat": false,
+		"hidden": false
+	},
+	"criteria": {
+		"craft": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "minecraft:crafting_table"
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"craft"
+		]
+	]
+}
