@@ -33,32 +33,3 @@ logoFile="dimensional_logo.png" #optional
     versionRange="[1.16.3]"
     ordering="NONE"
     side="BOTH"
-
-#cosmoslibrary
-modLoader="javafml" #mandatory
-loaderVersion="[34,)" #mandatory
-license="All Rights Reserved" #mandatory
-logoFile="cosmos_logo.png" #optional
-
-[[mods]] #mandatory
-	modId="cosmoslibrary" #mandatory
-	version="1.16.3-3.0.10" #mandatory
-	displayName="Cosmos Library" #mandatory
-	displayURL="https://www.curseforge.com/minecraft/mc-mods/cosmoslibrary" #optional
-	authors="TheCosmicNebula" #optional
-	description='''
-    Library and API for TheCosmicNebula's Mods.
-	'''
-
-[[dependencies.cosmoslibrary]] #optional
-    modId="forge" #mandatory
-    mandatory=true #mandatory
-    versionRange="[34,)" #mandatory
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.cosmoslibrary]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.16.3]"
-    ordering="NONE"
-    side="BOTH"
