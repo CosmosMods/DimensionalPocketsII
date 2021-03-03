@@ -37,6 +37,7 @@ If you wish to view the original DimensionalPockets code, please refer to [NPExc
 ## Development Team:
 - TheCosmicNebula (Main Author)
 - Rechalow (Chinese Translation)
+- 343GuiltySpark (Mod Bug Testing)
 
 ### Development Team Applications:
  - Please feel free to email: thecosmicnebula_@outlook.com
