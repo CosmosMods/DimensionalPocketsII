@@ -18,7 +18,14 @@
 	"item.dimensionalpocketsii.dimensional_shifter": "Dimensional Shifter",
 	"item.dimensionalpocketsii.enhanced_dimensional_shifter": "Enhanced Dimensional Shifter",
 	
+	"item.dimensionalpocketsii.dimensional_sword": "Dimensional Sword",
+	"item.dimensionalpocketsii.dimensional_pickaxe": "Dimensional Pickaxe",
+	"item.dimensionalpocketsii.dimensional_axe": "Dimensional Ace",
+	"item.dimensionalpocketsii.dimensional_shovel": "Dimensional Shovel",
+	
 	"block.dimensionalpocketsii.block_dimensional_ore": "Dimensional Ore",
+	"block.dimensionalpocketsii.block_dimensional_ore_nether": "Nether Dimensional Ore",
+	"block.dimensionalpocketsii.block_dimensional_ore_end": "End Dimensional Ore",
 	"block.dimensionalpocketsii.block_dimensional": "Block of Dimensional Material",
 	"block.dimensionalpocketsii.block_dimensional_metal": "Block of Dimensional Metal",
 	

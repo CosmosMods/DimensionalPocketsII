@@ -2,7 +2,7 @@ package com.tcn.dimensionalpocketsii.pocket.core.shift;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
+import com.tcn.cosmoslibrary.impl.colour.ChatColour;
 import com.tcn.dimensionalpocketsii.core.management.CoreSoundHandler;
 
 import net.minecraft.util.SoundEvent;
@@ -11,9 +11,9 @@ import net.minecraft.util.text.StringTextComponent;
 
 public enum EnumShiftDirection {
 	
-	ENTER(0, "enter", "Leave", "Leaving", "pocket.direction.enter", TextHelper.BOLD + TextHelper.GREEN, CoreSoundHandler.GENERIC.PORTAL_IN),
-	LEAVE(1, "leave", "Enter", "Entering", "pocket.direction.leave", TextHelper.BOLD + TextHelper.ORANGE, CoreSoundHandler.GENERIC.PORTAL_OUT),
-	UNKNOWN(-1, "unknown", "Unknown", "Unknown", "pocket.direction.unknown", TextHelper.RED, null);
+	ENTER(0, "enter", "Leave", "Leaving", "pocket.direction.enter", ChatColour.BOLD + ChatColour.GREEN, CoreSoundHandler.GENERIC.PORTAL_IN),
+	LEAVE(1, "leave", "Enter", "Entering", "pocket.direction.leave", ChatColour.BOLD + ChatColour.ORANGE, CoreSoundHandler.GENERIC.PORTAL_OUT),
+	UNKNOWN(-1, "unknown", "Unknown", "Unknown", "pocket.direction.unknown", ChatColour.RED, null);
 	
 	private final int index;
 	private final String name;
@@ -75,7 +75,7 @@ public enum EnumShiftDirection {
 	}
 	
 	public String getChatStringForDirection() {
-		return TextHelper.TEAL + "You are now: " + this.display_colour + this.use_name + TextHelper.END + TextHelper.TEAL + " the Pocket Dimension." + TextHelper.END;
+		return ChatColour.CYAN + "You are now: " + this.display_colour + this.use_name + ChatColour.END + ChatColour.CYAN + " the Pocket Dimension." + ChatColour.END;
 	}
 
 	public ITextComponent getChatComponentForDirection() {

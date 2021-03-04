@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.context.CommandContextBuilder;
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
+import com.tcn.cosmoslibrary.impl.colour.ChatColour;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.core.management.CoreConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.CoreDimensionManager;
@@ -14,10 +14,15 @@ import com.tcn.dimensionalpocketsii.pocket.core.block.BlockWallEdge;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
@@ -25,9 +30,12 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -93,13 +101,13 @@ public class PocketEventManager {
 							if (((PlayerEntity) entity).isCreative()) {
 								event.setCanceled(false);
 							}  else if (!CoreConfigurationManager.getInstance().getCanTeleport()) {
-								entity.sendMessage(new StringTextComponent(TextHelper.RED + "You cannot use this command inside a Pocket."), UUID.randomUUID());
+								entity.sendMessage(new StringTextComponent(ChatColour.RED + "You cannot use this command inside a Pocket."), UUID.randomUUID());
 								event.setCanceled(true);
 							}
 						} 
 						
 						else if (command.contains("kill")) {
-							entity.sendMessage(new StringTextComponent(TextHelper.RED + "You cannot use this command inside a Pocket."), UUID.randomUUID());
+							entity.sendMessage(new StringTextComponent(ChatColour.RED + "You cannot use this command inside a Pocket."), UUID.randomUUID());
 							event.setCanceled(true);
 						}
 					}
@@ -113,13 +121,15 @@ public class PocketEventManager {
 		Entity entity = event.getEntity();
 		
 		if (entity != null) {
-			World world = entity.getEntityWorld();
-			RegistryKey<World> dimension = world.getDimensionKey();
-			
-			if (world != null) {
-				if (dimension.equals(CoreDimensionManager.POCKET_WORLD)) {
-					event.setDistance(0.0F);
-					event.setCanceled(true);
+			if (entity instanceof PlayerEntity) {
+				World world = entity.getEntityWorld();
+				RegistryKey<World> dimension = world.getDimensionKey();
+				
+				if (world != null) {
+					if (dimension.equals(CoreDimensionManager.POCKET_WORLD)) {
+						event.setDistance(0.0F);
+						event.setCanceled(true);
+					}
 				}
 			}
 		}
@@ -130,19 +140,21 @@ public class PocketEventManager {
 		Entity entity = event.getEntityLiving();
 		
 		if (entity != null) {
-			World world = entity.getEntityWorld();
-			RegistryKey<World> dimension = world.getDimensionKey();
-			
-			if (world != null) {
-				if (dimension.equals(CoreDimensionManager.POCKET_WORLD)) {
-					if (entity instanceof PlayerEntity) {
-						if (entity.getEntityWorld().getDifficulty() == Difficulty.PEACEFUL) {
-							event.setCanceled(true);
+			if (entity instanceof PlayerEntity) {
+				World world = entity.getEntityWorld();
+				RegistryKey<World> dimension = world.getDimensionKey();
+				
+				if (world != null) {
+					if (dimension.equals(CoreDimensionManager.POCKET_WORLD)) {
+						if (entity instanceof PlayerEntity) {
+							if (entity.getEntityWorld().getDifficulty() == Difficulty.PEACEFUL) {
+								event.setCanceled(true);
+							} else {
+								event.setCanceled(false);
+							}
 						} else {
 							event.setCanceled(false);
 						}
-					} else {
-						event.setCanceled(false);
 					}
 				}
 			}
@@ -184,12 +196,52 @@ public class PocketEventManager {
 						if(entity.getEntityWorld().getDifficulty() == Difficulty.PEACEFUL) {
 							((ServerPlayerEntity) entity).setHealth(((PlayerEntity) entity).getMaxHealth());
 							event.setCanceled(true);
-						} else {
-							((ServerPlayerEntity) entity).func_242111_a(World.OVERWORLD, null, 0.0F, true, true);
-							event.setCanceled(false);
 						}
 					}
 				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntitySpawnEvent(EntityJoinWorldEvent event) {
+		Entity entity = event.getEntity();
+		EntityType<?> entity_type = entity.getType();
+		World world = entity.getEntityWorld();
+		RegistryKey<World> dimension = world.getDimensionKey();
+		
+		if (dimension.equals(CoreDimensionManager.POCKET_WORLD)) {
+			if (entity_type.equals(EntityType.ELDER_GUARDIAN)) {
+				event.setCanceled(true);
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityMountEvent(LivingEntityUseItemEvent event) {
+		Entity entity = event.getEntity();
+		RegistryKey<World> dimension = entity.getEntityWorld().getDimensionKey();
+		
+		ItemStack stack = event.getItem();
+		Item item = stack.getItem();
+		
+		if (item.equals(Items.CHORUS_FRUIT)) {
+			if (entity instanceof PlayerEntity) {
+				if (dimension.equals(CoreDimensionManager.POCKET_WORLD)) {
+					event.setCanceled(true);
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityMountEvent(EntityMountEvent event) {
+		Entity entity = event.getEntity();
+		RegistryKey<World> dimension = entity.getEntityWorld().getDimensionKey();
+		
+		if (entity instanceof PlayerEntity) {
+			if (dimension.equals(CoreDimensionManager.POCKET_WORLD)) {
+				event.setCanceled(true);
 			}
 		}
 	}
@@ -210,7 +262,9 @@ public class PocketEventManager {
 					if (!CoreConfigurationManager.getInstance().getCanDestroyWalls()) {
 						if (block.equals(ModBusManager.BLOCK_WALL) 
 								|| block.equals(ModBusManager.BLOCK_WALL_EDGE)
-									|| block.equals(ModBusManager.BLOCK_WALL_CONNECTOR)) {
+									|| block.equals(ModBusManager.BLOCK_WALL_CONNECTOR)
+										|| block.equals(ModBusManager.BLOCK_WALL_CHARGER)
+											|| block.equals(Blocks.BEDROCK)) {
 										//|| event.getWorld().getBlockState(event.getPos()).getBlock() == BlockManager.BLOCK_DIMENSIONAL_POCKET_WALL_ENERGY_DISPLAY
 											//|| event.getWorld().getBlockState(event.getPos()).getBlock() == BlockManager.BLOCK_DIMENSIONAL_POCKET_WALL_FLUID_DISPLAY) {
 							

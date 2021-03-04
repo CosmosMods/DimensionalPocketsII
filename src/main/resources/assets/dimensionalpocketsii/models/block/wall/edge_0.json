@@ -2,12 +2,12 @@
     "__comment": "The model for a block that is not being connected to on any angle.",
     "parent": "cosmoslibrary:block/tinted_cube",
     "textures": {
-		"particle": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/normal",
-        "down": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/normal",
-		"up": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/normal",
-		"north": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/normal",
-		"south": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/normal",
-		"west": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/normal",
-		"east": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/normal"
+		"particle": "dimensionalpocketsii:blocks/wall/edge_connected/normal",
+        "down": "dimensionalpocketsii:blocks/wall/edge_connected/normal",
+		"up": "dimensionalpocketsii:blocks/wall/edge_connected/normal",
+		"north": "dimensionalpocketsii:blocks/wall/edge_connected/normal",
+		"south": "dimensionalpocketsii:blocks/wall/edge_connected/normal",
+		"west": "dimensionalpocketsii:blocks/wall/edge_connected/normal",
+		"east": "dimensionalpocketsii:blocks/wall/edge_connected/normal"
     }
 }

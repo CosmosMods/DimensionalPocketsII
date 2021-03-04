@@ -2,8 +2,8 @@ package com.tcn.dimensionalpocketsii.pocket.core.block;
 
 import javax.annotation.Nonnull;
 
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
 import com.tcn.cosmoslibrary.impl.block.CosmosBlockConnectedUnbreakable;
+import com.tcn.cosmoslibrary.impl.colour.ChatColour;
 import com.tcn.cosmoslibrary.impl.util.CosmosChatUtil;
 import com.tcn.dimensionalpocketsii.core.management.CoreConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.CoreDimensionManager;
@@ -38,8 +38,6 @@ public class BlockWallEdge extends CosmosBlockConnectedUnbreakable {
 		if (PocketUtil.isDimensionEqual(worldIn, CoreDimensionManager.POCKET_WORLD)) {
 			Pocket pocket = PocketRegistryManager.getPocketFromChunk(PocketUtil.scaleToChunkPos(pos));
 			
-			System.out.println(PocketRegistryManager.getPocketMap());
-			
 			if (!worldIn.isRemote) {
 				if (pocket != null) {
 					if (playerIn.isSneaking()) {
@@ -51,7 +49,7 @@ public class BlockWallEdge extends CosmosBlockConnectedUnbreakable {
 						} 
 					}
 				} else {
-					CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.RED + "Unable to shift to complete action. Pocket is null.");
+					CosmosChatUtil.sendPlayerMessage(playerIn, false, ChatColour.RED + "Unable to shift to complete action. Pocket is null.");
 					return ActionResultType.FAIL;
 				}
 			}
@@ -61,7 +59,7 @@ public class BlockWallEdge extends CosmosBlockConnectedUnbreakable {
 	
 	@Override
 	public boolean canEntityDestroy(BlockState state, IBlockReader world, BlockPos pos, Entity entity) {
-		return CoreConfigurationManager.getInstance().getCanDestroyWalls();
+		return false;
     }
 	
 	@Override

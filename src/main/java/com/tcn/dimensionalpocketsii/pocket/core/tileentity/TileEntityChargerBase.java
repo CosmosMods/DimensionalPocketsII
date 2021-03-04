@@ -1,6 +1,6 @@
 package com.tcn.dimensionalpocketsii.pocket.core.tileentity;
 
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
+import com.tcn.cosmoslibrary.impl.colour.ChatColour;
 import com.tcn.cosmoslibrary.impl.interfaces.block.IBlockInteract;
 import com.tcn.cosmoslibrary.impl.interfaces.block.IBlockNotifier;
 import com.tcn.cosmoslibrary.impl.util.CosmosChatUtil;
@@ -86,7 +86,6 @@ public abstract class TileEntityChargerBase extends TileEntity implements IBlock
 	public void read(BlockState state, CompoundNBT compound) {
 		if (PocketUtil.hasPocketKey(compound)) {
 			this.pocket = Pocket.readFromNBT(compound);
-			
 		}
 	}
 	
@@ -96,7 +95,7 @@ public abstract class TileEntityChargerBase extends TileEntity implements IBlock
 	@Override
 	public void handleUpdateTag(BlockState state, CompoundNBT tag) {
 		if (PocketUtil.hasPocketKey(tag)) {
-			this.pocket = Pocket.readFromNBT(tag);
+			//this.pocket = Pocket.readFromNBT(tag);
 		}
 	}
 	
@@ -108,7 +107,7 @@ public abstract class TileEntityChargerBase extends TileEntity implements IBlock
 		CompoundNBT tag = new CompoundNBT();
 		
 		if (this.getPocket() != null) {
-			this.getPocket().writeToNBT(tag);
+			//this.getPocket().writeToNBT(tag);
 		}
 		
 		return tag;
@@ -264,8 +263,6 @@ public abstract class TileEntityChargerBase extends TileEntity implements IBlock
 						if (this.getStackInSlot(0).isEmpty()) {
 							this.setInventorySlotContents(0, stack.copy());
 							
-							System.out.println(stack.getItem() + " || " + this.getStackInSlot(0).getItem());
-							
 							playerIn.setHeldItem(hand, ItemStack.EMPTY);
 							
 							this.setShifterUses();
@@ -289,7 +286,7 @@ public abstract class TileEntityChargerBase extends TileEntity implements IBlock
 					}
 				}
 			} else {
-				CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.RED + "Unable to shift to complete action. Pocket is null.");
+				CosmosChatUtil.sendPlayerMessage(playerIn, false, ChatColour.RED + "Unable to shift to complete action. Pocket is null.");
 				
 				return ActionResultType.FAIL;
 			}

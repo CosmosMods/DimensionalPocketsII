@@ -1,7 +1,8 @@
 package com.tcn.dimensionalpocketsii.pocket.core.tileentity;
 
 import com.tcn.cosmoslibrary.client.impl.IClientUpdatedTile;
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
+import com.tcn.cosmoslibrary.impl.colour.ChatColour;
+import com.tcn.cosmoslibrary.impl.colour.EnumMinecraftColour;
 import com.tcn.cosmoslibrary.impl.enums.EnumConnectionType;
 import com.tcn.cosmoslibrary.impl.enums.EnumSideState;
 import com.tcn.cosmoslibrary.impl.interfaces.IFluidStorage;
@@ -28,6 +29,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -77,11 +79,11 @@ public abstract class TileEntityConnectorBase extends TileEntity implements IBlo
 		
 		//FMLCommonHandler.instance().getMinecraftServerInstance().saveAllWorlds(false);
 	}
-
-	@SuppressWarnings("unused")
+	
 	@Override
 	public void tick() {
 		//TileEntity tile = this.world.getTileEntity(this.getPos());
+		/**
 		if (PocketUtil.isDimensionEqual(this.world, CoreDimensionManager.POCKET_WORLD)) {
 			for (Direction c : Direction.values()) {
 				//TileEntity tile_other = this.world.getTileEntity(this.getPos().offset(c));
@@ -105,12 +107,12 @@ public abstract class TileEntityConnectorBase extends TileEntity implements IBlo
 						}
 					}
 				}*/
-			}
+			/*}
 			
 			this.setSurroundingStacks();
 			this.setStacks();
 			this.checkFluidSlots();
-		}
+		}*/
 	}
 	
 	@Override
@@ -122,10 +124,6 @@ public abstract class TileEntityConnectorBase extends TileEntity implements IBlo
 	public void setConnectionType(EnumConnectionType type, boolean update) {
 		this.TYPE = type;
 		
-		if (this.getPocket() != null) {
-			this.getPocket().updateConnectorInArray(this.getPos(), this.getConnectionType());
-		}
-		
 		this.sendUpdates(update);
 	}
 	
@@ -133,10 +131,6 @@ public abstract class TileEntityConnectorBase extends TileEntity implements IBlo
 	public void cycleConnectionType(boolean update) {
 		EnumConnectionType next_state = TYPE.getNextState();
 		this.TYPE = next_state;
-		
-		if (this.getPocket() != null) {
-			this.getPocket().updateConnectorInArray(this.getPos(), this.getConnectionType());
-		}
 		
 		this.sendUpdates(update);
 	}
@@ -347,7 +341,7 @@ public abstract class TileEntityConnectorBase extends TileEntity implements IBlo
 		BlockState state = world.getBlockState(pkt.getPos());
 		
 		this.handleUpdateTag(state, tag_);
-		this.sendUpdates(true);
+		//this.sendUpdates(true);
 	}
 	
 	
@@ -544,14 +538,15 @@ public abstract class TileEntityConnectorBase extends TileEntity implements IBlo
 		this.markDirty();
 		
 		if (PocketUtil.isDimensionEqual(worldIn, CoreDimensionManager.POCKET_WORLD)) {
-			Pocket pocket = this.getPocket();
+			Pocket pocketIn = this.getPocket();
 			
-			if (pocket != null) {
+			if (pocketIn != null) {
 				if (!playerIn.isSneaking()) {
 					if (CosmosUtil.isHoldingHammer(playerIn)) {
 						this.cycleSide(Direction.UP, true);
 						
-						CosmosChatUtil.sendPlayerMessage(playerIn, true, TextHelper.LIGHT_GRAY + TextHelper.BOLD + I18n.format("pocket.status.cycle_side.name") + this.getSide(hit.getFace()).getTextColour() + TextHelper.BOLD + " [" + this.getSide(hit.getFace()).getDisplayName() + "]");
+						CosmosChatUtil.sendPlayerMessage(playerIn, true, ChatColour.LIGHT_GRAY + ChatColour.BOLD + I18n.format("pocket.status.cycle_side.name") + this.getSide(hit.getFace()).getTextColour() + ChatColour.BOLD + " [" + this.getSide(hit.getFace()).getDisplayName() + "]");
+						return ActionResultType.SUCCESS;
 					}
 					
 					else if (playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
@@ -562,14 +557,41 @@ public abstract class TileEntityConnectorBase extends TileEntity implements IBlo
 							
 							return ActionResultType.SUCCESS;
 						} else {
-							CosmosChatUtil.sendPlayerMessage(playerIn, true,TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.access_set.name"));
+							CosmosChatUtil.sendPlayerMessage(playerIn, true,ChatColour.RED + ChatColour.BOLD + I18n.format("pocket.status.access_set.name"));
 							
 							return ActionResultType.FAIL;
 						}
 					}
+					
+					else if (!playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {						
+						ItemStack stack = playerIn.getHeldItem(Hand.MAIN_HAND);
+						
+						if (!stack.getItem().equals(ModBusManager.DIMENSIONAL_SHARD)) {
+							DyeColor stack_color = DyeColor.getColor(stack);
+							
+							if (stack_color != null) {
+								int id = stack_color.getId();
+								
+								EnumMinecraftColour colour = EnumMinecraftColour.byIndex(id);
+								int decimal_colour = colour.getDecimal();
+								String colour_name = colour.getColouredName();
+								
+								pocketIn.setDisplayColour(decimal_colour);
+								CosmosChatUtil.sendPlayerMessage(playerIn, false, "Pocket colour changed to: " + colour_name);
+								
+								worldIn.notifyBlockUpdate(pos, state, worldIn.getBlockState(pos).getBlockState().getBlock().getDefaultState(), 3);
+								
+								return ActionResultType.SUCCESS;
+							}
+						} else if (stack.getItem().equals(ModBusManager.DIMENSIONAL_SHARD)) {
+							pocketIn.setDisplayColour(EnumMinecraftColour.POCKET_PURPLE.getDecimal());
+							CosmosChatUtil.sendPlayerMessage(playerIn, false, "Pocket colour changed to: " + EnumMinecraftColour.POCKET_PURPLE.getColouredName());
+							
+							return ActionResultType.SUCCESS;
+						}
+					}
 				} else {
 					if (CosmosUtil.isHoldingHammer(playerIn)) {
-						pocket.removeConnector(pos);
 						worldIn.setBlockState(pos, ModBusManager.BLOCK_WALL.getDefaultState());
 						worldIn.removeTileEntity(pos);
 						
@@ -578,14 +600,13 @@ public abstract class TileEntityConnectorBase extends TileEntity implements IBlo
 					
 					else if (!CosmosUtil.isHoldingHammer(playerIn) && playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
 						if (!worldIn.isRemote) {
-							pocket.shift(playerIn, EnumShiftDirection.LEAVE, null, null);
+							pocketIn.shift(playerIn, EnumShiftDirection.LEAVE, null, null);
 							return ActionResultType.SUCCESS;
 						}
 					}
 				}
 			} else {
-				CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.RED + "Unable to shift to complete action. Pocket is null.");
-				
+				CosmosChatUtil.sendPlayerMessage(playerIn, false, ChatColour.RED + "Unable to shift to complete action. Pocket is null.");
 				return ActionResultType.FAIL;
 			}
 		}

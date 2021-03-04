@@ -29,7 +29,7 @@ public class CoreConfigurationManager {
 	private final BooleanValue keep_chunks_loaded;
 	private final BooleanValue can_destroy_walls;
 	private final BooleanValue can_teleport;
-	private final BooleanValue system_message;
+	private final BooleanValue debug_message;
 	
 	private final BooleanValue encrypt_files;
 	private final BooleanValue cancel_commands;
@@ -52,8 +52,8 @@ public class CoreConfigurationManager {
 				.define("cancel_commands", true);
 		
 		internal_height = builder
-				.comment("The Internal height of pockets. Can only be between 15 - 255")
-				.defineInRange("internal_height", 15, 15, 255);
+				.comment("The Internal height of pockets. Can only be between 15 - 253")
+				.defineInRange("internal_height", 15, 15, 253);
 		
 		internal_replace = builder
 				.comment("Whether if reducing the Internal Height of Pocket that is larger will make it smaller.")
@@ -65,9 +65,9 @@ public class CoreConfigurationManager {
 					.comment("Whether you can use the /tp command to teleport into and out of the Pocket Dimension")
 					.define("can_teleport", false);
 		
-		system_message = builder
+		debug_message = builder
 					.comment("Whether DimensionalPockets can send system messages")
-					.define("system_message", true);
+					.define("debug_message", false);
 		
 		encrypt_files = builder
 				.comment("Whether pocket data files are encrypted or not")
@@ -117,12 +117,12 @@ public class CoreConfigurationManager {
 		this.can_teleport.set(value);
 	}
 	
-	public boolean getSystemMessage() {
-		return system_message.get();
+	public boolean getDebugMessage() {
+		return debug_message.get();
 	}
 	
-	public void setSystemMessage(boolean value) {
-		this.system_message.set(value);
+	public void setDebugMessage(boolean value) {
+		this.debug_message.set(value);
 	}
 	
 	public boolean getCancelCommands() {

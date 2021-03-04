@@ -13,10 +13,10 @@
         }
     },
     "textures": {
-        "core_face": "dimensionalpocketsii:blocks/pocket/core/core_face",
-        "core_face_inside": "dimensionalpocketsii:blocks/pocket/core/core_face_inside",
-        "box_inner": "dimensionalpocketsii:blocks/pocket/star_face",
-        "particle": "dimensionalpocketsii:blocks/block_dimensional"
+        "outside": "dimensionalpocketsii:blocks/pocket/core/normal",
+        "inside": "dimensionalpocketsii:blocks/pocket/core/inside",
+        "core": "dimensionalpocketsii:blocks/pocket/core/core",
+        "particle": "dimensionalpocketsii:blocks/pocket/core/normal"
     },
     "elements": [
         {
@@ -25,11 +25,12 @@
             "faces": {
                 "north": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face"
+                    "texture": "#outside", 
+                    "tintindex": 0
                 },
                 "south": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face_inside"
+                    "texture": "#inside"
                 }
             }
         },
@@ -39,11 +40,12 @@
             "faces": {
                 "north": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face_inside"
+                    "texture": "#inside"
                 },
                 "south": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face"
+                    "texture": "#outside", 
+                    "tintindex": 0
                 }
             }
         },
@@ -54,11 +56,12 @@
             "faces": {
                "up": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face_inside"
+                    "texture": "#inside"
                 },
                 "down": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face"
+                    "texture": "#outside", 
+                    "tintindex": 0
                 }
             }
         },
@@ -68,11 +71,12 @@
             "faces": {
                 "up": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face"
+                    "texture": "#outside", 
+                    "tintindex": 0
                 },
                 "down": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face_inside"
+                    "texture": "#inside"
                 }
             }
         },
@@ -83,11 +87,12 @@
             "faces": {
                 "east": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face_inside"
+                    "texture": "#inside"
                 },
                 "west": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face"
+                    "texture": "#outside", 
+                    "tintindex": 0
                 }
             }
         },
@@ -97,11 +102,12 @@
             "faces": {
                "east": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face"
+                    "texture": "#outside", 
+                    "tintindex": 0
                 },
                 "west": {
                     "uv": [3,3,13,13],
-                    "texture": "#core_face_inside"
+                    "texture": "#inside"
                 }
             }
         },
@@ -112,27 +118,27 @@
             "faces": {
                "up": {
                     "uv": [6,6,10,10],
-                    "texture": "#box_inner"
+                    "texture": "#core"
                 },
                 "down": {
                     "uv": [6,6,10,10],
-                    "texture": "#box_inner"
+                    "texture": "#core"
                 },
                 "north": {
                     "uv": [6,6,10,10],
-                    "texture": "#box_inner"
+                    "texture": "#core"
                 },
                 "south": {
                     "uv": [6,6,10,10],
-                    "texture": "#box_inner"
+                    "texture": "#core"
                 },
                 "east": {
                     "uv": [6,6,10,10],
-                    "texture": "#box_inner"
+                    "texture": "#core"
                 },
                 "west": {
                     "uv": [6,6,10,10],
-                    "texture": "#box_inner"
+                    "texture": "#core"
                 }
             }
         }

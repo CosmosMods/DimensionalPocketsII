@@ -6,6 +6,7 @@ import com.tcn.dimensionalpocketsii.pocket.core.tileentity.TileEntityPocket;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -106,6 +107,11 @@ public class BlockPocket extends BlockRemovableNBT {
 			((TileEntityPocket) tileEntity).neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
 		}
 	}
+
+	@Override
+	public boolean canEntityDestroy(BlockState state, IBlockReader world, BlockPos pos, Entity entity) {
+		return false;
+    }
 	
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {

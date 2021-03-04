@@ -58,7 +58,7 @@ public final class ScreenPocketConfig extends Screen {
 				));
 		this.optionsRowList.addOption(new SliderPercentageOption(
 				"Internal Pocket Height",
-				15, 255, 1.0F,
+				15, 253, 1.0F,
 				unused -> (double) CoreConfigurationManager.getInstance().getInternalHeight(),
 				(unused, newValue) -> CoreConfigurationManager.getInstance().setInternalHeight(newValue.intValue()),
 				(gs, option) -> new StringTextComponent("Internal Pocket Height: [" + option.get(gs) + "]")
@@ -77,9 +77,9 @@ public final class ScreenPocketConfig extends Screen {
 				(unused, newValue) -> CoreConfigurationManager.getInstance().setCanTeleport(newValue)
 				));
 		this.optionsRowList.addOption(new BooleanOption(
-				"System Messages",
-				unused -> CoreConfigurationManager.getInstance().getSystemMessage(),
-				(unused, newValue) -> CoreConfigurationManager.getInstance().setSystemMessage(newValue)
+				"Debug Messages",
+				unused -> CoreConfigurationManager.getInstance().getDebugMessage(),
+				(unused, newValue) -> CoreConfigurationManager.getInstance().setDebugMessage(newValue)
 				));
 		
 		

@@ -1,6 +1,7 @@
 package com.tcn.dimensionalpocketsii.pocket.core.tileentity;
 
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
+import com.tcn.cosmoslibrary.impl.colour.ChatColour;
+import com.tcn.cosmoslibrary.impl.colour.EnumMinecraftColour;
 import com.tcn.cosmoslibrary.impl.enums.EnumSideState;
 import com.tcn.cosmoslibrary.impl.interfaces.block.IBlockInteract;
 import com.tcn.cosmoslibrary.impl.interfaces.block.IBlockNotifier;
@@ -23,6 +24,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -44,7 +46,7 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 	private EnumSideState[] SIDE_STATE_ARRAY = EnumSideState.getStandardArray();
 	
 	@SuppressWarnings("unused")
-	private Pocket pocket;
+	private Pocket pocket_nbt;
 	
 	public TileEntityPocketBase(TileEntityType<?> type) {
 		super(type);
@@ -149,7 +151,7 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 			this.getPocket().writeToNBT(compound);
 			
 			if (!this.world.isRemote) {
-				this.pocket = this.getPocket();
+				this.pocket_nbt = this.getPocket();
 			}
 		}
 		
@@ -173,7 +175,7 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 		}
 		
 		if (PocketUtil.hasPocketKey(compound)) {
-			this.pocket = Pocket.readFromNBT(compound);
+			this.pocket_nbt = Pocket.readFromNBT(compound);
 		}
 		
 		String tempString = compound.getString(TAG_CUSTOM_DP_NAME);
@@ -196,7 +198,7 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 	@Override
 	public void handleUpdateTag(BlockState state, CompoundNBT tag) {
 		if (PocketUtil.hasPocketKey(tag)) {
-			this.pocket = Pocket.readFromNBT(tag);
+			this.pocket_nbt = Pocket.readFromNBT(tag);
 		}
 	}
 	
@@ -233,28 +235,20 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 	
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
-		if (playerIn.isSneaking()) {
-			if (playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
-				Pocket pocket = this.getPocket();
+		Pocket pocketIn = this.getPocket();
+		
+		if (pocketIn != null) {
+			if (playerIn.isSneaking()) {
+				if (playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
+					
+					pocketIn.shift(playerIn, EnumShiftDirection.ENTER, pos, null);
+					
+				} 
 				
-				pocket.shift(playerIn, EnumShiftDirection.ENTER, pos, null);
-				/*
-				if (pocket_ != null) {
-					if (pocket_.getCreator() == null) {
-						pocket_.setCreator(playerIn);
-						this.markDirty();
-					}
-				}
-				*/
-			} 
-			
-			else if (CosmosUtil.isHoldingHammer(playerIn)) {
-				Pocket pocket_ = this.getPocket();
-				
-				if (pocket_ != null) {
-					if (pocket_.checkIfOwner(playerIn)) {
+				else if (CosmosUtil.isHoldingHammer(playerIn)) {
+					if (pocketIn.checkIfOwner(playerIn)) {
 						if (this.getLockState()) {
-							CosmosChatUtil.sendPlayerMessage(playerIn, true, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.remove_locked.name"));
+							CosmosChatUtil.sendPlayerMessage(playerIn, true, ChatColour.RED + ChatColour.BOLD + I18n.format("pocket.status.remove_locked.name"));
 						} else {
 							//ChunkLoaderManagerRoom.removePocketFromChunkLoader(this.getPocket());
 							//ChunkLoaderManagerBlock.removePocketBlockFromChunkLoader(this.getPos());
@@ -263,40 +257,59 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 							world.setBlockState(pos, Blocks.AIR.getDefaultState());
 						}
 					} else {
-						CosmosChatUtil.sendPlayerMessage(playerIn, true, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.remove_not.name"));
+						CosmosChatUtil.sendPlayerMessage(playerIn, true, ChatColour.RED + ChatColour.BOLD + I18n.format("pocket.status.remove_not.name"));
 					}
-				}
-			}
-		} else {
-			if (playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
-				Pocket pocket_ = this.getPocket();
-				String creator = pocket_.getOwnerName();
-				String locked_comp;
+					}
+			} else {
+				if (playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
+					String creator = pocketIn.getOwnerName();
+					String locked_comp;
 
-				if (this.getLockState()) {
-					locked_comp = TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.locked.name");
-				} else {
-					locked_comp = TextHelper.GREEN + TextHelper.BOLD + I18n.format("pocket.status.unlocked.name");
-				}
+					if (this.getLockState()) {
+						locked_comp = ChatColour.RED + ChatColour.BOLD + I18n.format("pocket.status.locked.name");
+					} else {
+						locked_comp = ChatColour.GREEN + ChatColour.BOLD + I18n.format("pocket.status.unlocked.name");
+					}
 
-				CosmosChatUtil.sendPlayerMessage(playerIn, true, TextHelper.LIGHT_GRAY + TextHelper.BOLD + I18n.format("pocket.status.owner.name") + TextHelper.PURPLE + TextHelper.BOLD + " {" + creator + "} " + TextHelper.LIGHT_GRAY + TextHelper.BOLD + I18n.format("pocket.status.and.name") + locked_comp);
-				
-				return ActionResultType.SUCCESS;
-			} 
-			
-			else if (CosmosUtil.isHoldingHammer(playerIn)) {
-				Pocket pocket_ = this.getPocket();
-				
-				if (pocket_ != null) {
-					if (pocket_.checkIfOwner(playerIn)) {
+					CosmosChatUtil.sendPlayerMessage(playerIn, true, ChatColour.LIGHT_GRAY + ChatColour.BOLD + I18n.format("pocket.status.owner.name") + ChatColour.PURPLE + ChatColour.BOLD + " {" + creator + "} " + ChatColour.LIGHT_GRAY + ChatColour.BOLD + I18n.format("pocket.status.and.name") + locked_comp);
+					
+					return ActionResultType.SUCCESS;
+				} else if (CosmosUtil.isHoldingHammer(playerIn)) {
+					if (pocketIn.checkIfOwner(playerIn)) {
 						this.cycleSide(hit.getFace(), true);
 						
 						this.markDirty();
-						CosmosChatUtil.sendPlayerMessage(playerIn, true, TextHelper.LIGHT_GRAY + TextHelper.BOLD + I18n.format("pocket.status.cycle_side.name") + this.getSide(hit.getFace()).getTextColour() + TextHelper.BOLD + " [" + this.getSide(hit.getFace()).getDisplayName() + "]");
+						CosmosChatUtil.sendPlayerMessage(playerIn, true, ChatColour.LIGHT_GRAY + ChatColour.BOLD + I18n.format("pocket.status.cycle_side.name") + this.getSide(hit.getFace()).getTextColour() + ChatColour.BOLD + " [" + this.getSide(hit.getFace()).getDisplayName() + "]");
 						
 						return ActionResultType.SUCCESS;
 					} else {
-						CosmosChatUtil.sendPlayerMessage(playerIn, true, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.access_lock.name"));
+						CosmosChatUtil.sendPlayerMessage(playerIn, true, ChatColour.RED + ChatColour.BOLD + I18n.format("pocket.status.access_lock.name"));
+					}
+				} else if (!playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
+					ItemStack stack = playerIn.getHeldItem(Hand.MAIN_HAND);
+					
+					if (!stack.getItem().equals(ModBusManager.DIMENSIONAL_SHARD)) {
+						DyeColor stack_color = DyeColor.getColor(stack);
+						
+						if (stack_color != null) {
+							int id = stack_color.getId();
+							
+							EnumMinecraftColour colour = EnumMinecraftColour.byIndex(id);
+							int decimal_colour = colour.getDecimal();
+							String colour_name = colour.getColouredName();
+							
+							pocketIn.setDisplayColour(decimal_colour);
+							CosmosChatUtil.sendPlayerMessage(playerIn, false, "Pocket colour changed to: " + colour_name);
+							
+							worldIn.notifyBlockUpdate(pos, state, worldIn.getBlockState(pos).getBlockState().getBlock().getDefaultState(), 3);
+							
+							return ActionResultType.SUCCESS;
+						}
+					} else if (stack.getItem().equals(ModBusManager.DIMENSIONAL_SHARD)) {
+						pocketIn.setDisplayColour(EnumMinecraftColour.POCKET_PURPLE.getDecimal());
+						CosmosChatUtil.sendPlayerMessage(playerIn, false, "Pocket colour changed to: " + EnumMinecraftColour.POCKET_PURPLE.getColouredName());
+						
+						return ActionResultType.SUCCESS;
 					}
 				}
 			}
@@ -306,25 +319,7 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 	}
 
 	@Override
-	public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn) {
-		Pocket pocket_ = this.getPocket();
-		
-		if (pocket_ != null) {
-			if (CosmosUtil.isHoldingHammer(playerIn) && playerIn.isSneaking()) {
-				if (pocket_.checkIfOwner(playerIn)) {
-					//if (!(worldIn.isRemote)) {
-						//FMLNetworkHandler.openGui(playerIn, DimensionalPockets.INSTANCE, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
-					//}
-					
-					
-				} else {
-					CosmosChatUtil.sendPlayerMessage(playerIn, true, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.access_set.name"));
-				} 		
-			}
-		} else {
-			CosmosChatUtil.sendPlayerMessage(playerIn, true, TextHelper.RED + TextHelper.BOLD + I18n.format("pocket.status.null.name"));
-		}
-	}
+	public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn) { }
 
 	@Override
 	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) { }
@@ -377,6 +372,7 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 					//NetworkHandler.sendPocketSetCreator(placer.getName(), pos);
 					//ChunkLoaderManagerRoom.addPocketToChunkLoader(pocket);
 					//ChunkLoaderManagerBlock.addPocketBlockToChunkLoader(this.getPos(), placer.dimension.getId());
+					
 				} else if (PocketUtil.isDimensionEqual(worldIn, CoreDimensionManager.POCKET_WORLD)) {
 					CompoundNBT stack_tag = stack.getTag();
 
@@ -390,12 +386,14 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 						Pocket test_pocket = PocketRegistryManager.getPocketFromChunk(chunk_pos);
 	
 						if (test_pocket != null) {
-							if (test_pocket.equals(PocketRegistryManager.getPocketFromChunk(PocketUtil.scaleToChunkPos(pos)))) {
-								if (!world.isRemote) {
-									CompatUtil.spawnStack(this.generateItemStackWithNBT(pos, chunk_pos), world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0);
+							if (test_pocket.equals(PocketRegistryManager.getPocketFromChunk(chunk_pos))) {
+								//if (!world.isRemote) {
+									CompatUtil.spawnStack(this.generateItemStackWithNBT(test_pocket, pos, chunk_pos), world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0);
 									
-									world.setBlockState(pos, Blocks.AIR.getDefaultState());
-								}
+									//world.setBlockState(pos, Blocks.AIR.getDefaultState());
+									
+									world.removeBlock(pos, false);
+								///}
 							} else {
 								PocketRegistryManager.updatePocket(chunk_pos, placer.world.getDimensionKey(), getPos());
 	
@@ -417,18 +415,16 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 	
 								Pocket pocket = this.getPocket();
 								pocket.generatePocket(((PlayerEntity) placer));
-								//NetworkHandler.sendPocketSetCreator(placer.getName(), pos);
-								//ChunkLoaderManagerRoom.addPocketToChunkLoader(pocket);
-								//ChunkLoaderManagerBlock.addPocketBlockToChunkLoader(this.getPos(), placer.dimension.getId());
 							}
+						} else {
+							Pocket pocket = this.getPocket();
+							pocket.generatePocket((PlayerEntity) placer);
 						}
 					}
 				} 
 			} else {
 				Pocket pocket = this.getPocket();
 				pocket.generatePocket((PlayerEntity) placer);
-				//ChunkLoaderManagerRoom.addPocketToChunkLoader(pocket);
-				//ChunkLoaderManagerBlock.addPocketBlockToChunkLoader(this.getPos(), placer.dimension);
 			}
 		}
 	}
@@ -456,12 +452,12 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 		chunk_tag.putInt("Z", chunkSet.getZ());
 
 		compound.put("chunk_set", chunk_tag);
-
+		
 		String creatorLore = null;
 		Pocket pocket = this.getPocket();
 		
 		if (pocket != null && pocket.getOwnerName() != null) {
-			creatorLore = TextHelper.LIGHT_BLUE + TextHelper.BOLD + I18n.format("pocket.desc.creator.name") + TextHelper.PURPLE + TextHelper.BOLD + " [" + pocket.getOwnerName() + "]";
+			creatorLore = ChatColour.LIGHT_BLUE + ChatColour.BOLD + I18n.format("pocket.desc.creator.name") + ChatColour.PURPLE + ChatColour.BOLD + " [" + pocket.getOwnerName() + "]";
 		}
 		
 		//Saves the side data to NBT
@@ -475,15 +471,17 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 			compound.put("sides", side_tag);
 		}
 		
+		compound.putInt("colour", pocket.getDisplayColour());
+		
 		itemStack.getTag().put("nbt_data", compound);
 		
 		BlockPos blockSet = PocketUtil.scaleFromChunkPos(chunkSet); 
 
-		itemStack = CompatUtil.generateItem(itemStack, customName, false, TextHelper.LIGHT_GRAY + TextHelper.BOLD + "Pocket: [" + blockSet.getX() + " | " + blockSet.getY() + " | " + blockSet.getZ() + "]", creatorLore);
+		itemStack = CompatUtil.generateItem(itemStack, customName, false, ChatColour.LIGHT_GRAY + ChatColour.BOLD + "Pocket: [" + blockSet.getX() + " | " + blockSet.getY() + " | " + blockSet.getZ() + "]", creatorLore);
 		return itemStack;
 	}
 
-	public ItemStack generateItemStackWithNBT(BlockPos posIn, ChunkPos chunkPosIn) {
+	public ItemStack generateItemStackWithNBT(Pocket pocket, BlockPos posIn, ChunkPos chunkPosIn) {
 		ItemStack item_stack = new ItemStack(ModBusManager.BLOCK_POCKET);
 
 		if (!item_stack.hasTag()) {
@@ -501,10 +499,12 @@ public abstract class TileEntityPocketBase extends TileEntity implements IBlockN
 
 		compound.put("chunk_set", chunk_tag);
 		
+		compound.putInt("colour", pocket.getDisplayColour());
+		
 		item_stack.getTag().put("nbt_data", compound);
 
 		String creatorLore = null;
-		Pocket pocket = getPocket();
+		
 		if (pocket != null && pocket.getOwnerName() != null) {
 			creatorLore = "Creator: [" + pocket.getOwnerName() + "]";
 		}

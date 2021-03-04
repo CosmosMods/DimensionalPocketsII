@@ -45,7 +45,7 @@ public class PocketRegistryManager {
 	public static void clearPocketMap() {
 		pocket_map.clear();
 		
-		System.out.println("Pocket Map Cleared");
+		DimensionalPockets.LOGGER.info("Pocket Map Cleared", PocketRegistryManager.class);
 	}
 
 	public static Pocket getPocketFromChunk(ChunkPos chunkPos) {
@@ -53,11 +53,11 @@ public class PocketRegistryManager {
 			if (pocket_map.containsKey(chunkPos)) {
 				return pocket_map.get(chunkPos);
 			} else {
-				System.out.println("Attempt to get pocket failed: chunkPos not present in backLinkMap: " + chunkPos);
+				DimensionalPockets.LOGGER.warn("Attempt to get pocket failed: chunkPos not present in backLinkMap: " + chunkPos, PocketRegistryManager.class);
 				return null;
 			}
 		} else {
-			System.out.println("Attempt to get Pocket failed: chunkPos NULL.");
+			DimensionalPockets.LOGGER.warn("Attempt to get Pocket failed: chunkPos NULL.", PocketRegistryManager.class);
 		}
 		return null;
 	}
@@ -123,7 +123,7 @@ public class PocketRegistryManager {
 	public static void updatePocket(ChunkPos chunkPos, RegistryKey<World> dimension, BlockPos pos) {
 		Pocket link = pocket_map.get(chunkPos);
 		if (link == null) {
-			System.out.println("No Pocket for chunkPos: " + chunkPos);
+			DimensionalPockets.LOGGER.info("No Pocket for chunkPos: " + chunkPos, PocketRegistryManager.class);
 			return;
 		}
 
@@ -137,16 +137,16 @@ public class PocketRegistryManager {
 		PocketConfigManager.saveBackLinkMap(pocket_map);
 		PocketConfigManager.savePocketGenParams(pocketGenParameters);
 		
-		DimensionalPockets.LOGGER.info("Pocket data saved to JSON", PocketRegistryManager.class);
-		System.out.println("Pocket data saved to JSON");
+		DimensionalPockets.LOGGER.info("Pocket data saved to JSON");
 	}
 
 	public static void loadData() {
 		pocket_map = PocketConfigManager.loadBackLinkMap();
 		pocketGenParameters = PocketConfigManager.loadPocketGenParams();
 		
-		DimensionalPockets.LOGGER.info("Pocket data loaded from JSON", PocketRegistryManager.class);
-		System.out.println("Pocket data loaded from JSON [" + pocket_map + "]");
+		if (!pocket_map.isEmpty()) {
+			DimensionalPockets.LOGGER.info("Pocket data loaded from JSON [" + pocket_map + "]");
+		}
 	}
 
 	@SuppressWarnings("unused")

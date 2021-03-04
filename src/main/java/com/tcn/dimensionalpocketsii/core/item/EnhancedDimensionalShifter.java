@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
+import com.tcn.cosmoslibrary.impl.colour.ChatColour;
 import com.tcn.cosmoslibrary.impl.util.CosmosChatUtil;
 import com.tcn.cosmoslibrary.math.ChunkPos;
 import com.tcn.dimensionalpocketsii.core.management.CoreDimensionManager;
@@ -27,6 +27,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -86,7 +87,7 @@ public class EnhancedDimensionalShifter extends Item {
 						nbt_data.put("chunk_pos", chunk_tag);
 						stack_tag.put("nbt_data", nbt_data);
 
-						if (!(PocketUtil.isDimensionEqual(world, CoreDimensionManager.POCKET_WORLD))) {
+						//if (!(PocketUtil.isDimensionEqual(world, CoreDimensionManager.POCKET_WORLD))) {
 							CompoundNBT pos_tag = new CompoundNBT();
 							pos_tag.putInt("x", player_pos.getX());
 							pos_tag.putInt("y", player_pos.getY());
@@ -94,12 +95,13 @@ public class EnhancedDimensionalShifter extends Item {
 							pos_tag.putFloat("yaw", playerIn.getPitchYaw().y);
 							pos_tag.putFloat("pitch", playerIn.getPitchYaw().x);
 							pos_tag.putBoolean("tele_to_block", true);
+							pos_tag.putString("dimension", world.getDimensionKey().getLocation().getPath());
 							
 							stack_tag.put("player_pos", pos_tag);
-						}
+						//}
 						
 						stack.setTag(stack_tag);
-						CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.PURPLE + "Dimensional Shifter Linked to Pocket:" + TextHelper.LIGHT_GRAY + " {" + x + ", " + z + "}");
+						CosmosChatUtil.sendPlayerMessage(playerIn, false, ChatColour.PURPLE + "Dimensional Shifter Linked to Pocket:" + ChatColour.LIGHT_GRAY + " {" + x + ", " + z + "}");
 						
 						playerIn.swingArm(Hand.MAIN_HAND);
 						return ActionResultType.FAIL;
@@ -168,6 +170,7 @@ public class EnhancedDimensionalShifter extends Item {
 									pos_tag.putFloat("yaw", playerIn.getPitchYaw().y);
 									pos_tag.putFloat("pitch", playerIn.getPitchYaw().x);
 									pos_tag.putBoolean("tele_to_block", tele_to_block);
+									pos_tag.putString("dimension", worldIn.getDimensionKey().getLocation().getPath());
 									
 									stack_tag.put("player_pos", pos_tag);
 									stack.setTag(stack_tag);
@@ -177,7 +180,7 @@ public class EnhancedDimensionalShifter extends Item {
 									return ActionResult.resultPass(playerIn.getHeldItem(handIn));
 								}
 							} else {
-								CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.LIGHT_RED + "Your Dimensional Shifter is out of charges!");
+								CosmosChatUtil.sendPlayerMessage(playerIn, false, ChatColour.LIGHT_RED + "Your Dimensional Shifter is out of charges!");
 							}
 						}
 					}
@@ -192,14 +195,14 @@ public class EnhancedDimensionalShifter extends Item {
 					stack.setTag(stack_tag);
 					
 					if (change) {
-						CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.PURPLE + "Mode changed: " + TextHelper.LIGHT_GRAY + "{Teleport to Block: " + TextHelper.RED + "False" + TextHelper.LIGHT_GRAY + "}");
+						CosmosChatUtil.sendPlayerMessage(playerIn, false, ChatColour.PURPLE + "Mode changed: " + ChatColour.LIGHT_GRAY + "{Teleport to Block: " + ChatColour.RED + "False" + ChatColour.LIGHT_GRAY + "}");
 					} else {
-						CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.PURPLE + "Mode changed: " + TextHelper.LIGHT_GRAY + "{Teleport to Block: " + TextHelper.GREEN + "True" + TextHelper.LIGHT_GRAY + "}");
+						CosmosChatUtil.sendPlayerMessage(playerIn, false, ChatColour.PURPLE + "Mode changed: " + ChatColour.LIGHT_GRAY + "{Teleport to Block: " + ChatColour.GREEN + "True" + ChatColour.LIGHT_GRAY + "}");
 					}
 				}
 			}
 		} else {
-			CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.LIGHT_RED + "You havent linked this Shifter to a Pocket yet!");
+			CosmosChatUtil.sendPlayerMessage(playerIn, false, ChatColour.LIGHT_RED + "You havent linked this Shifter to a Pocket yet!");
 		}
 		
 		return ActionResult.resultPass(playerIn.getHeldItem(handIn));
@@ -209,19 +212,19 @@ public class EnhancedDimensionalShifter extends Item {
 	public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		super.addInformation(stack, worldIn, tooltip, flagIn);
 		
-		if (!TextHelper.isShiftKeyDown(Minecraft.getInstance())) {
-			tooltip.add(new StringTextComponent(TextHelper.getInfoText(this.info)));
+		if (!ChatColour.isShiftKeyDown(Minecraft.getInstance())) {
+			tooltip.add(new StringTextComponent(ChatColour.getInfoText(this.info)));
 			
-			if (TextHelper.displayShiftForDetail) {
-				tooltip.add(new StringTextComponent(TextHelper.shiftForMoreDetails()));
+			if (ChatColour.displayShiftForDetail) {
+				tooltip.add(new StringTextComponent(ChatColour.shiftForMoreDetails()));
 			}
 		} else {
-			tooltip.add(new StringTextComponent(TextHelper.getDescOneText(shift_desc_one)));
-			tooltip.add(new StringTextComponent(TextHelper.getDescTwoText(shift_desc_two)));
-			tooltip.add(new StringTextComponent(TextHelper.getDescThreeText(shift_desc_three)));
-			tooltip.add(new StringTextComponent(TextHelper.ORANGE + limitation + TextHelper.END));
+			tooltip.add(new StringTextComponent(ChatColour.getDescOneText(shift_desc_one)));
+			tooltip.add(new StringTextComponent(ChatColour.getDescTwoText(shift_desc_two)));
+			tooltip.add(new StringTextComponent(ChatColour.getDescThreeText(shift_desc_three)));
+			tooltip.add(new StringTextComponent(ChatColour.ORANGE + limitation + ChatColour.END));
 			
-			tooltip.add(new StringTextComponent(TextHelper.shiftForLessDetails()));
+			tooltip.add(new StringTextComponent(ChatColour.shiftForLessDetails()));
 		}
 		
 		if (stack.hasTag()) {
@@ -236,7 +239,7 @@ public class EnhancedDimensionalShifter extends Item {
 					int x = pos_tag.getInt("x");
 					int z = pos_tag.getInt("z");
 					
-					tooltip.add(new StringTextComponent(TextHelper.GRAY + "Currently linked to Pocket: " + TextHelper.LIGHT_GRAY + "[ " + TextHelper.BRIGHT_BLUE + x + TextHelper.LIGHT_GRAY + ", " + TextHelper.BRIGHT_BLUE + z + TextHelper.LIGHT_GRAY + " ]"));
+					tooltip.add(new StringTextComponent(ChatColour.GRAY + "Currently linked to Pocket: " + ChatColour.LIGHT_GRAY + "[ " + ChatColour.BRIGHT_BLUE + x + ChatColour.LIGHT_GRAY + ", " + ChatColour.BRIGHT_BLUE + z + ChatColour.LIGHT_GRAY + " ]"));
 				}
 				
 				if (tag.contains("player_pos")) {
@@ -245,18 +248,24 @@ public class EnhancedDimensionalShifter extends Item {
 					int x = player_pos.getInt("x");
 					int y = player_pos.getInt("y");
 					int z = player_pos.getInt("z");
-					
 					boolean tele_to_block = player_pos.getBoolean("tele_to_block");
+					String dimension = player_pos.getString("dimension");
 					
 					if (tele_to_block) {
-						tooltip.add(new StringTextComponent(TextHelper.GRAY + "Teleport to Block: " + TextHelper.LIGHT_GRAY + "[ " + TextHelper.GREEN + "True" + TextHelper.LIGHT_GRAY + " ]"));
+						tooltip.add(new StringTextComponent(ChatColour.GRAY + "Teleport to Block: " + ChatColour.LIGHT_GRAY + "[ " + ChatColour.GREEN + "True" + ChatColour.LIGHT_GRAY + " ]"));
 					} else {
-						tooltip.add(new StringTextComponent(TextHelper.GRAY + "Teleport to Block: " + TextHelper.LIGHT_GRAY + "[ " + TextHelper.RED + "False" + TextHelper.LIGHT_GRAY + " ]"));
+						tooltip.add(new StringTextComponent(ChatColour.GRAY + "Teleport to Block: " + ChatColour.LIGHT_GRAY + "[ " + ChatColour.RED + "False" + ChatColour.LIGHT_GRAY + " ]"));
 					}
-					tooltip.add(new StringTextComponent(TextHelper.GRAY + "Saved Player Position: " + TextHelper.LIGHT_GRAY + "[ " + TextHelper.TEAL + x + TextHelper.LIGHT_GRAY + ", " + TextHelper.TEAL + y + TextHelper.LIGHT_GRAY + ", " + TextHelper.TEAL + z + TextHelper.LIGHT_GRAY + " ]"));
+					tooltip.add(new StringTextComponent(ChatColour.GRAY + "Saved Player Position: " + ChatColour.LIGHT_GRAY + "[ " + ChatColour.CYAN + x + ChatColour.LIGHT_GRAY + ", " + ChatColour.CYAN + y + ChatColour.LIGHT_GRAY + ", " + ChatColour.CYAN + z + ChatColour.LIGHT_GRAY + " ]"));
+					tooltip.add(new StringTextComponent(ChatColour.GRAY + "Pocket Source Dimension: " + ChatColour.LIGHT_GRAY + "[ " + ChatColour.WHITE + dimension + ChatColour.LIGHT_GRAY + " ]"));
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean isDamageable(DamageSource damageSource) {
+		return false;
 	}
 	
 	@Override

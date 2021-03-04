@@ -15,8 +15,6 @@ public class CoreEventManager {
 
 	@SubscribeEvent
 	public void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
-		System.out.println("Success");
-		
 		clearMap();
 	}
 	

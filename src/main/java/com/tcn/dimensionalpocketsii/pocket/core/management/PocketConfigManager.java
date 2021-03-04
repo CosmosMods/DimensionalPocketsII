@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,98 +41,37 @@ public class PocketConfigManager {
 			.enableComplexMapKeySerialization().setPrettyPrinting().create();
 
 	private static final String currentBackLinkFile = "pocketRegistry";
-	private static final String legacyBackLinkFile = "teleportRegistry";
 	private static final String pocketGenParamsFile = "pocketGenParameters";
 	
 	private static File getConfig(String fileName) throws IOException {
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		StringBuilder file_path = new StringBuilder();
-		
-		if (server != null) {
-			if (server.isSinglePlayer()) {
-				file_path.append("saves/");
-			}
-			
-			final Object save = ObfuscationReflectionHelper.getPrivateValue(MinecraftServer.class, server, "field_71310_m");
-			
-			if (save instanceof SaveFormat.LevelSave) {
-				String save_name = ((LevelSave) save).getSaveName();
-				
-				file_path.append(save_name);
-				
-				System.out.println("File: [" + fileName + "] Accessed for World: [" + save_name + "]");
-			}
-			
-			file_path.append("/dimpockets/");
-			file_path.append(fileName);
-			file_path.append(".json");
-	
-			File savefile = server.getFile(file_path.toString());
-			if (!savefile.exists()) {
-				savefile.getParentFile().mkdirs();
-				savefile.createNewFile();
-			}
-			return savefile;
-		}
-		return new File(".");
-	}
-	
-	private static File getConfigLegacy(String file_name, String legacy_file_name) throws IOException {
-		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		StringBuilder file_path = new StringBuilder();
-		StringBuilder legacy_path = new StringBuilder();
 		StringBuilder backup_path = new StringBuilder();
 		
 		if (server != null) {
 			if (server.isSinglePlayer()) {
 				file_path.append("saves/");
-				legacy_path.append("saves/");
 				backup_path.append("saves/");
 			}
-	
+			
 			final Object save = ObfuscationReflectionHelper.getPrivateValue(MinecraftServer.class, server, "field_71310_m");
 			
 			if (save instanceof SaveFormat.LevelSave) {
 				String save_name = ((LevelSave) save).getSaveName();
 				
 				file_path.append(save_name);
-				legacy_path.append(save_name);
 				backup_path.append(save_name);
-				
-				System.out.println("File: [" + file_name + "] Accessed for World: [" + save_name + "]");
-				System.out.println("File: [" + legacy_file_name + "] Accessed for World: [" + save_name + "]");
-				System.out.println("File: [backupRegistry] Accessed for World: [" + save_name + "]");
 			}
 			
-			file_path.append("/dimpockets/");
-			file_path.append(file_name);
-			file_path.append(".json");
-			
-			legacy_path.append("/dimpockets/");
-			legacy_path.append(legacy_file_name);
-			legacy_path.append(".json");
-	
-			backup_path.append("/dimpockets/");
-			backup_path.append("backupRegistry");
-			backup_path.append(".json");
+			file_path.append("/dimpockets/" + fileName + ".json");
+			backup_path.append("/dimpockets/" + fileName + "_BACKUP.json");
 	
 			File save_file = server.getFile(file_path.toString());
-			File legacy_file = server.getFile(legacy_path.toString());
 			File backup_file = server.getFile(backup_path.toString());
 			
-			/**
-			 * Checks to see if the current file exists. 
-			 * If it doesn't, it loads the data from the legacy file and creates the current file.
-			 */
 			if (!save_file.exists()) {
-				if (!legacy_file.exists()) {
-					save_file.getParentFile().mkdirs();
-					save_file.createNewFile();
-				} else {
-					save_file.getParentFile().mkdirs();
-					FileUtils.copyFile(legacy_file, save_file);
-					return save_file;
-				}
+				save_file.getParentFile().mkdirs();
+				save_file.createNewFile();
 			}
 			
 			//Makes a backup
@@ -150,15 +88,9 @@ public class PocketConfigManager {
 		return new File(".");
 	}
 	
-	public static File encryptFile() {
-		//Will start encrypting the loaded file so it cannot be edited.
-		
-		return null;
-	}
-
 	public static void saveBackLinkMap(Map<ChunkPos, Pocket> backLinkMap) {		
 		try {
-			File registryFile = getConfigLegacy(currentBackLinkFile, legacyBackLinkFile);
+			File registryFile = getConfig(currentBackLinkFile);
 
 			Collection<Pocket> values = backLinkMap.values();
 			Pocket[] tempArray = values.toArray(new Pocket[values.size()]);
@@ -176,7 +108,7 @@ public class PocketConfigManager {
 	public static Map<ChunkPos, Pocket> loadBackLinkMap() {
 		Map<ChunkPos, Pocket> backLinkMap = new HashMap<>();
 		try {
-			File registryFile = getConfigLegacy(currentBackLinkFile, legacyBackLinkFile);
+			File registryFile = getConfig(currentBackLinkFile);
 
 			Pocket[] pocket_array = null;
 			try (FileReader reader = new FileReader(registryFile)) {
@@ -190,7 +122,7 @@ public class PocketConfigManager {
 					if (link.getFluidTank() == null) {
 						link.setFluidTank(new FluidTank(256000));
 						
-						DimensionalPockets.LOGGER.warn("[LEGACY] Pocket {fluid_tank} null! Create new fluid_tank...", PocketConfigManager.class);
+						DimensionalPockets.LOGGER.warn("[LEGACY] Pocket {fluid_tank} null! Create new fluid_tank...");
 					}
 					
 					/*
@@ -226,11 +158,11 @@ public class PocketConfigManager {
 						}
 						
 						link.item_array = items_;
-						DimensionalPockets.LOGGER.warn("[LEGACY] Pocket {items} not equal! Creating new <items> and replace...", PocketConfigManager.class);
+						DimensionalPockets.LOGGER.warn("[LEGACY] Pocket {items} not equal! Creating new <items> and replace...");
 					}
 					
 					backLinkMap.put(link.getChunkPos(), link);
-					DimensionalPockets.LOGGER.info("Pocket Loaded: {" + link + "}", PocketConfigManager.class);
+					DimensionalPockets.LOGGER.info("Pocket Loaded: {" + link.getChunkPos() + ", Owner: " + link.getOwnerName() + "}");
 				}
 			}
 		} catch (Exception e) {
@@ -266,11 +198,5 @@ public class PocketConfigManager {
 			DimensionalPockets.LOGGER.fatal("Error when loading pocketGenParamsFile", e.getCause());
 		}
 		return new PocketGenParameters();
-	}
-	
-	public static String getWorldFolder(MinecraftServer server) throws NoSuchFieldException, IllegalAccessException {
-		Field folderField = server.getClass().getDeclaredField("anvilConverterForAnvilFile");
-		folderField.setAccessible(true);
-		return ((SaveFormat.LevelSave) folderField.get(server)).getSaveName();
 	}
 }

@@ -7,10 +7,9 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
-import com.tcn.cosmoslibrary.impl.enums.EnumConnectionType;
+import com.tcn.cosmoslibrary.impl.colour.EnumMinecraftColour;
+import com.tcn.cosmoslibrary.impl.colour.ChatColour;
 import com.tcn.cosmoslibrary.impl.nbt.UtilNBT;
-import com.tcn.cosmoslibrary.impl.registry.object.ObjectConnectionType;
 import com.tcn.cosmoslibrary.impl.registry.object.ObjectFluidTankCustom;
 import com.tcn.cosmoslibrary.impl.registry.object.ObjectPlayerInformation;
 import com.tcn.cosmoslibrary.impl.registry.object.ObjectTeleportPos;
@@ -60,6 +59,7 @@ public class Pocket {
 	private static final String NBT_GENERATED_KEY = "is_generated";
 	private static final String NBT_LOCKED_KEY = "is_locked";
 	private static final String NBT_TRAP_KEY = "trap_players";
+	private static final String NBT_COLOUR_KEY = "display_colour";
 	private static final String NBT_INTERNAL_HEIGHT_KEY = "internal_height";
 	private static final String NBT_ENERGY_STORED_KEY = "energy_stored";
 	private static final String NBT_ENERGY_CAPACITY_KEY = "energy_capacity";
@@ -71,7 +71,6 @@ public class Pocket {
 	private static final String NBT_SPAWN_POS_KEY = "spawn_pos";
 	private static final String NBT_FLUID_TANK_KEY = "fluid_tank";
 	private static final String NBT_ALLOWED_PLAYERS_KEY = "allowed_players_array";
-	private static final String NBT_CONNECTOR_MAP_KEY = "connector_array";
 	private static final String NBT_BLOCK_ARRAY_KEY = "block_array";
 	private static final String NBT_ITEMS_KEY = "items_array";
 	
@@ -86,6 +85,9 @@ public class Pocket {
 	
 	@SerializedName(NBT_TRAP_KEY)
 	private boolean trap_players = false;
+	
+	@SerializedName(NBT_COLOUR_KEY)
+	private int display_colour = EnumMinecraftColour.POCKET_PURPLE.getDecimal();
 	
 	@SerializedName(NBT_INTERNAL_HEIGHT_KEY)
 	private int internal_height = CoreConfigurationManager.getInstance().getInternalHeight();
@@ -119,9 +121,6 @@ public class Pocket {
 
 	@SerializedName(NBT_ALLOWED_PLAYERS_KEY)
 	private ArrayList<ObjectPlayerInformation> allowed_players_array = new ArrayList<ObjectPlayerInformation>();
-	
-	@SerializedName(NBT_CONNECTOR_MAP_KEY)
-	private LinkedHashMap<Integer, ObjectConnectionType> connector_array = new LinkedHashMap<>();
 	
 	@SerializedName(NBT_BLOCK_ARRAY_KEY)
 	private LinkedHashMap<Integer, BlockPos> block_array = new LinkedHashMap<>();
@@ -161,6 +160,7 @@ public class Pocket {
 	}
 	
 	public BlockPos getSourceBlockPos() {
+		
 		return this.getLastBlockPos();
 	}
 	
@@ -182,6 +182,22 @@ public class Pocket {
 
 	public boolean getLockState() {
 		return this.is_locked;
+	}
+	
+	public int getDisplayColour() {
+		return this.display_colour;
+	}
+	
+	public void setDisplayColour(int colour) {
+		this.display_colour = colour;
+	}
+	
+	public void setDisplayColour(EnumMinecraftColour colour) {
+		this.display_colour = colour.getDecimal();
+	}
+
+	public int getInternalHeight() {
+		return this.internal_height;
 	}
 	
 	public void setLockState(boolean change) {
@@ -339,76 +355,6 @@ public class Pocket {
 			}
 		}
 	}
-	
-	/** TODO - Connector Stuff -  */
-	public LinkedHashMap<Integer, ObjectConnectionType> getConnectorArray() {
-		return this.connector_array;
-	}
-	
-	public void updateConnectorInArray(BlockPos posIn, EnumConnectionType typeIn) {
-		ObjectConnectionType connector = new ObjectConnectionType(posIn, typeIn);
-		
-		if (this.connector_array.size() > 0) {
-			for (int i = 0; i < this.connector_array.size(); i++) {
-				if (this.connector_array.get(i) != null) {
-					ObjectConnectionType test = this.connector_array.get(i);
-					BlockPos test_pos = test.getPos();
-					
-					if (test_pos.equals(posIn)) {
-						this.connector_array.replace(i, connector);
-						DimensionalPockets.LOGGER.info("Connector already exists in Map. Updating...", Pocket.class);
-					} else {
-						this.connector_array.put(this.connector_array.size(), connector);
-						DimensionalPockets.LOGGER.info("Connector added to Map.", Pocket.class);
-					}
-				} else {
-					DimensionalPockets.LOGGER.warn("Connector Map is corrupt! Report this to the mod author.", Pocket.class);
-				}
-			}
-		} else {
-			this.connector_array.put(this.connector_array.size(), connector);
-			DimensionalPockets.LOGGER.info("Connector added to Map.", Pocket.class);
-		}
-		PocketRegistryManager.saveData();
-	}
-	
-	public void updateConnectorInArray(ObjectConnectionType connectorIn) {
-		if (this.connector_array.size() > 0) {
-			for (int i = 0; i < this.connector_array.size(); i++) {
-				if (this.connector_array.get(i) != null) {
-					ObjectConnectionType test = this.connector_array.get(i);
-					
-					if (test.equals(connectorIn)) {
-						this.connector_array.replace(i, connectorIn);
-						DimensionalPockets.LOGGER.info("Connector already exists in Map. Updating...", Pocket.class);
-					} else {
-						connector_array.put(this.connector_array.size(), connectorIn);
-						DimensionalPockets.LOGGER.info("Connector added to Map.", Pocket.class);
-					}
-				} else {
-					DimensionalPockets.LOGGER.warn("Connector Map is corrupt! Report this to the mod author.", Pocket.class);
-				}
-			}
-		} else {
-			this.connector_array.put(this.connector_array.size(), connectorIn);
-			DimensionalPockets.LOGGER.info("Connector added to Map.", Pocket.class);
-		}
-		PocketRegistryManager.saveData();
-	}
-	
-	public void removeConnector(BlockPos posIn) {
-		for (int i = 0; i < this.connector_array.size(); i++) {
-			ObjectConnectionType test = this.connector_array.get(i);
-			BlockPos pos = test.getPos();
-			
-			if (posIn.equals(pos)) {
-				this.connector_array.remove(i);
-				DimensionalPockets.LOGGER.info("Connector removed from Map.", Pocket.class);
-			}
-		}
-		PocketRegistryManager.saveData();
-	}
-	
 	
 	/** - Energy Methods - */
 	
@@ -602,34 +548,43 @@ public class Pocket {
 						boolean flagY = y == y_offset || y == (height);
 						boolean flagZ = z == 0 || z == (size - 1);
 						
+						chunk.rescheduleTicks();
+						
+						BlockPos pos = new BlockPos(x, y, z);
+						
+						if (x == 0 || y == 1 || z == 0) {
+							chunk.setBlockState(pos, Blocks.BEDROCK.getDefaultState(), false);
+						}
+						
+						if (x == (size - 1) || y == (height - (1 - y_offset)) || z == (size - 1)) {
+							chunk.setBlockState(pos, Blocks.BEDROCK.getDefaultState(), false);
+						} 
+						
 						//Added those flags, so I could add these checks, almost halves the time.
 						if (!(flagX || flagY || flagZ) || flagX && (flagY || flagZ) || flagY && flagZ) {
 							continue;
 						}
 						
-						BlockPos pos = new BlockPos(x, y, z);
 						//Creates the "edge" blocks first. Stylistic choice.
 						if (x == 1 || y == (1 + y_offset) || z == 1) {
 							chunk.setBlockState(pos, ModBusManager.BLOCK_WALL_EDGE.getDefaultState().updatePostPlacement(Direction.UP, world.getBlockState(pos), world, pos, pos.offset(Direction.UP)), false);
 						} else if (x == (size - 2) || y == (height - (2 - y_offset)) || z == (size - 2)) {
 							chunk.setBlockState(pos, ModBusManager.BLOCK_WALL_EDGE.getDefaultState().updatePostPlacement(Direction.UP, world.getBlockState(pos), world, pos, pos.offset(Direction.UP)), false);
 						} else {
-							if (!(world.getBlockState(pos).getBlock().equals(ModBusManager.BLOCK_WALL_CONNECTOR)) 
-									//&& !(storage.getBlockState(x, y, z).getBlock().equals(BusSubscriberMod.BLOCK_ENERGY_DISPLAY))
-										//&& !(storage.getBlockState(x, y, z).getBlock().equals(BusSubscriberMod.BLOCK_ENERGY_DISPLAY))
+							if (!(chunk.getBlockState(pos).getBlock().equals(ModBusManager.BLOCK_WALL_CONNECTOR) && !(chunk.getBlockState(pos).getBlock().equals(ModBusManager.BLOCK_WALL_CHARGER))) 
+									//&& !(world.getBlockState(pos).getBlock().equals(ModBusManager.BLOCK_ENERGY_DISPLAY))
+										//&& !(worlde.getBlockState(pos).getBlock().equals(ModBusManager.BLOCK_ENERGY_DISPLAY))
 											) {
 								chunk.setBlockState(pos, ModBusManager.BLOCK_WALL.getDefaultState(), false);
 							}
 						}
-						
-						//Update the structure so it displays.
-						world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos).getBlock().getDefaultState(), 3);
-						world.markAndNotifyBlock(pos, chunk, world.getBlockState(pos), world.getBlockState(pos).getBlock().getDefaultState(), 3, z);
-						
-						world.getBlockState(pos).updateDiagonalNeighbors(world, pos, 3);
-						world.getBlockState(pos).updateNeighbours(world, pos, 3);
 
-						chunk.setLoaded(true);
+						BlockPos world_pos = new BlockPos(worldX + x, y, worldZ + z);
+						
+						world.notifyBlockUpdate(world_pos, world.getBlockState(world_pos), world.getBlockState(world_pos).getBlock().getDefaultState(), 3);
+						world.markAndNotifyBlock(world_pos, chunk, world.getBlockState(world_pos), world.getBlockState(world_pos).getBlock().getDefaultState(), 3, 0);
+						world.getBlockState(world_pos).updateDiagonalNeighbors(world, world_pos, 3);
+						world.getBlockState(world_pos).updateNeighbours(world, world_pos, 3);
 					}
 				}
 			}
@@ -647,36 +602,34 @@ public class Pocket {
 			
 				if (!(this.internal_height > CoreConfigurationManager.getInstance().getInternalHeight())) {
 					if (CoreConfigurationManager.getInstance().getInternalReplace()) {
-						int[] edge = new int[] { 0, 15 };
+						int[] edge = new int[] { 0, 14 };
 					
 						for (int x = edge[0]; x < edge[1]; x++) {
 							for (int z = edge[0]; z < edge[1]; z++) {
 								BlockPos pos = new BlockPos(x, this.internal_height, z);
 								
-								if (world.getBlockState(pos).getBlock().equals(ModBusManager.BLOCK_WALL)) {
+								if (chunk.getBlockState(pos).getBlock().equals(ModBusManager.BLOCK_WALL)) {
 									chunk.setBlockState(pos, ModBusManager.BLOCK_WALL_EDGE.getDefaultState(), false);
 								}
 							}
 						}
 					}  else {
-						System.out.println("Pocket internal height is larger than the config. Pocket will not reduce in size.");
+						DimensionalPockets.LOGGER.warn("Pocket internal height is larger than the config. Pocket will not reduce in size.", Pocket.class);
 					}
 				}
+				
+				chunk.setLoaded(true);
 			}
 			
-			this.internal_height = height;
-			//Added these checks to ensure correct pocket generation.
 			Block check_block_one = world.getBlockState(new BlockPos((worldX + 1), worldY, (worldZ + 1))).getBlock();
 			Block check_block_two = world.getBlockState(new BlockPos((worldX + 2), worldY, (worldZ + 2))).getBlock();
+			Block check_block_three = world.getBlockState(new BlockPos(worldX, worldY, worldZ)).getBlock();
+			Block check_block_four = world.getBlockState(new BlockPos(worldX, (worldY + internal_height) - 1, worldZ)).getBlock();
 			
-			System.out.println("XX [" + (worldX + 1) + "] YY [" + (worldY + 1) + "] ZZ [" + (worldZ + 1) + "]");
-			System.out.println("C_X [" + chunk_pos.getX() + "]" + " C_Z [" + chunk_pos.getZ() + "]");
-			
-			this.is_generated = check_block_one instanceof BlockWallEdge && check_block_two instanceof BlockWall;
+			this.setOwner(playerIn);
 
-			if (playerIn != null) {
-				this.setOwner(playerIn);
-			}
+			this.is_generated = check_block_one instanceof BlockWallEdge && check_block_two instanceof BlockWall && check_block_three.equals(Blocks.BEDROCK) && check_block_four.equals(Blocks.BEDROCK);
+			this.internal_height = height;
 			
 			PocketRegistryManager.saveData();
 		}
@@ -732,10 +685,10 @@ public class Pocket {
 					ShifterCore.sendPlayerToBedWithMessage(server_player, direction, "Someone broke your Pocket!");
 				}
 			} else {
-				playerIn.sendMessage(new StringTextComponent(TextHelper.RED + "Direction cannot be determined. Please report this issue to the Mod Author."), UUID.randomUUID());
+				playerIn.sendMessage(new StringTextComponent(ChatColour.RED + "Direction cannot be determined. Please report this issue to the Mod Author."), UUID.randomUUID());
 			}
 		} else {
-			playerIn.sendMessage(new StringTextComponent(TextHelper.BOLD + TextHelper.RED + "This Pocket has been locked by: " + TextHelper.ORANGE + this.getOwnerName() + TextHelper.RED + "." + TextHelper.END), UUID.randomUUID());
+			playerIn.sendMessage(new StringTextComponent(ChatColour.BOLD + ChatColour.RED + "This Pocket has been locked by: " + ChatColour.ORANGE + this.getOwnerName() + ChatColour.RED + "." + ChatColour.END), UUID.randomUUID());
 		}
 	}
 	
@@ -749,6 +702,7 @@ public class Pocket {
 		
 		compound_nbt.putBoolean(NBT_GENERATED_KEY, this.isGenerated());
 		compound_nbt.putBoolean(NBT_LOCKED_KEY, this.getLockState());
+		compound_nbt.putInt(NBT_COLOUR_KEY, this.getDisplayColour());
 		UtilNBT.writeDimensionToNBT(getSourceBlockDimension(), compound_nbt);
 		compound_nbt.putInt(NBT_ENERGY_STORED_KEY, this.getStored());
 		compound_nbt.putInt(NBT_ENERGY_CAPACITY_KEY, this.getMaxEnergyStored());
@@ -803,18 +757,6 @@ public class Pocket {
 		players.putInt("length", this.allowed_players_array.size());
 		compound_nbt.put(NBT_ALLOWED_PLAYERS_KEY, players);
 		
-		//Connector Map
-		CompoundNBT connectors = new CompoundNBT();
-		for (int i = 0; i < this.getConnectorArray().size(); i++) {
-			CompoundNBT connector = new CompoundNBT();
-			ObjectConnectionType type = this.connector_array.get(i);
-			
-			type.writeToNBT(connector);
-			connectors.put(Integer.toString(i), connector);
-		}
-		connectors.putInt("length", this.getConnectorArray().size());
-		compound_nbt.put(NBT_CONNECTOR_MAP_KEY, connectors);
-		
 		//Side Map
 		CompoundNBT sideMapTag = new CompoundNBT();
 		if (this.block_array.size() > 0) {
@@ -863,6 +805,7 @@ public class Pocket {
 		
 		pocket.is_generated = pocketTag.getBoolean(NBT_GENERATED_KEY);
 		pocket.setLockState(pocketTag.getBoolean(NBT_LOCKED_KEY));
+		pocket.setDisplayColour(pocketTag.getInt(NBT_COLOUR_KEY));
 		pocket.setSourceBlockDimension(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, UtilNBT.readDimensionFromNBT(compound_nbt)));
 		pocket.setEnergyStored(pocketTag.getInt(NBT_ENERGY_STORED_KEY));
 		pocket.energy_capacity = pocketTag.getInt(NBT_ENERGY_CAPACITY_KEY);
@@ -895,15 +838,6 @@ public class Pocket {
 			UUID player_uuid = player_info.getPlayerUUID();
 			
 			pocket.addAllowedPlayerNBT(player_name, player_uuid);
-		}
-		
-		//Connector Map
-		CompoundNBT connectorsTag = pocketTag.getCompound(NBT_CONNECTOR_MAP_KEY);
-		for (int i = 0; i < connectorsTag.getInt("length"); i++) {
-			CompoundNBT connectorTag = connectorsTag.getCompound(Integer.toString(i));
-			ObjectConnectionType type = ObjectConnectionType.readFromNBT(connectorTag);
-			
-			pocket.updateConnectorInArray(type);
 		}
 		
 		//Side Map

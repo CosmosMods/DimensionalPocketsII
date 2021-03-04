@@ -1,8 +1,7 @@
 package com.tcn.dimensionalpocketsii.pocket.core.block;
 
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
 import com.tcn.cosmoslibrary.impl.block.CosmosBlockUnbreakable;
-import com.tcn.cosmoslibrary.impl.enums.EnumConnectionType;
+import com.tcn.cosmoslibrary.impl.colour.ChatColour;
 import com.tcn.cosmoslibrary.impl.util.CosmosChatUtil;
 import com.tcn.cosmoslibrary.impl.util.CosmosUtil;
 import com.tcn.dimensionalpocketsii.core.management.CoreConfigurationManager;
@@ -11,7 +10,6 @@ import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
 import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
-import com.tcn.dimensionalpocketsii.pocket.core.tileentity.TileEntityConnector;
 import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
 import net.minecraft.block.Block;
@@ -19,7 +17,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.network.DebugPacketSender;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -41,21 +38,25 @@ public class BlockWall extends CosmosBlockUnbreakable {
 			if (pocket != null) {
 				if (!playerIn.isSneaking()) {
 					if (CosmosUtil.isHoldingHammer(playerIn)) {
-						if (pos.getY() != 0 && pos.getY() != 15) {
-							if (CosmosUtil.isHoldingHammer(playerIn)) {
-								worldIn.removeBlock(pos, false);
-								worldIn.setBlockState(pos, ModBusManager.BLOCK_WALL_CHARGER.getDefaultState());
-								
-								return ActionResultType.SUCCESS;
+						if (!worldIn.isRemote) {
+							if (pos.getY() != 1 && pos.getY() != pocket.getInternalHeight()) {
+								if (CosmosUtil.isHoldingHammer(playerIn)) {
+									worldIn.removeBlock(pos, false);
+									worldIn.setBlockState(pos, ModBusManager.BLOCK_WALL_CHARGER.getDefaultState());
+								}
 							}
+							return ActionResultType.FAIL;
 						}
+						return ActionResultType.SUCCESS;
 					}
 				} else {
 					if (CosmosUtil.isHoldingHammer(playerIn)) {
-						worldIn.setBlockState(pos, ModBusManager.BLOCK_WALL_CONNECTOR.getDefaultState());
-						worldIn.setTileEntity(pos, new TileEntityConnector());
-						pocket.updateConnectorInArray(pos, EnumConnectionType.getStandardValue());
-						
+						if (!worldIn.isRemote) {
+							if (pos.getY() != 1 && pos.getY() != pocket.getInternalHeight()) {
+								worldIn.setBlockState(pos, ModBusManager.BLOCK_WALL_CONNECTOR.getDefaultState());
+							}
+							return ActionResultType.FAIL;
+						}
 						return ActionResultType.SUCCESS;
 					}
 					
@@ -64,13 +65,16 @@ public class BlockWall extends CosmosBlockUnbreakable {
 							pocket.shift(playerIn, EnumShiftDirection.LEAVE, null, null);
 							return ActionResultType.SUCCESS;
 						}
+					} else {
+						return ActionResultType.FAIL;
 					}
 				}
 			} else {
-				CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.RED + "Unable to complete action. Pocket is null.");
+				CosmosChatUtil.sendPlayerMessage(playerIn, false, ChatColour.RED + "Unable to complete action. Pocket is null.");
 				return ActionResultType.FAIL;
 			}
 		}
+		
 		return ActionResultType.FAIL;
 	}
 	
@@ -81,7 +85,7 @@ public class BlockWall extends CosmosBlockUnbreakable {
 
 	@Override
 	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-		DebugPacketSender.func_218806_a(worldIn, pos);
+		//DebugPacketSender.func_218806_a(worldIn, pos);
 	}
 	
 	@Override

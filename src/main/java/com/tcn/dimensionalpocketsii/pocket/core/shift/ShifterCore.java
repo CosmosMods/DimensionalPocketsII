@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
+import com.tcn.cosmoslibrary.impl.colour.ChatColour;
 import com.tcn.cosmoslibrary.impl.util.CosmosChatUtil;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,7 +28,7 @@ public class ShifterCore {
 	public static void sendPlayerToBedWithMessage(PlayerEntity playerIn, @Nullable EnumShiftDirection directionIn, String messageIn) {
 		if (playerIn instanceof ServerPlayerEntity) {
 			ServerPlayerEntity server_player = (ServerPlayerEntity) playerIn;
-			playerIn.sendMessage(new StringTextComponent(TextHelper.ORANGE + "Unable to shift to correct target. " + TextHelper.BOLD + TextHelper.RED + messageIn + TextHelper.END), UUID.randomUUID());
+			playerIn.sendMessage(new StringTextComponent(ChatColour.ORANGE + "Unable to shift to correct target. " + ChatColour.BOLD + ChatColour.RED + messageIn + ChatColour.END), UUID.randomUUID());
 			shiftPlayerToDimension(server_player, Shifter.createTeleporter(server_player.func_241141_L_(), directionIn, server_player.func_241140_K_(), playerIn.rotationYaw, playerIn.rotationPitch));
 		}
 	}
@@ -60,14 +60,14 @@ public class ShifterCore {
 						server_player.setPositionAndRotation(position[0] + 0.5F, position[1], position[2] + 0.5F, rotation[0], rotation[1]);
 						server_player.setPositionAndUpdate(position[0] + 0.5F, position[1], position[2] + 0.5F);
 					} else {
-						server_player.sendMessage(new StringTextComponent(TextHelper.RED + "Your respawn point cannot be found. Defaulting to Spawn World position."), UUID.randomUUID());
+						server_player.sendMessage(new StringTextComponent(ChatColour.RED + "Your respawn point cannot be found. Defaulting to Spawn World position."), UUID.randomUUID());
 						server_player.changeDimension(server_world, shifterIn);
 					}
 				} else {
-					server_player.sendMessage(new StringTextComponent(TextHelper.RED + "Server World is null. Please report this issue to the Mod Author."), UUID.randomUUID());
+					server_player.sendMessage(new StringTextComponent(ChatColour.RED + "Server World is null. Please report this issue to the Mod Author."), UUID.randomUUID());
 				}
 			} else {
-				server_player.sendMessage(new StringTextComponent(TextHelper.RED + "Dimension Key is null. Please report this issue to the Mod Author."), UUID.randomUUID());
+				server_player.sendMessage(new StringTextComponent(ChatColour.RED + "Dimension Key is null. Please report this issue to the Mod Author."), UUID.randomUUID());
 			}
 		}
 	}
