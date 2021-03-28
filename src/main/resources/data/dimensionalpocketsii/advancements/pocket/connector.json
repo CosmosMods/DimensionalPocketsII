@@ -2,7 +2,7 @@
 	"parent": "dimensionalpocketsii:pocket/pockets",
 	"display": {
 		"icon": {
-			"item": "dimensionalpocketsii:block_connector"
+			"item": "dimensionalpocketsii:block_wall_connector"
 		},
 		"title": "Connections!",
 		"description": "Create a Connector inside of a Pocket.",
@@ -18,11 +18,11 @@
 			"conditions": {
 				"location": {
 					"block": {
-						"block": "dimensionalpocketsii:block_connector"
+						"block": "dimensionalpocketsii:block_wall_connector"
 					}
 				},
 				"item": {
-					"item": "dimensionalpocketsii:dimensional_wrench"
+					"item": "dimensionalpocketsii:module_connector"
 				}
 			}
 		}

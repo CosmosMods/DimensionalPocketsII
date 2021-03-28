@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 public final class CoreGroupManager {
 
-	public static final ItemGroup DIM_POCKETS_ITEM_GROUP = new ModItemGroup(DimensionalPockets.MOD_ID, () -> new ItemStack(ModBusManager.BLOCK_POCKET));
+	public static final ItemGroup DIM_POCKETS_ITEM_GROUP = new ModItemGroup(DimensionalPockets.MOD_ID, () -> new ItemStack(CoreModBusManager.BLOCK_POCKET));
 
 	public static final class ModItemGroup extends ItemGroup {
 
@@ -23,10 +23,9 @@ public final class CoreGroupManager {
 			super(name);
 			this.iconSupplier = iconSupplier;
 		}
-
+		
 		@Override
-		@Nonnull
-		public ItemStack createIcon() {
+		public ItemStack makeIcon() {
 			return iconSupplier.get();
 		}
 	}

@@ -3,7 +3,7 @@ package com.tcn.dimensionalpocketsii.pocket.core.management;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.tcn.cosmoslibrary.math.ChunkPos;
+import com.tcn.cosmoslibrary.common.math.ChunkPos;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.core.management.CoreDimensionManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
@@ -35,7 +35,7 @@ public class PocketRegistryManager {
 	}
 
 	public static World getWorldForPockets() {
-		return ServerLifecycleHooks.getCurrentServer().getWorld(CoreDimensionManager.POCKET_WORLD);
+		return ServerLifecycleHooks.getCurrentServer().getLevel(CoreDimensionManager.POCKET_WORLD);
 	}
 	
 	public static Map<ChunkPos, Pocket> getPocketMap() {
@@ -45,24 +45,26 @@ public class PocketRegistryManager {
 	public static void clearPocketMap() {
 		pocket_map.clear();
 		
-		System.out.println("Pocket Map Cleared");
+		DimensionalPockets.LOGGER.info("Pocket Map Cleared");
 	}
 
-	public static Pocket getPocketFromChunk(ChunkPos chunkPos) {
+	public static Pocket getPocketFromChunkPosition(ChunkPos chunkPos) {
+		Pocket pocket = new Pocket(null);
+		
 		if (chunkPos != null){
 			if (pocket_map.containsKey(chunkPos)) {
 				return pocket_map.get(chunkPos);
 			} else {
-				System.out.println("Attempt to get pocket failed: chunkPos not present in backLinkMap: " + chunkPos);
-				return null;
+				DimensionalPockets.LOGGER.warn("Pocket for Chunk Position: [ " + chunkPos + "] is not present in Map.");
+				return pocket;
 			}
 		} else {
-			System.out.println("Attempt to get Pocket failed: chunkPos NULL.");
+			DimensionalPockets.LOGGER.warn("Chunk Position [ NULL ].");
 		}
-		return null;
+		return pocket;
 	}
 
-	public static ChunkPos getNextPocketCoords(ChunkPos currentCoords) {
+	public static ChunkPos getNextPocketChunkPosition(ChunkPos currentCoords) {
 		ChunkPos result = currentCoords;
 		
 		while (pocket_map.containsKey(result)) {
@@ -71,7 +73,7 @@ public class PocketRegistryManager {
 			result = new ChunkPos(result.getX(), result.getZ()).add(offset.getX() * pocketChunkSpacing, offset.getZ() * pocketChunkSpacing);
 		}
 		
-		Direction clockwise = pocketGenParameters.nextPocketCoordsDirection.rotateY();
+		Direction clockwise = pocketGenParameters.nextPocketCoordsDirection.getClockWise();
 		ChunkPos probe = new ChunkPos(0, 0).offset(clockwise);
 		ChunkPos probe2 = new ChunkPos(probe.getX() * pocketChunkSpacing, probe.getZ() * pocketChunkSpacing);
 		
@@ -84,7 +86,7 @@ public class PocketRegistryManager {
 		return result;
 	}
 	
-	public static ChunkPos getChunkPosForPocket(RegistryKey<World> dimension, BlockPos pos) {
+	public static ChunkPos getChunkPositionForPocket(RegistryKey<World> dimension, BlockPos pos) {
 		for(Pocket pocket : pocket_map.values()) {
 			RegistryKey<World> pocket_dimension = pocket.getSourceBlockDimension();
 			
@@ -97,15 +99,15 @@ public class PocketRegistryManager {
 	}
 	
 	public static Pocket getOrCreatePocket(World world, BlockPos coordSetSource) {
-		RegistryKey<World> dimIDSource = world.getDimensionKey();
-		ChunkPos chunk = getChunkPosForPocket(dimIDSource, coordSetSource);
-		Pocket pocket = new Pocket();
+		RegistryKey<World> dimIDSource = world.dimension();
+		ChunkPos chunk = getChunkPositionForPocket(dimIDSource, coordSetSource);
+		Pocket pocket = new Pocket(null);
 		
-		if (chunk != null && getPocketFromChunk(chunk) != null) {
-			pocket = getPocketFromChunk(chunk);
+		if (chunk != null && getPocketFromChunkPosition(chunk) != null) {
+			pocket = getPocketFromChunkPosition(chunk);
 		} else {
 			if (!pocket_map.isEmpty()) {
-				pocketGenParameters.currentChunk = getNextPocketCoords(pocketGenParameters.currentChunk);
+				pocketGenParameters.currentChunk = getNextPocketChunkPosition(pocketGenParameters.currentChunk);
 				
 				pocket = new Pocket(pocketGenParameters.currentChunk, dimIDSource, coordSetSource);
 				pocket_map.put(pocket.getChunkPos(), pocket);
@@ -122,8 +124,9 @@ public class PocketRegistryManager {
 
 	public static void updatePocket(ChunkPos chunkPos, RegistryKey<World> dimension, BlockPos pos) {
 		Pocket link = pocket_map.get(chunkPos);
+		
 		if (link == null) {
-			System.out.println("No Pocket for chunkPos: " + chunkPos);
+			DimensionalPockets.LOGGER.info("Pocket for Chunk Position: [ " + chunkPos + "] does not exist.");
 			return;
 		}
 
@@ -132,21 +135,23 @@ public class PocketRegistryManager {
 
 		saveData();
 	}
-
+	
 	public static void saveData() {
-		PocketConfigManager.saveBackLinkMap(pocket_map);
-		PocketConfigManager.savePocketGenParams(pocketGenParameters);
+		PocketFileSystemManager.saveBackLinkMap(pocket_map);
+		PocketFileSystemManager.savePocketGenParams(pocketGenParameters);
 		
-		DimensionalPockets.LOGGER.info("Pocket data saved to JSON", PocketRegistryManager.class);
-		System.out.println("Pocket data saved to JSON");
+		DimensionalPockets.LOGGER.info("<Server> Pocket data saved to JSON.");
 	}
 
 	public static void loadData() {
-		pocket_map = PocketConfigManager.loadBackLinkMap();
-		pocketGenParameters = PocketConfigManager.loadPocketGenParams();
+		pocket_map = PocketFileSystemManager.loadBackLinkMap();
+		pocketGenParameters = PocketFileSystemManager.loadPocketGenParams();
 		
-		DimensionalPockets.LOGGER.info("Pocket data loaded from JSON", PocketRegistryManager.class);
-		System.out.println("Pocket data loaded from JSON [" + pocket_map + "]");
+		if (!pocket_map.isEmpty()) {
+			DimensionalPockets.LOGGER.info("<Server> Pocket data loaded from JSON.");
+		} else {
+			DimensionalPockets.LOGGER.info("<Server> Pocket Registry empty. Creating new Pocket Registry.");
+		}
 	}
 
 	@SuppressWarnings("unused")

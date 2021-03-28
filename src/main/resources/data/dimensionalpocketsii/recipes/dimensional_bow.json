@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" IT",
+		"IBT",
+		" IT"
+	],
+	"key": {
+		"I": {
+			"item": "dimensionalpocketsii:dimensional_ingot"
+		},
+		"B": {
+			"item": "minecraft:bow"
+		},
+		"T" : {
+			"item": "dimensionalpocketsii:dimensional_thread"
+		}
+	},
+	"result": {
+		"item": "dimensionalpocketsii:dimensional_bow"
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"D D",
+		"MEM",
+		"WRW"
+	],
+	"key": {
+		"R": {
+			"item": "minecraft:redstone"
+		},
+		"E": {
+			"item": "dimensionalpocketsii:dimensional_elytraplate"
+		},
+		"D" : {
+			"item": "dimensionalpocketsii:dimensional_ingot"
+		},
+		"W" : {
+			"item": "dimensionalpocketsii:dimensional_wrench"
+		},
+		"M" : {
+			"item": "dimensionalpocketsii:module_connector"
+		}
+	},
+	"result": {
+		"item": "dimensionalpocketsii:dimensional_elytraplate_screen"
+	}
+}

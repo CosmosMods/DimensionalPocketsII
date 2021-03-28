@@ -1,0 +1,81 @@
+{
+    "parent": "block/block",
+    "display": {
+        "gui": {
+            "rotation": [ 30, 135, 0 ],
+            "translation": [ 0, 0, 0],
+            "scale":[ 0.625, 0.625, 0.625 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 90, 0 ],
+            "translation": [ 0, 0, 0],
+            "scale":[ 0.5, 0.5, 0.5 ]
+        }
+    },
+    "textures": {
+        "particle": "dimensionalpocketsii:blocks/wall/wall",
+        "default": "dimensionalpocketsii:blocks/wall/module/crafter/grid_frame",
+        "center": "dimensionalpocketsii:blocks/wall/module/crafter/grid_overlay",
+        "wall": "dimensionalpocketsii:blocks/wall/wall"
+    },
+    "elements": [
+        {
+            "from": [0, 0, 0],
+            "to": [16, 16, 16],
+            "faces": {
+                "north": {
+                    "uv": [0,0,16,16],
+                    "texture": "#default",
+                    "tintindex": 0
+                },
+                "south": {
+                    "uv": [0,0,16,16],
+                    "texture": "#default",
+                    "tintindex": 0
+                },
+                "east": {
+                    "uv": [0,0,16,16],
+                    "texture": "#default",
+                    "tintindex": 0
+                },
+                "west": {
+                    "uv": [0,0,16,16],
+                    "texture": "#default",
+                    "tintindex": 0
+                },
+                "up": {
+                    "uv": [0,0,16,16],
+                    "texture": "#wall",
+                    "tintindex": 0
+                },
+                "down": {
+                    "uv": [0,0,16,16],
+                    "texture": "#wall",
+                    "tintindex": 0
+                }
+            }
+        },
+        {
+        "from": [0, 0, 0],
+            "to": [16, 16, 16],
+            "faces": {
+                "north": {
+                    "uv": [0,0,16,16],
+                    "texture": "#center"
+                },
+                "south": {
+                    "uv": [0,0,16,16],
+                    "texture": "#center"
+                },
+                "east": {
+                    "uv": [0,0,16,16],
+                    "texture": "#center"
+                },
+                "west": {
+                    "uv": [0,0,16,16],
+                    "texture": "#center"
+                }
+            }
+        }
+    ]
+}

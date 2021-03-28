@@ -1,0 +1,28 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"DWD",
+		"NEN",
+		"DSD"
+	],
+	"key": {
+		"S": {
+			"item": "dimensionalpocketsii:dimensional_shifter_enhanced"
+		},
+		"E": {
+			"item": "dimensionalpocketsii:dimensional_elytraplate"
+		},
+		"D" : {
+			"item": "dimensionalpocketsii:dimensional_ingot"
+		},
+		"W" : {
+			"item": "dimensionalpocketsii:dimensional_wrench"
+		},
+		"N" : {
+			"item": "dimensionalpocketsii:nether_star_shard"
+		}
+	},
+	"result": {
+		"item": "dimensionalpocketsii:dimensional_elytraplate_shift"
+	}
+}

@@ -1,0 +1,72 @@
+{
+	"parent": "dimensionalpocketsii:pocket/ingots",
+	"display": {
+		"icon": {
+			"item": "dimensionalpocketsii:dimensional_chestplate"
+		},
+		"title": "Armour up!",
+		"description": "Craft a full set of Dimensional Armour.",
+		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
+		"frame": "goal",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"d_helmet": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:dimensional_helmet",
+						"count": 1
+					}
+				]
+			}
+		},
+		"d_plate": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:dimensional_chestplate",
+						"count": 1
+					}
+				]
+			}
+		},
+		"d_legs": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:dimensional_leggings",
+						"count": 1
+					}
+				]
+			}
+		},
+		"d_boots": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:dimensional_boots",
+						"count": 1
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"d_helmet",
+			"d_plate",
+			"d_legs",
+			"d_boots"
+		]
+	],
+	"rewards": {
+		"experience": 50
+	}
+}

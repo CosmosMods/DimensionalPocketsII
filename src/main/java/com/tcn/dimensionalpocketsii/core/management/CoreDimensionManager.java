@@ -15,9 +15,9 @@ public class CoreDimensionManager {
 	
 	public static final ResourceLocation POCKET_ID = new ResourceLocation(DimensionalPockets.MOD_ID, "pocket");
 
-	public static final RegistryKey<World> POCKET_WORLD = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, POCKET_ID);
-	private static final RegistryKey<DimensionType> POCKET_DIMENSION_TYPE = RegistryKey.getOrCreateKey(Registry.DIMENSION_TYPE_KEY, POCKET_ID);
-	private static final RegistryKey<Dimension> POCKET_DIMENSION = RegistryKey.getOrCreateKey(Registry.DIMENSION_KEY, POCKET_ID);
-	private static final RegistryKey<Biome> POCKET_BIOME = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, POCKET_ID);
+	public static final RegistryKey<World> POCKET_WORLD = RegistryKey.create(Registry.DIMENSION_REGISTRY, POCKET_ID);
+	private static final RegistryKey<DimensionType> POCKET_DIMENSION_TYPE = RegistryKey.create(Registry.DIMENSION_TYPE_REGISTRY, POCKET_ID);
+	private static final RegistryKey<Dimension> POCKET_DIMENSION = RegistryKey.create(Registry.LEVEL_STEM_REGISTRY, POCKET_ID);
+	private static final RegistryKey<Biome> POCKET_BIOME = RegistryKey.create(Registry.BIOME_REGISTRY, POCKET_ID);
 	  
 }

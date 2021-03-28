@@ -1,0 +1,31 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"MCM",
+		"NSN",
+		"WBW"
+	],
+	"key": {
+		"M": {
+			"item": "dimensionalpocketsii:block_dimensional_metal"
+		},
+		"C": {
+			"item": "dimensionalpocketsii:dimensional_chestplate"
+		},
+		"N" : {
+			"item": "minecraft:netherite_block"
+		},
+		"S" : {
+			"item": "minecraft:nether_star"
+		},
+		"W" : {
+			"item": "dimensionalpocketsii:elytra_wing"
+		},
+		"B" : {
+			"item": "minecraft:blaze_powder"
+		}
+	},
+	"result": {
+		"item": "dimensionalpocketsii:dimensional_elytraplate"
+	}
+}

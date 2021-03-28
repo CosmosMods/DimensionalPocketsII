@@ -1,0 +1,36 @@
+{
+	"parent": "dimensionalpocketsii:pocket/ingots",
+	"display": {
+		"icon": {
+			"item": "dimensionalpocketsii:dimensional_sword"
+		},
+		"title": "Unstoppable!",
+		"description": "Craft a Dimensional Sword.",
+		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
+		"frame": "task",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"d_sword": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:dimensional_sword",
+						"count": 1
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"d_sword"
+		]
+	],
+	"rewards": {
+		"experience": 50
+	}
+}

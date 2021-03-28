@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" II",
+		" S ",
+		" N "
+	],
+	"key": {
+		"I": {
+			"item": "dimensionalpocketsii:dimensional_ingot"
+		},
+		"S": {
+			"item": "minecraft:netherite_hoe"
+		},
+		"N": {
+			"item": "minecraft:netherite_ingot"
+		}
+	},
+	"result": {
+		"item": "dimensionalpocketsii:dimensional_hoe"
+	}
+}

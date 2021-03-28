@@ -1,11 +1,13 @@
 package com.tcn.dimensionalpocketsii.pocket.core.block;
 
-import com.tcn.cosmoslibrary.impl.nbt.BlockRemovableNBT;
+import com.tcn.cosmoslibrary.common.nbt.BlockRemovableNBT;
+import com.tcn.dimensionalpocketsii.core.management.CoreModBusManager;
 import com.tcn.dimensionalpocketsii.pocket.core.tileentity.TileEntityPocket;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -31,20 +33,21 @@ public class BlockPocket extends BlockRemovableNBT {
 	public static final IntegerProperty UP = IntegerProperty.create("up", 0, 3);
 	public static final IntegerProperty DOWN = IntegerProperty.create("down", 0, 3);
 	public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
+	public static final BooleanProperty SIDE_GUIDE = BooleanProperty.create("side_guide");
 
 	public BlockPocket(Block.Properties prop) {
 		super(prop);
 		
-		this.setDefaultState(this.getDefaultState()
-				.with(NORTH, 0).with(EAST, 0)
-				.with(SOUTH, 0).with(WEST, 0)
-				.with(UP, 0).with(DOWN, 0)
-				.with(LOCKED, false));
+		this.registerDefaultState(this.defaultBlockState()
+				.setValue(NORTH, 0).setValue(EAST, 0)
+				.setValue(SOUTH, 0).setValue(WEST, 0)
+				.setValue(UP, 0).setValue(DOWN, 0)
+				.setValue(LOCKED, false).setValue(SIDE_GUIDE, false));
 	}
 
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader worldIn) {
-		return new TileEntityPocket();
+		return CoreModBusManager.POCKET_TILE_TYPE.create();
 	}
 	
 	@Override
@@ -53,87 +56,115 @@ public class BlockPocket extends BlockRemovableNBT {
 	}
 	
 	@Override
-	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-		TileEntity tileEntity = world.getTileEntity(pos);
+	public void attack(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+		TileEntity tileEntity = world.getBlockEntity(pos);
 		
 		if (tileEntity instanceof TileEntityPocket) {
-			((TileEntityPocket) tileEntity).onBlockClicked(state, world, pos, player);
+			((TileEntityPocket) tileEntity).attack(state, world, pos, player);
 		}
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+	public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
+		TileEntity tileEntity = worldIn.getBlockEntity(pos);
 		
 		if (tileEntity instanceof TileEntityPocket) {
-			return ((TileEntityPocket) tileEntity).onBlockActivated(state, worldIn, pos, playerIn, handIn, hit);
+			return ((TileEntityPocket) tileEntity).use(state, worldIn, pos, playerIn, handIn, hit);
 		}
 		return ActionResultType.FAIL;
 	}
 	
 	@Override
-	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+	public void onPlace(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+		TileEntity tileEntity = worldIn.getBlockEntity(pos);
 		
 		if (tileEntity instanceof TileEntityPocket) {
-			((TileEntityPocket) tileEntity).onBlockAdded(state, worldIn, pos, oldState, isMoving);
+			((TileEntityPocket) tileEntity).onPlace(state, worldIn, pos, oldState, isMoving);
 		}
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+	public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		TileEntity tileEntity = worldIn.getBlockEntity(pos);
 		
 		if (tileEntity instanceof TileEntityPocket) {
-			((TileEntityPocket) tileEntity).onBlockPlacedBy(worldIn, pos, state, placer, stack);
+			((TileEntityPocket) tileEntity).setPlacedBy(worldIn, pos, state, placer, stack);
 		}
 	}
 
 	@Override
-	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+	public void playerWillDestroy(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+		TileEntity tileEntity = worldIn.getBlockEntity(pos);
 		
 		if (tileEntity instanceof TileEntityPocket) {
-			((TileEntityPocket) tileEntity).onBlockHarvested(worldIn, pos, state, player);
+			((TileEntityPocket) tileEntity).playerWillDestroy(worldIn, pos, state, player);
 		}
 	}
 
 	@Override
 	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-	TileEntity tileEntity = worldIn.getTileEntity(pos);
+	TileEntity tileEntity = worldIn.getBlockEntity(pos);
 		
 		if (tileEntity instanceof TileEntityPocket) {
 			((TileEntityPocket) tileEntity).neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
 		}
 	}
+
+	public BlockState updateState(BlockState state, BlockPos posIn, World worldIn) {
+		if (!worldIn.isClientSide) {
+			TileEntity entity = worldIn.getBlockEntity(posIn);
+			
+			if (entity instanceof TileEntityPocket) {
+				TileEntityPocket tile = (TileEntityPocket) entity;
+				
+				return this.defaultBlockState().setValue(NORTH, tile.getSide(Direction.NORTH).getIndex())
+						.setValue(EAST, tile.getSide(Direction.EAST).getIndex())
+						.setValue(SOUTH, tile.getSide(Direction.SOUTH).getIndex())
+						.setValue(WEST, tile.getSide(Direction.WEST).getIndex())
+						.setValue(UP, tile.getSide(Direction.UP).getIndex())
+						.setValue(DOWN, tile.getSide(Direction.DOWN).getIndex())
+						.setValue(LOCKED, tile.getLockState())
+						.setValue(SIDE_GUIDE, tile.getSideGuideValue());
+			} else {
+				return this.defaultBlockState();
+			}
+		} else {
+			return this.defaultBlockState();
+		}
+	}
 	
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
+	public boolean canEntityDestroy(BlockState state, IBlockReader world, BlockPos pos, Entity entity) {
+		return false;
+    }
+	
+	@Override
+	public BlockRenderType getRenderShape(BlockState state) {
 		return BlockRenderType.MODEL;
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		builder.add(NORTH, EAST, WEST, SOUTH, UP, DOWN, LOCKED);
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+		builder.add(NORTH, EAST, WEST, SOUTH, UP, DOWN, LOCKED, SIDE_GUIDE);
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {	
-		TileEntity tile_in = worldIn.getTileEntity(currentPos);
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {	
+		TileEntity tile_in = worldIn.getBlockEntity(currentPos);
 		
 		if (tile_in instanceof TileEntityPocket) {
-			TileEntityPocket tile = (TileEntityPocket) worldIn.getTileEntity(currentPos);
+			TileEntityPocket tile = (TileEntityPocket) worldIn.getBlockEntity(currentPos);
 
-			return stateIn.with(NORTH, tile.getSide(Direction.NORTH).getIndex())
-					.with(EAST, tile.getSide(Direction.EAST).getIndex())
-					.with(SOUTH, tile.getSide(Direction.SOUTH).getIndex())
-					.with(WEST, tile.getSide(Direction.WEST).getIndex())
-					.with(UP, tile.getSide(Direction.UP).getIndex())
-					.with(DOWN, tile.getSide(Direction.DOWN).getIndex())
-					.with(LOCKED, tile.getLockState());
+			return stateIn.setValue(NORTH, tile.getSide(Direction.NORTH).getIndex())
+					.setValue(EAST, tile.getSide(Direction.EAST).getIndex())
+					.setValue(SOUTH, tile.getSide(Direction.SOUTH).getIndex())
+					.setValue(WEST, tile.getSide(Direction.WEST).getIndex())
+					.setValue(UP, tile.getSide(Direction.UP).getIndex())
+					.setValue(DOWN, tile.getSide(Direction.DOWN).getIndex())
+					.setValue(LOCKED, tile.getLockState())
+					.setValue(SIDE_GUIDE, tile.getSideGuideValue());
 		} else {
-			return this.getDefaultState();
+			return this.defaultBlockState();
 		}
 	}
-	
 }

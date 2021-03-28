@@ -1,0 +1,46 @@
+{
+    "parent": "block/block",
+    "textures": {
+    	"particle": "dimensionalpocketsii:blocks/wall/wall",
+        "default": "dimensionalpocketsii:blocks/wall/module/display/base",
+        "wall": "dimensionalpocketsii:blocks/wall/wall"
+    },
+    "elements": [
+        {   
+        	"from": [ 0, 0, 0 ],
+            "to": [ 16, 16, 16 ],
+                "faces": {
+                "north": {
+                    "uv": [0,0,16,16],
+                    "texture": "#default",
+                    "tintindex": 0
+                },
+                "south": {
+                    "uv": [0,0,16,16],
+                    "texture": "#default",
+                    "tintindex": 0
+                },
+                "east": {
+                    "uv": [0,0,16,16],
+                    "texture": "#default",
+                    "tintindex": 0
+                },
+                "west": {
+                    "uv": [0,0,16,16],
+                    "texture": "#default",
+                    "tintindex": 0
+                },
+                "up": {
+                    "uv": [0,0,16,16],
+                    "texture": "#wall",
+                    "tintindex": 0
+                },
+                "down": {
+                    "uv": [0,0,16,16],
+                    "texture": "#wall",
+                    "tintindex": 0
+                }
+            }
+        }
+    ]
+}

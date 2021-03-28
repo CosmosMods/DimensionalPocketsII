@@ -1,6 +1,7 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "dimensionalpocketsii:items/dimensional_shifter"
+        "layer0": "dimensionalpocketsii:items/tool/shifter/normal_base",
+        "layer1": "dimensionalpocketsii:items/tool/shifter/normal_top"
     }
 }

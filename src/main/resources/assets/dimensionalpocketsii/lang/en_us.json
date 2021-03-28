@@ -12,13 +12,45 @@
 	
 	"item.dimensionalpocketsii.dimensional_shard": "Dimensional Shard",
 	"item.dimensionalpocketsii.dimensional_ingot": "Dimensional Metal Ingot",
+	"item.dimensionalpocketsii.dimensional_dust": "Dimensional Dust",
+	"item.dimensionalpocketsii.dimensional_pearl": "Dimensional Pearl",
+	"item.dimensionalpocketsii.dimensional_thread": "Dimensional Thread",
 	
 	"item.dimensionalpocketsii.dimensional_wrench": "Dimensional Wrench",
 	"item.dimensionalpocketsii.nether_star_shard": "Nether Star Shard",
 	"item.dimensionalpocketsii.dimensional_shifter": "Dimensional Shifter",
-	"item.dimensionalpocketsii.enhanced_dimensional_shifter": "Enhanced Dimensional Shifter",
+	"item.dimensionalpocketsii.dimensional_shifter_enhanced": "Enhanced Dimensional Shifter",
+	
+	"item.dimensionalpocketsii.dimensional_sword": "Dimensional Sword",
+	"item.dimensionalpocketsii.dimensional_pickaxe": "Dimensional Pickaxe",
+	"item.dimensionalpocketsii.dimensional_axe": "Dimensional Axe",
+	"item.dimensionalpocketsii.dimensional_shovel": "Dimensional Shovel",
+	"item.dimensionalpocketsii.dimensional_hoe": "Dimensional Hoe",
+	"item.dimensionalpocketsii.dimensional_bow": "Dimensional Bow",
+	"item.dimensionalpocketsii.dimensional_trident": "Dimensional Trident",
+	
+	"item.dimensionalpocketsii.dimensional_helmet": "Dimensional Helmet",
+	"item.dimensionalpocketsii.dimensional_chestplate": "Dimensional Chestplate",
+	"item.dimensionalpocketsii.dimensional_elytraplate": "Dimensional Elytraplate",
+	"item.dimensionalpocketsii.dimensional_elytraplate_screen": "Dimensional Elytraplate [Gui] [WIP]",
+	"item.dimensionalpocketsii.dimensional_elytraplate_shift": "Dimensional Elytraplate [Shifter]",
+	"item.dimensionalpocketsii.dimensional_leggings": "Dimensional Leggings",
+	"item.dimensionalpocketsii.dimensional_boots": "Dimensional Boots",
+	
+	"item.dimensionalpocketsii.dimensional_tome": "Dimensional Tome [WIP]",
+		
+	"item.dimensionalpocketsii.elytra_wing": "Elytra Wing",
+	
+	"item.dimensionalpocketsii.module_base": "Blank Pocket Module",
+	"item.dimensionalpocketsii.module_connector": "Pocket Connector Module",
+	"item.dimensionalpocketsii.module_charger": "Pocket Charger Module",
+	"item.dimensionalpocketsii.module_linker": "Pocket Linker Module",
+	"item.dimensionalpocketsii.module_crafter": "Pocket Crafter Module",
+	"item.dimensionalpocketsii.module_energy_display": "Energy Display Module",
 	
 	"block.dimensionalpocketsii.block_dimensional_ore": "Dimensional Ore",
+	"block.dimensionalpocketsii.block_dimensional_ore_nether": "Nether Dimensional Ore",
+	"block.dimensionalpocketsii.block_dimensional_ore_end": "End Dimensional Ore",
 	"block.dimensionalpocketsii.block_dimensional": "Block of Dimensional Material",
 	"block.dimensionalpocketsii.block_dimensional_metal": "Block of Dimensional Metal",
 	
@@ -28,57 +60,335 @@
 	"block.dimensionalpocketsii.block_wall": "Dimensional Wall",
 	"block.dimensionalpocketsii.block_wall_edge": "Dimensional Wall Edge",
 	
-	"block.dimensionalpocketsii.block_wall_connector": "Dimensional Connector",
-	"block.dimensionalpocketsii.block_wall_charger": "Dimensional Charger",
+	"block.dimensionalpocketsii.block_wall_connector": "Connector Module",
+	"block.dimensionalpocketsii.block_wall_charger": "Charger Module",
+	"block.dimensionalpocketsii.block_wall_crafter": "Crafter Module",
+	
 	"block.dimensionalpocketsii.block_wall_energy_display": "Dimensional Energy Display",
 	"block.dimensionalpocketsii.block_wall_fluid_display": "Dimensional Fluid Display",
 	
-	"command.dimshift.usage": "/dimshift <destination dimension>(As a number, Eg: 0 [Overworld])",
+	"dimensionalpocketsii.modid": "Dimensional Pockets II",
+	"dimensionalpocketsii.version": "[1.16.5-1.0.0]",
 	
-	"command.dimhelp.header": "--- Showing help for Dimensional Pockets ---",
-	"command.dimhelp.usage": "/dimhelp [ page ]",
+	"dimensionalpocketsii.command.dimshift.usage": "/dimshift <destination dimension>(As a word, eg: overworld)",
+	"dimensionalpocketsii.command.dimshift.error.exists": "Dimension specified does not exist.",
+	"dimensionalpocketsii.command.dimshift.error.cheats": "You must have Cheats enabled to use that Command.",
+	"dimensionalpocketsii.command.dimshift.error.creative": "You must be in Creative mode to use that Command.",
+	"dimensionalpocketsii.command.dimshift.error.same": "You are already in that Dimension.",
 	
-	"command.recoverpocket.usage": "/recoverpocket <pocket number> (Specifies the pocket to recover) / length (This will show how many pockets exist in the registry)",
-	"command.recoverpocket.too.usage": "Pocket number specified is more than the amount of pockets in the registry.",
-	"command.recoverpocket.wrong_name": "You cannot recover this pocket as it does not belong to you.",
-	"command.recoverpocket.creative": "You must be in Creative mode to use this command.",
+	"dimensionalpocketsii.command.dimhelp.header": "--- Showing help for Dimensional Pockets ---",
+	"dimensionalpocketsii.command.dimhelp.usage": "/dimhelp [ page ]",
 	
-	"command.recoverpocket_admin.usage": "/recoverpocketadmin <pocket number> (Specifies the pocket to recover) / length (This will show how many pockets exist in the registry)",
-	"command.recoverpocket_admin.too.usage": "Pocket number specified is more than the amount of pockets in the registry.",
+	"dimensionalpocketsii.command.recoverpocket.usage": "/recoverpocket <chunk x>,<chunk z> (Specifies the Pocket to recover by the Chunk Position)",
+	"dimensionalpocketsii.command.recoverpocket.usage_": "/recoverpocket length (This will show how many pockets exist in the Registry)",
+	"dimensionalpocketsii.command.recoverpocket.error.exists": "Pocket specified does not exist in the Registry.",
+	"dimensionalpocketsii.command.recoverpocket.error.cheats": "You must have Cheats enabled to use that Command.",
+	"dimensionalpocketsii.command.recoverpocket.error.not_owner": "You cannot recover this pocket as it does not belong to you.",
+	"dimensionalpocketsii.command.recoverpocket.error.creative": "You must be in Creative mode to use that Command.",
+	"dimensionalpocketsii.command.recoverpocket.error.no_space": "You must have at least 1 empty Inventory Slot available to recover a Pocket.",
 	
-	"command.setspawn.usage": "/setspawn (Sets the current position you are standing to the entry point when you enter this pocket.)",
-
-	"gui.main.dimensional_pocket.name": "Dimensional Pocket",
-	"gui.main.connector.name": "Connector Configuration",
+	"dimensionalpocketsii.command.recoverpocket.success.single": "Successfully recovered your Pocket",
+	"dimensionalpocketsii.command.recoverpocket.success.single_no_owner": "Successfully recovered unclaimed Pocket",
 	
-	"gui.header.allowed_players.name": "Allowed Players:",
-	"gui.header.owner.name": "Pocket Owner:",
-	"gui.header.config.name": "Configuration:",
-	"gui.header.legend.name": "Legend:",
-	"gui.header.layout.name": "Layout:",
-	"gui.header.internal.name": "Internals:",
-	"gui.comp.null_creator.name": "Null Creator!",
-	"gui.header.surrounding.name": "Surrounding:",
-	"gui.header.pocket_inv.name": "Pocket Items:",
+	"dimensionalpocketsii.command.recoverpocket.op.usage": "/recoverpocketop <chunk x>,<chunk y> (Specifies the Pocket to recover by the Chunk Position)",
+	"dimensionalpocketsii.command.recoverpocket.op.error.exists": "Pocket specified does not exist in the Registry.",
+	"dimensionalpocketsii.command.recoverpocket.op.error.permission": "You must be a Server Operator to use that Command.",
+	"dimensionalpocketsii.command.recoverpocket.op.error.creative": "You must be in Creative mode to use that Command.",
 	
-	"gui.config.name": "Dimensional Pockets II Config",
-	"gui.done": "Done",
+	"dimensionalpocketsii.command.setspawn.usage": "/setspawn (Sets the current position you are standing to the entry point when you enter this pocket.)",
+	"dimensionalpocketsii.command.setspawn.success.pre": "Successfully set Pocket Spawn Location to: [",
+	"dimensionalpocketsii.command.setspawn.success.suff": "]",
+	"dimensionalpocketsii.command.setspawn.error.dimension": "You must be inside a Pocket to use this Command.",
 	
-	"config.keep_chunks_loaded": "Keep Chunks Loaded",
+	"dimensionalpocketsii.command.transfer.success.old": "Successfully transferred Pocket to: ",
+	"dimensionalpocketsii.command.transfer.success.new": " has transferred their Pocket to you.",
+	"dimensionalpocketsii.command.transfer.error.owner_same": "You cannot transfer Ownership of your Pocket to yourself.",
+	"dimensionalpocketsii.command.transfer.error.not_owner": "You cannot transfer Ownership of that Pocket as you don't own it.",
 	
-	"pocket.status.locked.name": "[Locked]",
-	"pocket.status.unlocked.name": "[Unlocked]",
-	"pocket.status.locked_.name": "Pocket Locked.",
-	"pocket.status.unlocked_.name": "Pocket Unlocked.",
-	"pocket.status.is_locked.name": "This Pocket has been locked by: ",
-	"pocket.status.owner.name": "Owned by:",
-	"pocket.status.and.name": "Currently: ",
-	"pocket.status.remove_locked.name": "This Pocket is locked. You must unlock before removal.",
-	"pocket.status.remove_not.name": "Only the owner of this Pocket can remove it.",
-	"pocket.status.access_set.name": "You cannot access the settings of this pocket.",
-	"pocket.status.access_lock.name": "You cannot access the settings of this pocket.",
-	"pocket.status.creator_null.name": "The creator field is null.",
-	"pocket.status.null.name": "Pocket is null. Seek help from the Mod Creator.",
+	"dimensionalpocketsii.error.command.usage": "You cannot use that Command inside a Pocket.",
+	"dimensionalpocketsii.error.block.usage": "You cannot place that Block inside a Pocket.",
+	"dimensionalpocketsii.error.item.usage": "You cannot use that Item inside a Pocket.",
 	
-	"pocket.desc.creator.name": "Creator:"
+	"dimensionalpocketsii.welcome_one": "Welcome to ",
+	"dimensionalpocketsii.welcome_two": "Dimensional Pockets II! ",
+	"dimensionalpocketsii.welcome_three": "Please see the Dimensional Tome in your inventory for more information. ",
+	"dimensionalpocketsii.welcome_four": "Current Version: ",
+	
+	"dimensionalpocketsii.gui.pocket.header": "Dimensional Pocket",
+	"dimensionalpocketsii.gui.connector.header": "Connector Module",
+	"dimensionalpocketsii.gui.crafter": "Crafting Module",
+	
+	"dimensionalpocketsii.gui.header.allowed_players": "Allowed Players:",
+	"dimensionalpocketsii.gui.header.owner": "Pocket Owner:",
+	"dimensionalpocketsii.gui.header.config": "Configuration:",
+	"dimensionalpocketsii.gui.header.legend": "Legend:",
+	"dimensionalpocketsii.gui.header.layout": "Layout:",
+	"dimensionalpocketsii.gui.header.internal": "Internals:",
+	"dimensionalpocketsii.gui.comp.null_creator": "Null Creator!",
+	"dimensionalpocketsii.gui.header.surrounding": "Surrounding:",
+	"dimensionalpocketsii.gui.header.pocket_inv": "Pocket Items:",
+	
+	"dimensionalpocketsii.gui.lock_info": "Lock or Unlock Pocket.",
+	"dimensionalpocketsii.gui.lock_value": "Pocket is currently: ",
+	
+	"dimensionalpocketsii.gui.allowed_player_info": "Allow or Block Allowed Players from Shifting.",
+	"dimensionalpocketsii.gui.allowed_player_value": "Allowed Players are Currently: ",
+	
+	"dimensionalpocketsii.gui.trap_players_info": "Trap or Free Players.",
+	"dimensionalpocketsii.gui.trap_players_value": "Players are currently: ",
+	
+	"dimensionalpocketsii.gui.hostile_spawn_info": "Allow or Block Hostile Mob Spawning.",
+	"dimensionalpocketsii.gui.hostile_spawn_value": "Hostile Spawns are Currently: ",
+	
+	"dimensionalpocketsii.gui.connector.connection_info": "Change Connection Type.",
+	"dimensionalpocketsii.gui.connector.connection_value": "Current Type: ",
+	
+	"dimensionalpocketsii.gui.connector.side_state_info": "Change Connector Side State.",
+	"dimensionalpocketsii.gui.connector.side_state_value": "Current State: ",
+	
+	"dimensionalpocketsii.gui.pocket.side_guide_info": "Show or Hide Side Guide.",
+	"dimensionalpocketsii.gui.pocket.side_guide_value": "Side Guide is: ",
+	
+	"dimensionalpocketsii.gui.button.text.clear": "Clear the Text Field",
+	"dimensionalpocketsii.gui.button.text.plus": "Add Player",
+	"dimensionalpocketsii.gui.button.text.minus": "Remove Player",
+	
+	"dimensionalpocketsii.gui.button.direction.prefix": "Change Pocket Side State.",
+	"dimensionalpocketsii.gui.button.direction.suffix": "Current State: ",
+	
+	"dimensionalpocketsii.gui.button.direction.down": "Down",
+	"dimensionalpocketsii.gui.button.direction.up": "Up",
+	"dimensionalpocketsii.gui.button.direction.north": "North",
+	"dimensionalpocketsii.gui.button.direction.south": "South",
+	"dimensionalpocketsii.gui.button.direction.west": "West",
+	"dimensionalpocketsii.gui.button.direction.east": "East",
+	
+	"dimensionalpocketsii.gui.button.tank_clear": "Shift-Click to Empty the Fluid Tank.",
+	"dimensionalpocketsii.gui.button.tank_clear_shift": "Warning! This cannot be undone.",
+	
+	"dimensionalpocketsii.gui.fluid_bar.pre": "Fluid Stored: ",
+	"dimensionalpocketsii.gui.fluid_bar.suff": " mB.",
+	
+	"dimensionalpocketsii.gui.energy_bar.pre": "Energy Stored: ",
+	"dimensionalpocketsii.gui.energy_bar.suff": " FE.",
+	
+	"dimensionalpocketsii.gui.config.name": "Dimensional Pockets II Config",
+	"dimensionalpocketsii.gui.config.chunks": "Keep Chunks Loaded",
+	"dimensionalpocketsii.gui.config.walls": "Can Destroy Walls In Creative",
+	"dimensionalpocketsii.gui.config.commands": "Cancel Commands",
+	"dimensionalpocketsii.gui.config.height": "Internal Pocket Height",
+	"dimensionalpocketsii.gui.config.replace": "Replace Internals",
+	"dimensionalpocketsii.gui.config.book": "Spawn With Book",
+	"dimensionalpocketsii.gui.config.structures": "Can Place Structures",
+	"dimensionalpocketsii.gui.config.use_items": "Can Use Items",
+	"dimensionalpocketsii.gui.config.messages": "Debug Messages",
+	"dimensionalpocketsii.gui.config.textures": "Connected Textures",
+	"dimensionalpocketsii.gui.done": "Done",
+	
+	"dimensionalpocketsii.config.keep_chunks_loaded": "Keep Chunks Loaded",
+	
+	"dimensionalpocketsii.pocket.status": "Pocket: ",
+	"dimensionalpocketsii.pocket.action.locked": "[Locked]",
+	"dimensionalpocketsii.pocket.action.unlocked": "[Unlocked]",
+	"dimensionalpocketsii.pocket.action.locked_": "Pocket Locked.",
+	"dimensionalpocketsii.pocket.status.unlocked_": "Pocket Unlocked.",
+	"dimensionalpocketsii.pocket.status.is_locked": "This Pocket has been locked by: ",
+	"dimensionalpocketsii.pocket.status.owner": "Owned by: ",
+	"dimensionalpocketsii.pocket.status.and": "Currently: ",
+	"dimensionalpocketsii.pocket.status.remove_locked": "This Pocket is LOCKED. You must unlock before removal.",
+	"dimensionalpocketsii.pocket.status.no_access": "You cannot access the settings of this pocket.",
+	"dimensionalpocketsii.pocket.status.no_access_remove": "Only the Owner of a Pocket can remove it.",
+	"dimensionalpocketsii.pocket.status.creator_null": "Creator NULL. Report this to the Mod Author.",
+	"dimensionalpocketsii.pocket.status.action.null": "Action unavailable. Pocket is NULL. Report this to the Mod Author.",
+	"dimensionalpocketsii.pocket.status.null": "Shift cancelled. Pocket is NULL. Report this to the Mod Author.",
+	"dimensionalpocketsii.pocket.status.locked": "Shift cancelled. This Pocket has been locked by the Owner.",
+	"dimensionalpocketsii.pocket.status.trapped": "Shift cancelled. The Owner of this Pocket will not let you leave.",
+	"dimensionalpocketsii.pocket.status.broken": "Pocket Block BROKEN.",
+	"dimensionalpocketsii.pocket.status.blocked": "Pocket is BLOCKED.",
+	"dimensionalpocketsii.pocket.status.location_blocked": "Pocket Shift Location BLOCKED.",
+	"dimensionalpocketsii.pocket.status.direction_unknown": "Direction UNKNOWN. Report this to the Mod Author.",
+	"dimensionalpocketsii.pocket.status.colour_update": "Pocket colour changed to: ",
+	"dimensionalpocketsii.pocket.status.cycle_side": "Side Cycled: ",
+	
+	"dimensionalpocketsii.pocket.desc.creator.name": "Creator:",
+	
+	"dimensionalpocketsii.pocket.direction.enter": "Entering ",
+	"dimensionalpocketsii.pocket.direction.leave": "Leaving ",
+	"dimensionalpocketsii.pocket.direction.unknown": "Unkown ",
+	
+	"dimensionalpocketsii.pocket.direction.pre": "You are now: ",
+	"dimensionalpocketsii.pocket.direction.suff": "the Pocket Dimension.",
+	
+	"dimensionalpocketsii.direction.generic.pre": "Successfully Shifted: ",
+	"dimensionalpocketsii.direction.generic.mid": " to: ",
+	
+	"dimensionalpocketsii.pocket.shifter_core.target_unknown_custom": "Unable to Shift to correct Target. ",
+	"dimensionalpocketsii.pocket.shifter_core.target_unknown": "Unable to Shift to correct Target. Defaulting to World Spawn.",
+	"dimensionalpocketsii.pocket.shifter_core.direction_unknown": "Shift cancelled. Direction UNKNOWN. Report this to the Mod Author.",
+	"dimensionalpocketsii.pocket.shifter_core.dimension_null": "Shift cancelled. Dimension NULL. Report this to the Mod Author.",
+	"dimensionalpocketsii.pocket.shifter_core.server_world_null": "Shift cancelled. ServerWorld NULL. Report this to the Mod Author.",
+	
+	"dimensionalpocketsii.keybind.suit_gui": "Elytraplate GUI Key",
+	"dimensionalpocketsii.keybind.suit_shift": "Elytraplate Shift Key",
+	"dimensionalpocketsii.keybind.suit_mode_change": "Elytraplate Mode Change Key",
+	"dimensionalpocketsii.keybind.category": "Dimensional Pockets II",
+	
+	"dimensionalpocketsii.item.message.shifter.linked": "Dimensional Shifter linked to Pocket:",
+	"dimensionalpocketsii.item.message.shifter.not_linked": "You haven't linked your Shifter to a Pocket yet!",
+	"dimensionalpocketsii.item.message.shifter.mode_change": "Mode Changed: ",
+	"dimensionalpocketsii.item.message.shifter.mode_change_prefix": "[ Teleport to block: ",
+	"dimensionalpocketsii.item.message.shifter.mode_change_true": "true",
+	"dimensionalpocketsii.item.message.shifter.mode_change_false": "false",
+	"dimensionalpocketsii.item.message.shifter.mode_change_suffix": "]",
+	"dimensionalpocketsii.item.message.shifter.out_of_charges": "Your Dimensional Shifter is out of charges!",
+	
+	"dimensionalpocketsii.item.message.elytraplate.linked": "Elytraplate linked to Pocket:",
+	"dimensionalpocketsii.item.message.elytraplate.not_linked": "You haven't linked your Elytraplate to a Pocket yet!",
+	
+	"dimensionalpocketsii.info.shifter_info": "Allows access to a Pocket from anywhere!",
+	"dimensionalpocketsii.info.shifter_shift_one": "To link: shift-right click this on a Pocket Block!",
+	"dimensionalpocketsii.info.shifter_shift_two": "To use: shift-right click this item facing open air!",
+	"dimensionalpocketsii.info.shifter_shift_three": "To change mode: right-click this item facing air!",
+	"dimensionalpocketsii.info.shifter_limitation": "Limited to 30 charges.",
+	"dimensionalpocketsii.info.shifter_enhanced": "Unlimited Charges.",
+	
+	"dimensionalpocketsii.info.shifter_player_pos": "Saved Player Position: ",
+	"dimensionalpocketsii.info.shifter_source_dimension": "Pocket Source Dimension: ",
+	
+	"dimensionalpocketsii.info.shifter.charges": "Current remaining charges: ",
+	"dimensionalpocketsii.info.shifter.pocket": "Currently linked to Pocket: ",
+	
+	"dimensionalpocketsii.info.pocket.pocket": "Linked to Pocket: ",
+	
+	"dimensionalpocketsii.info.elytraplate_info": "Dimensional Chestplate + Elytra!",
+	"dimensionalpocketsii.info.elytraplate_shift_one": "Upgraded Dimensional Armour with Elytra Flight.",
+	"dimensionalpocketsii.info.elytraplate_shift_two": "Unlimted Elytra Flight. No durability.",
+	
+	"dimensionalpocketsii.info.elytraplate_s_info": "Elytraplate + Screen GUI!",
+	"dimensionalpocketsii.info.elytraplate_s_shift_one": "Elytraplate with access to a Connector GUI.",
+	"dimensionalpocketsii.info.elytraplate_s_shift_two": "To open the GUI: press the ",
+	"dimensionalpocketsii.info.elytraplate_s_shift_three": "To link: shift-right click this on a Pocket Block.",
+	"dimensionalpocketsii.info.elytraplate_s_shift_four": "Unlimted Elytra Flight. No durability.",
+	
+	"dimensionalpocketsii.info.elytraplate_sh_info": "Elytraplate + Shifter!",
+	"dimensionalpocketsii.info.elytraplate_sh_shift_one": "Elytraplate with a built in Shifter.",
+	"dimensionalpocketsii.info.elytraplate_sh_shift_two": "To Shift: press the ",
+	"dimensionalpocketsii.info.elytraplate_sh_shift_two_": "To switch Modes: press the ",
+	"dimensionalpocketsii.info.elytraplate_sh_shift_three": "To link: shift-right click this on a Pocket Block.",
+	"dimensionalpocketsii.info.elytraplate_sh_shift_four": "Unlimted Elytra Flight. No durability.",
+	
+	"dimensionalpocketsii.info.elytraplate_key": " key. ",
+	
+	"dimensionalpocketsii.info.tome_info": "A full guide on Dimensional Pockets II!",
+	"dimensionalpocketsii.info.tome_shift_one": "Contains crafting recipes, mechanics and more.",
+	"dimensionalpocketsii.info.tome_shift_two": "To access the Guide, simply right click your Tome.",
+	
+	"dimensionalpocketsii.info.module.base": "Base Pocket Module",
+	
+	"dimensionalpocketsii.info.module.charger": "Charger Module.",
+	"dimensionalpocketsii.info.module.charger_shift_one": "To create: shift-right click this on any wall block inside your Pocket.",
+	"dimensionalpocketsii.info.module.charger_shift_two": "To remove: shift-right click on the Charger with a Wrench.",
+	
+	"dimensionalpocketsii.info.block.module.charger": "Used to charge Dimensional Items.",
+	"dimensionalpocketsii.info.block.module.charger_shift_one": "To use: right-click the Item that requires charging on the Charger.",
+	"dimensionalpocketsii.info.block.module.charger_shift_two": "To retreive the Item, right-click with an empty hand.",
+	
+	"dimensionalpocketsii.info.module.connector": "Connector Module.",
+	"dimensionalpocketsii.info.module.connector_shift_one": "To create: shift-right click this on any wall block inside your Pocket.",
+	"dimensionalpocketsii.info.module.connector_shift_two": "To remove: shift-right click on the Connector with a Wrench.",
+	
+	"dimensionalpocketsii.info.block.module.connector": "Pocket Interface. Has a GUI.",
+	"dimensionalpocketsii.info.block.module.connector_shift_one": "To use: right-click on this block to access the GUI.",
+	"dimensionalpocketsii.info.block.module.connector_shift_two": "To change mode: right-click on the Connector with a Wrench.",
+	
+	"dimensionalpocketsii.info.module.linker": "Linker Module.",
+	"dimensionalpocketsii.info.module.linker_shift_one": "To create: shift-right click this on any wall block inside your Pocket.",
+	"dimensionalpocketsii.info.module.linker_shift_two": "To remove: shift-right click on the Linker with a Wrench.",
+	
+	"dimensionalpocketsii.info.block.module.linker": "Used to link Dimensional Items.",
+	"dimensionalpocketsii.info.block.module.linker_shift_one": "To use: right-click the Item that requires linking on the Linker.",
+	"dimensionalpocketsii.info.block.module.linker_shift_two": "To retreive the Item, right-click with an empty hand.",
+	
+	"dimensionalpocketsii.info.block.pocket": "Creates a pocket dimension!",
+	"dimensionalpocketsii.info.block.pocket_shift_one": "Once placed shift-right click to enter the pocket.",
+	"dimensionalpocketsii.info.block.pocket_shift_two": "To exit the pocket, simply shift-right click on any wall.",
+	"dimensionalpocketsii.info.block.pocket_shift_three": "To change colours, simply right-click your Pocket Block, or Connector with your choice of dye.",
+	
+	"dimensionalpocketsii.info.module.crafter": "Crafter Module.",
+	"dimensionalpocketsii.info.module.crafter_shift_one": "To create: shift-right click this on any wall block inside your Pocket.",
+	"dimensionalpocketsii.info.module.crafter_shift_two": "To remove: shift-right click on the Crafter with a Wrench.",
+	
+	"dimensionalpocketsii.info.block.module.crafter": "Dimensional Crafting Bench",
+	"dimensionalpocketsii.info.block.module.crafter_shift_one": "To use: right-click the Crafter to Craft.",
+	
+	"dimensionalpocketsii.info.module.energy_display": "Energy Display Module.",
+	"dimensionalpocketsii.info.module.energy_display_shift_one": "To create: shift-right click this on any wall block inside your Pocket.",
+	"dimensionalpocketsii.info.module.energy_display_shift_two": "To remove: shift-right click on the Energy Display with a Wrench.",
+	
+	"dimensionalpocketsii.info.block.module.energy_display": "Quick Glance Display of Stored Energy",
+	"dimensionalpocketsii.info.block.module.energy_display_shift_one": "Displays the current energy level of your Pocket.",
+	
+	"dimensionalpocketsii.tome_page": "Page: ",
+	"dimensionalpocketsii.tome_heading": "Dimensional Tome",
+	
+	"dimensionalpocketsii.tome_button_one": "Exit",
+	"dimensionalpocketsii.tome_button_two": "Home",
+	"dimensionalpocketsii.tome_button_three": "Next Page",
+	"dimensionalpocketsii.tome_button_four": "Previous Page",
+	
+	"dimensionalpocketsii.tome_one_body": "Welcome to:<br>",
+	"dimensionalpocketsii.tome_one_body_one": "DimensionalPocketsII!<br> ",
+	"dimensionalpocketsii.tome_one_body_two": "<br>This Tome will enable you to<br>better understand how to use<br>the mod, with all the recipes<br>you need to get started!",
+	"dimensionalpocketsii.tome_one_body_heading": "Contents:",
+	"dimensionalpocketsii.tome_foot_one": "Contents: ",
+	
+	"dimensionalpocketsii.tome_two_heading": "[1]: Introduction",
+	"dimensionalpocketsii.tome_two_body_one": "So, you've decided you want<br>to explore the world of<br>Pocket Dimensions?<br> <br>Well, you have come to the<br>right place!",
+	"dimensionalpocketsii.tome_two_body_two": "In this guide, you will learn:",
+	"dimensionalpocketsii.tome_two_sub_one": "-How to use Pockets",
+	"dimensionalpocketsii.tome_two_sub_two": "-How to use Pocket Modules",
+	"dimensionalpocketsii.tome_two_sub_three": "-Dimensional Items + their uses",
+	"dimensionalpocketsii.tome_two_sub_four": "-Dimensional Configuration",
+	"dimensionalpocketsii.tome_two_sub_five": "-Dimensional Armour + Weapons",
+	"dimensionalpocketsii.tome_two_sub_six": "-Dimensional Crafting Recipes",
+	"dimensionalpocketsii.tome_two_body_three": "To continue please use either<br>the tabs on the right side,<br>or the arrows at the bottom.",
+	"dimensionalpocketsii.tome_foot_two": "Introduction: ",
+	
+	"dimensionalpocketsii.tome_three_heading": "[2]: Pockets",
+	"dimensionalpocketsii.tome_three_body_one": "This is a Pocket Block.<br>It is the heart of the Mod.<br>To use it: Shift-right click.<br>Thats it! It really is that simple.<br>This will send you to the<br>Pocket Dimension, into your<br>own personal Pocket!<br>A Pocket is a private space<br>away from everything else.",
+	"dimensionalpocketsii.tome_foot_three": "Pockets: ",
+	
+	"dimensionalpocketsii.tome_four_heading": "[3]: Modules",
+	"dimensionalpocketsii.tome_four_body": "Modules are used to interface<br>with certain aspects of a<br>Pocket, such as functions<br>or other uses such as viewing<br>energy or fluid levels,<br>storing items and accessing<br>settings.<br> <br>Modules are crafted, and<br>when you need to place one:<br>Simply shift-right click the<br>Module onto a wall inside<br>your Pocket. To retreive a<br>module, shift-right click the<br>module with a Wrench.<br> <br>The next few pages show each<br>of the modules in the Mod.",
+	"dimensionalpocketsii.tome_four_heading_one": "[A]: Connector",
+	"dimensionalpocketsii.tome_four_body_one": "This is a Connector Module.<br>It is used to interface with<br>a Pocket from inside your<br>Pocket.<br> <br>Use this to Lock & Unlock<br>your Pocket, add Allowed<br>Players for Servers, and<br>much more!<br>Right-click to access the GUI.",
+	"dimensionalpocketsii.tome_four_heading_two": "[B]: Charger",
+	"dimensionalpocketsii.tome_four_body_two": "This is a Charger Module. It<br>is used to charge items,<br>using FE or Forge Energy.<br>This module will take FE from<br>your Pockets' internal<br>storage, and use it to charge<br>any item which needs FE.<br> <br>Some dimensional items<br>require FE, so this block is<br>a useful way to charge them.",
+	"dimensionalpocketsii.tome_four_heading_three": "[C]: Crafter",
+	"dimensionalpocketsii.tome_four_body_three": "This is a Crafter Module. It<br>is used to craft items,<br>similar to a Crafting<br>Bench. A convenient way<br>to craft inside your<br>Pocket!",
+	
+	"dimensionalpocketsii.tome_foot_four": "Modules: ",
+	
+	"dimensionalpocketsii.tome_five_heading": "[4]: Items",
+	"dimensionalpocketsii.tome_foot_five": "Items: ",
+	
+	"dimensionalpocketsii.tome_six_heading": "[5]: Configuration",
+	"dimensionalpocketsii.tome_foot_six": "Configuration: ",
+	
+	"dimensionalpocketsii.tome_seven_heading": "[6]: Armour",
+	"dimensionalpocketsii.tome_foot_seven": "Armour: ",
+	
+	
+	"dimensionalpocketsii.tome_eight_heading": "[6.5]: Weapons",
+	"dimensionalpocketsii.tome_foot_eight": "Weapons: ",
+	
+	"dimensionalpocketsii.tome_nine_heading": "[7]: Recipes",
+	"dimensionalpocketsii.tome_foot_nine": "Recipes: ",
+	
+	"dimensionalpocketsii.tome_ten_heading": "[8]: Credits",
+	"dimensionalpocketsii.tome_ten_body_one": "Programmers:",
+	"dimensionalpocketsii.tome_ten_body_two": "Beta Testers + Ideas",
+	"dimensionalpocketsii.tome_ten_body_three": "Translation:",
+	"dimensionalpocketsii.tome_foot_ten": "Credits: "
+	
 }

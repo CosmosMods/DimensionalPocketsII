@@ -1,0 +1,6 @@
+{
+    "parent": "dimensionalpocketsii:item/dimensional_bow",
+    "textures": {
+        "layer0": "dimensionalpocketsii:items/tool/bow_0"
+    }
+}

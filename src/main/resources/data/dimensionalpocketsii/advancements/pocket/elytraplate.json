@@ -1,0 +1,36 @@
+{
+	"parent": "dimensionalpocketsii:pocket/armour_set",
+	"display": {
+		"icon": {
+			"item": "dimensionalpocketsii:dimensional_elytraplate"
+		},
+		"title": "Wings of an Angel!",
+		"description": "Craft a Dimensional Elytraplate.",
+		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
+		"frame": "challenge",
+		"show_toast": true,
+		"announce_to_chat": true,
+		"hidden": false
+	},
+	"criteria": {
+		"elytraplate": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"item": "dimensionalpocketsii:dimensional_elytraplate",
+						"count": 1
+					}
+				]
+			}
+		}
+	},
+	"requirements": [
+		[
+			"elytraplate"
+		]
+	],
+	"rewards": {
+		"experience": 150
+	}
+}

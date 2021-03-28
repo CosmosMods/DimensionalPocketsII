@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "dimensionalpocketsii:items/module/energy_base",
+        "layer1": "dimensionalpocketsii:items/module/energy_top"
+    }
+}

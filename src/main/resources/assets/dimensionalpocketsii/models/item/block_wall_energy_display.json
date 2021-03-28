@@ -1,3 +1,3 @@
 {
-    "parent": "dimensionalpocketsii:block/display/energy/display_0"
+    "parent": "dimensionalpocketsii:block/module/energy/base_gui"
 }

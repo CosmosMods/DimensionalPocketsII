@@ -6,6 +6,7 @@ import net.minecraft.advancements.criterion.AbstractCriterionTrigger;
 import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.advancements.criterion.EnchantmentPredicate;
 import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.EntityPredicate.AndPredicate;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.advancements.criterion.NBTPredicate;
@@ -32,12 +33,12 @@ public class UseShifterTrigger extends AbstractCriterionTrigger<UseShifterTrigge
 	}
 
 	public UseShifterTrigger.Instance deserializeTrigger(JsonObject json, EntityPredicate.AndPredicate entityPredicate, ConditionArrayParser conditionsParser) {
-		return new UseShifterTrigger.Instance(entityPredicate, ItemPredicate.deserialize(json.get("item")));
+		return new UseShifterTrigger.Instance(entityPredicate, ItemPredicate.fromJson(json.get("item")));
 	}
 
 	public void trigger(ServerPlayerEntity player, ItemStack item) {
-		this.triggerListeners(player, (instance) -> {
-			return instance.test(item);
+		this.trigger(player, (instance) -> {
+			return instance.matches(item);
 		});
 	}
 
@@ -49,22 +50,27 @@ public class UseShifterTrigger extends AbstractCriterionTrigger<UseShifterTrigge
 			this.item = item;
 		}
 
-		public static UseShifterTrigger.Instance any() {
-			return new UseShifterTrigger.Instance(EntityPredicate.AndPredicate.ANY_AND, ItemPredicate.ANY);
+		public static UseShifterTrigger.Instance usedItem() {
+			return new UseShifterTrigger.Instance(EntityPredicate.AndPredicate.ANY, ItemPredicate.ANY);
 		}
 
-		public static UseShifterTrigger.Instance forItem(IItemProvider item) {
-			return new UseShifterTrigger.Instance(EntityPredicate.AndPredicate.ANY_AND, new ItemPredicate((ITag<Item>) null, item.asItem(), MinMaxBounds.IntBound.UNBOUNDED, MinMaxBounds.IntBound.UNBOUNDED, EnchantmentPredicate.enchantments, EnchantmentPredicate.enchantments, (Potion) null, NBTPredicate.ANY));
+		public static UseShifterTrigger.Instance usedItem(IItemProvider item) {
+			return new UseShifterTrigger.Instance(EntityPredicate.AndPredicate.ANY, new ItemPredicate((ITag<Item>) null, item.asItem(), MinMaxBounds.IntBound.ANY, MinMaxBounds.IntBound.ANY, EnchantmentPredicate.NONE, EnchantmentPredicate.NONE, (Potion) null, NBTPredicate.ANY));
 		}
 
-		public boolean test(ItemStack item) {
-			return this.item.test(item);
+		public boolean matches(ItemStack item) {
+			return this.item.matches(item);
 		}
 
-		public JsonObject serialize(ConditionArraySerializer conditions) {
-			JsonObject jsonobject = super.serialize(conditions);
-			jsonobject.add("item", this.item.serialize());
+		public JsonObject serializeToJson(ConditionArraySerializer conditions) {
+			JsonObject jsonobject = super.serializeToJson(conditions);
+			jsonobject.add("item", this.item.serializeToJson());
 			return jsonobject;
 		}
+	}
+
+	@Override
+	protected Instance createInstance(JsonObject jsonObjectIn, AndPredicate andPredicateIn, ConditionArrayParser arrayParserIn) {
+		return null;
 	}
 }

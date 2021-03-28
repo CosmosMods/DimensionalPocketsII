@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"ICI",
+		"N N",
+		"   "
+	],
+	"key": {
+		"I": {
+			"item": "dimensionalpocketsii:dimensional_ingot"
+		},
+		"N": {
+			"item": "minecraft:netherite_ingot"
+		},
+		"C" : {
+			"item": "minecraft:netherite_boots"
+		}
+	},
+	"result": {
+		"item": "dimensionalpocketsii:dimensional_boots"
+	}
+}
