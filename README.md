@@ -1,5 +1,5 @@
 # DimensionalPocketsII
-Due to having a similiar idea to NPException's Dimensional Pockets, I have created DimensionalPocketsII with some features carried over, but with my own twist. Currently using MinecraftForge 1.16.5.
+Due to having a similiar idea to NPException's Dimensional Pockets, I have created DimensionalPocketsII with some features carried over, but with my own twist. Currently using MinecraftForge 1.16.3.
 
 ## Licence
 This repo does not have a licence. This means that by default, it is All Rights Reserved. However, due to having complete control over what rights that includes, here is a list of what you can and cannot do:
