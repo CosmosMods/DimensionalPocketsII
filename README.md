@@ -20,6 +20,7 @@ This repo does not have a licence. This means that by default, it is All Rights 
    - You include a link to the Mod on the same page as the download for your Pack.
    - Include the author name (TheCosmicNebula) above the link.
    - You do not re-route the link through comission sites such as Ad.Fly.
+- Copy any classes that have the #OPEN tag in the comment after the Imports.
 
 ## You Cannot:
  - Copy large chunks of code, entire Class files or any assets contained within the Mod.
