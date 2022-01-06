@@ -1,15 +1,87 @@
 package com.tcn.dimensionalpocketsii;
 
-import net.minecraft.util.ResourceLocation;
+import java.util.ArrayList;
+
+import com.tcn.cosmoslibrary.common.lib.ComponentColour;
+import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
+
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class DimReference {
 	
 	public static class CONSTANT {
-		//public static final int POCKET_DIMENSION_ID = 98;
 		public static final int POCKET_BIOME_ID = 99;
 		
 		public static final int POCKET_HELD_ITEMS_SIZE = 48;
-		public static final int POCKET_RF_CAP = 50000000;
+		
+		public static final int POCKET_FE_CAP = 500000000;
+		public static final int POCKET_FE_REC = 100000;
+		public static final int POCKET_FE_EXT = 100000;
+		
+		public static final int POCKET_FLUID_CAP = 1000000;
+		
+		public static final int DEFAULT_COLOUR = ComponentColour.POCKET_PURPLE.dec();
+		
+		public static final int[] ENERGY = new int[] { 2000000, 50000, 4000 };
+		public static final int[] ENERGY_ENHANCED = new int[] { 4000000, 100000, 6000 };
+		
+		public static final ComponentColour ENERGYBARCOLOUR = ComponentColour.RED;
+	}
+	
+	public static class CONFIG_DEFAULTS {
+		public static final ArrayList<String> BLOCKED_BLOCKS = new ArrayList<String>() { 
+			private static final long serialVersionUID = 4L;
+			
+			{
+				add("lucky:lucky_block");
+				add("chancecubes:chance_cube");
+				add("chancecubes:chance_icosahedron");
+				add("chancecubes:giant_chance_cube");
+				add("chancecubes:cube_dispenser");
+				add("xreliquary:wraith_node");
+				add("notenoughwands:teleportation_wand");
+			};
+		};
+		
+		public static final ArrayList<String> BLOCKED_ITEMS = new ArrayList<String>() {
+			private static final long serialVersionUID = 4L;
+			
+			{
+				add("minecraft:chorus_fruit");
+				add("minecraft:ender_pearl");
+				add("xreliquary:ender_staff");
+				add("inventorypets:pet_nether_portal");
+				add("inventorypets:pet_enderman");
+				add("inventorypets:pet_silverfish");
+				add("mana-and-artifice:spell");
+				add("mana-and-artifice:spell_book");
+				add("mana-and-artifice:grimoire");
+				//add("");
+			};
+		};
+		
+		public static final ArrayList<String> BLOCKED_COMMANDS = new ArrayList<String>() {
+			private static final long serialVersionUID = 4L;
+			
+			{
+				add("teleport");
+				add("tp");
+				add("kill");
+				add("setblock");
+				//add("");
+			};
+		};
+	}
+	
+	public static class MESSAGES {
+		public static final BaseComponent WELCOME = (BaseComponent) ComponentHelper.locComp(ComponentColour.CYAN, false, "dimensionalpocketsii.welcome_one")
+			.append(ComponentHelper.locComp(ComponentColour.PURPLE, false, "dimensionalpocketsii.welcome_two"))
+			.append(ComponentHelper.locComp(ComponentColour.CYAN, false, "dimensionalpocketsii.welcome_three"))
+			.append(ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.welcome_four"))
+			.append(ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.version"));
 	}
 	
 	public static class RESOURCE {
@@ -21,40 +93,78 @@ public class DimReference {
 		public static final String BLOCKS = PRE + "blocks/";
 		public static final String ITEMS = RESOURCE + "items/";
 		
+		public static final String MODELS = RESOURCE + "models/";
+		
+		public static final VoxelShape[] BOUNDING_BOXES_STANDARD = new VoxelShape[] {
+			Block.box(4.80D, 4.80D, 4.80D, 11.2D, 11.2D, 11.2D), //BASE
+			Block.box(4.80D, 0.00D, 4.80D, 11.2D, 4.80D, 11.2D), // DOWN
+			Block.box(4.80D, 11.2D, 4.80D, 11.2D, 16.0D, 11.2D), // UP
+			Block.box(4.80D, 4.80D, 0.00D, 11.2D, 11.2D, 4.80D), // NORTH
+			Block.box(4.80D, 4.80D, 11.2D, 11.2D, 11.2D, 16.0D), // SOUTH
+			Block.box(0.00D, 4.80D, 4.80D, 4.80D, 11.2D, 11.2D), // WEST
+			Block.box(11.2D, 4.80D, 4.80D, 16.0D, 11.2D, 11.2D), // EAST
+		};
+		
+	}
+	
+	public static class INTEGRATION {
+		public static class JEI {
+			public static final ResourceLocation UPGRADE_UID = new ResourceLocation(DimensionalPockets.MOD_ID, "upgrade_category");
+			
+			public static final ResourceLocation UPGRADE_BACKGROUND = new ResourceLocation(DimReference.RESOURCE.GUI + "jei/upgrade_background.png");
+		}
 	}
 	
 	public static class GUI {
 		public static class RESOURCE {
-			public static final ResourceLocation GUI_ALLOWED_PLAYERS = new ResourceLocation(DimReference.RESOURCE.GUI + "gui_allowed_players.png");
-			public static final ResourceLocation GUI_ALLOWED_PLAYERS_INFO = new ResourceLocation(DimReference.RESOURCE.GUI + "gui_allowed_players_info.png");
 			
-			public static final ResourceLocation GUI_ALLOWED_PLAYERS_WALL_CONNECTOR = new ResourceLocation(DimReference.RESOURCE.GUI + "gui_allowed_players_wall_connector.png");
-			public static final ResourceLocation GUI_ALLOWED_PLAYERS_WALL_CONNECTOR_INFO = new ResourceLocation(DimReference.RESOURCE.GUI + "gui_allowed_players_wall_connector_info.png");
+			public static final ResourceLocation[] POCKET = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/background_normal.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/background_normal_dark.png") };
+			public static final ResourceLocation[] POCKET_SIDE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/background_side.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/background_side_dark.png") };
+			public static final ResourceLocation[] POCKET_OVERLAY_NORMAL = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/overlay_normal.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/overlay_normal_dark.png") };
+			public static final ResourceLocation[] POCKET_OVERLAY_SIDE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/overlay_side.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/overlay_side_dark.png") };
+			public static final ResourceLocation[] POCKET_BASE_NORMAL = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/base_normal.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/base_normal_dark.png") };
+			public static final ResourceLocation[] POCKET_BASE_SIDE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/base_side.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "pocket/base_side_dark.png") };
+			
+			public static final ResourceLocation[] CONNECTOR = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "connector/background_normal.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "connector/background_normal_dark.png") };
+			public static final ResourceLocation[] CONNECTOR_SIDE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "connector/background_side.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "connector/background_side_dark.png") };
+			public static final ResourceLocation[] CONNECTOR_OVERLAY_NORMAL = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "connector/overlay_normal.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "connector/overlay_normal_dark.png") };
+			public static final ResourceLocation[] CONNECTOR_OVERLAY_SIDE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "connector/overlay_side.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "connector/overlay_side_dark.png") };
+			public static final ResourceLocation[] CONNECTOR_BASE_NORMAL = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "connector/base_normal.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "connector/base_normal_dark.png") };
+			public static final ResourceLocation[] CONNECTOR_BASE_SIDE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "connector/base_side.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "connector/base_side_dark.png") };
+			
+			public static final ResourceLocation[] CHARGER = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "charger/background.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "charger/background_dark.png") };
+			public static final ResourceLocation[] CHARGER_OVERLAY = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "charger/overlay.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "charger/overlay_dark.png") };
+			public static final ResourceLocation[] CHARGER_BASE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "charger/base.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "charger/base_dark.png") };
+
+			public static final ResourceLocation[] GENERATOR = new ResourceLocation[] { new ResourceLocation (DimReference.RESOURCE.GUI + "generator/background.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "generator/background_dark.png") };
+			public static final ResourceLocation[] GENERATOR_OVERLAY = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "generator/overlay.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "generator/overlay_dark.png") };
+			public static final ResourceLocation[] GENERATOR_BASE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "generator/base.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "generator/base_dark.png") };
+
+			public static final ResourceLocation[] CRAFTER = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "crafter/background.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "crafter/background_dark.png") };
+			public static final ResourceLocation[] CRAFTER_OVERLAY = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "crafter/overlay.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "crafter/overlay_dark.png") };
+			public static final ResourceLocation[] CRAFTER_BASE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "crafter/base.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "crafter/base_dark.png") };
+
+			public static final ResourceLocation[] FURNACE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "furnace/background.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "furnace/background_dark.png") };
+			public static final ResourceLocation[] FURNACE_OVERLAY = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "furnace/overlay.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "furnace/overlay_dark.png") };
+			public static final ResourceLocation[] FURNACE_BASE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "furnace/base.png"),  new ResourceLocation(DimReference.RESOURCE.GUI + "furnace/base_dark.png") };
+
+			public static final ResourceLocation[] ARMOUR_WORKBENCH = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "armour_workbench/background.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "armour_workbench/background_dark.png") };
+			public static final ResourceLocation[] ARMOUR_WORKBENCH_OVERLAY = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "armour_workbench/overlay.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "armour_workbench/overlay_dark.png") };
+			public static final ResourceLocation[] ARMOUR_WORKBENCH_BASE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "armour_workbench/base.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "armour_workbench/base_dark.png") };
+
+			public static final ResourceLocation[] UPGRADE_STATION = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/background.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/background_dark.png") };
+			public static final ResourceLocation[] UPGRADE_STATION_OVERLAY = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/overlay.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/overlay_dark.png") };
+			public static final ResourceLocation[] UPGRADE_STATION_BASE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/base.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/base_dark.png") };
+			
+			public static final ResourceLocation[] ELYTRAPLATE_SETTINGS = new ResourceLocation[] { new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/elytraplate/settings.png"), new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/elytraplate/settings_dark.png") };
+			public static final ResourceLocation[] ELYTRAPLATE_SLOTS = new ResourceLocation[] { new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/elytraplate/slots.png"), new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/elytraplate/slots_dark.png") };
+			public static final ResourceLocation ELYTRAPLATE_VISOR = new ResourceLocation(DimReference.RESOURCE.GUI + "elytraplate/visor.png");
+			
+			public static final ResourceLocation[] FOCUS = new ResourceLocation[] { new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/focus/base.png"), new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/focus/base_dark.png") };
+			public static final ResourceLocation[] FOCUS_SLOTS = new ResourceLocation[] { new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/focus/slots.png"), new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/focus/slots_dark.png") };
 			
 			public static final ResourceLocation GUI_DIMENSIONAL_BUTTON = new ResourceLocation(DimReference.RESOURCE.GUI + "gui_dimensional_button.png");
-			public static final ResourceLocation GUI_DIMENSIONAL_ELEMENT = new ResourceLocation(DimReference.RESOURCE.GUI + "gui_dimensional_element.png");
+			public static final ResourceLocation GUI_DIMENSIONAL_BUTTON_0 = new ResourceLocation(DimReference.RESOURCE.GUI + "gui_dimensional_button_0.png");
 		}
-	}
-	
-	/**
-	 * Dependencies.
-	 */
-	public static class DEPENDENCY {
-		private static final String FORGE_BUILD = "2838";
-		private static final String FORGE_REQ = "14.23.5." + FORGE_BUILD;
-		private static final String FORGE_REQ_MAX = "14.24.0";
-		
-		private static final String ZEHERLIB_REQ = "7.0.14";
-		private static final String ZEHERLIB_REQ_MAX = "7.1.0";
-		public static final String ZEHERLIB_DEP = "required-after:" + "zeherlib" + "@[" + ZEHERLIB_REQ + "," + ZEHERLIB_REQ_MAX + "];";
-
-		private static final String REDSTONE_REQ = "2.1.0";
-		private static final String REDSTONE_REQ_MAX = "2.2.0";
-		public static final String REDSTONE_DEP = "required-after:" + "redstoneflux" + "@[" + REDSTONE_REQ + "," + REDSTONE_REQ_MAX + "];";
-		
-		public static final String FORGE_DEP = "required-after:" + "forge" +  "@[" + FORGE_REQ + "," + FORGE_REQ_MAX + "];";
-		
-		public static final String DOWN_URL = "";
-		
 	}
 }

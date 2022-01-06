@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"": {
-			"model": "dimensionalpocketsii:block/block_dimensional_core"
+			"model": "dimensionalpocketsii:block/pocket/base"
 		}
 	}
 }

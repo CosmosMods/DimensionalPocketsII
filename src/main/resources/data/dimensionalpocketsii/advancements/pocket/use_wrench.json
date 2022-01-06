@@ -4,8 +4,12 @@
 		"icon": {
 			"item": "minecraft:redstone"
 		},
-		"title": "Technician!",
-		"description": "Modify a Pocket with a wrench.",
+		"title": {
+			"translate": "dimensionalpocketsii.advancements.use_wrench.title"
+		},
+		"description": {
+			"translate": "dimensionalpocketsii.advancements.use_wrench.desc"
+		},
 		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
 		"frame": "goal",
 		"show_toast": true,
@@ -18,11 +22,15 @@
 			"conditions": {
 				"location": {
 					"block": {
-						"block": "dimensionalpocketsii:block_pocket"
+						"blocks": [
+							"dimensionalpocketsii:block_pocket"
+						]
 					}
 				},
 				"item": {
-					"item": "dimensionalpocketsii:dimensional_wrench"
+					"items": [
+						"dimensionalpocketsii:dimensional_wrench"
+					]
 				}
 			}
 		}

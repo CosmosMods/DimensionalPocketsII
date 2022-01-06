@@ -1,20 +1,15 @@
 package com.tcn.dimensionalpocketsii;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.tcn.dimensionalpocketsii.client.screen.ScreenPocketConfig;
+import com.tcn.cosmoslibrary.common.runtime.CosmosConsoleManager;
 import com.tcn.dimensionalpocketsii.core.advancement.CoreTriggers;
-import com.tcn.dimensionalpocketsii.core.management.CoreConfigurationManager;
-import com.tcn.dimensionalpocketsii.core.management.CoreRecipeHandler;
+import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
+import com.tcn.dimensionalpocketsii.core.management.ForgeEventManager;
 import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketEventManager;
+import com.tcn.dimensionalpocketsii.core.management.NetworkManager;
+import com.tcn.dimensionalpocketsii.pocket.core.management.PocketNetworkManager;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -25,57 +20,42 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod(DimensionalPockets.MOD_ID)
 public final class DimensionalPockets {
 
+	//This must NEVER EVER CHANGE!
 	public static final String MOD_ID = "dimensionalpocketsii";
+		
+	public static final CosmosConsoleManager CONSOLE = new CosmosConsoleManager(DimensionalPockets.MOD_ID, ConfigurationManager.getInstance().getDebugMessage(), ConfigurationManager.getInstance().getInfoMessage());
 	
-	// Directly reference a log4j logger.
-	public static final Logger LOGGER = LogManager.getLogger();
-	public static final String LOGGER_PREFIX = "< " + MOD_ID + " >: ";
-
 	public DimensionalPockets() {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFMLCommonSetup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFMLClientSetup);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(ModBusManager::setRenderLayers);
-
 		MinecraftForge.EVENT_BUS.register(this);
 		
-		ModLoadingContext context = ModLoadingContext.get();
-		
-		context.registerConfig(ModConfig.Type.COMMON, CoreConfigurationManager.spec, "dimpockets-common.toml");
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigurationManager.spec, "dimensionalpockets-common-rev-1.toml");
 	}
 
-	public void onFMLCommonSetup(FMLCommonSetupEvent event) {
-		LOGGER.info(LOGGER_PREFIX + "[FMLCommonSetupEvent] CommonSetup...");
-		
-		CoreRecipeHandler.preInitialization();
-		
+	public void onFMLCommonSetup(final FMLCommonSetupEvent event) {
 		CriteriaTriggers.register(CoreTriggers.USE_SHIFTER_TRIGGER);
-
-		// GameRegistry.registerWorldGenerator(new WorldGenerationHandler(), 0);
-		// NetworkHandler.preInitialization();
-
-		//ModDimensionManager.registerDimensions();
-
-		if (CoreConfigurationManager.getInstance().getKeepChunksLoaded()) {
-			// ForgeChunkManager.setForcedChunkLoadingCallback(this, new
-			// ChunkLoaderManagerRoom());
-			// ForgeChunkManager.setForcedChunkLoadingCallback(this, new
-			// ChunkLoaderManagerBlock());
+		ForgeEventManager.registerOresForGeneration();
+		
+		NetworkManager.register();
+		PocketNetworkManager.register();
+		
+		if (ConfigurationManager.getInstance().getKeepChunksLoaded()) {
+			//ForgeChunkManager.setForcedChunkLoadingCallback(MOD_ID, callback);
+			
+			//ForgeChunkManager.setForcedChunkLoadingCallback(this, new ChunkLoaderManagerRoom());
+			//ForgeChunkManager.setForcedChunkLoadingCallback(this, new ChunkLoaderManagerBlock());
 		}
-
-		MinecraftForge.EVENT_BUS.register(new PocketEventManager());
+		
+		CONSOLE.startup("DimensionalPocketsII Common Setup complete.");
 	}
-	
-	public void onFMLClientSetup(FMLClientSetupEvent event) {
+
+	public void onFMLClientSetup(final FMLClientSetupEvent event) {
 		final ModLoadingContext context = ModLoadingContext.get();
 		
-		registerGUI(context);
+		ModBusManager.registerClient(context);
+		ModBusManager.onFMLClientSetup(event);
 		
-		LOGGER.info(LOGGER_PREFIX + "[FMLClientSetupEvent] ClientSetup...");
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	public void registerGUI(ModLoadingContext context) {
-		context.registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new ScreenPocketConfig(screen));
-		
+		CONSOLE.startup("Dimensional PocketsII Client Setup complete.");
 	}
 }

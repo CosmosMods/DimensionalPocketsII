@@ -6,5 +6,9 @@
     "portal_out": { 
        "category" : "block", 
        "sounds": [ "dimensionalpocketsii:portal_out" ]
+    },
+    "woosh": { 
+       "category" : "block", 
+       "sounds": [ "dimensionalpocketsii:woosh" ]
     }
 }

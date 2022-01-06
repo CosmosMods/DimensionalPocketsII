@@ -1,0 +1,6 @@
+{
+    "parent": "cosmoslibrary:block/modblock",
+    "textures": {
+    	"all": "dimensionalpocketsii:blocks/ore/block_dimensional_ore_nether"
+    }
+}

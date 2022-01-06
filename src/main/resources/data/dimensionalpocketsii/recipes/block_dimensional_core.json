@@ -11,7 +11,7 @@
 			"item": "dimensionalpocketsii:block_dimensional_metal"
 		},
 		"I":{
-            "item": "minecraft:iron_block"
+            "item": "dimensionalpocketsii:dimensional_gem"
         },
 		"O": {
             "item": "dimensionalpocketsii:nether_star_shard"	

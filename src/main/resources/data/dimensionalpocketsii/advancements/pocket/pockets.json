@@ -4,8 +4,12 @@
 		"icon": {
 			"item": "dimensionalpocketsii:block_pocket"
 		},
-		"title":"Pockets!",
-		"description": "Craft a Pocket for the first time.",
+		"title": {
+			"translate": "dimensionalpocketsii.advancements.pockets.title"
+		},
+		"description": {
+			"translate": "dimensionalpocketsii.advancements.pockets.desc"
+		},
 		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
 		"frame": "goal",
 		"show_toast": true,
@@ -18,8 +22,9 @@
 			"conditions": {
 				"items": [
 					{
-						"item": "dimensionalpocketsii:block_pocket",
-						"count": 1
+						"items": [
+							"dimensionalpocketsii:block_pocket"
+						]
 					}
 				]
 			}

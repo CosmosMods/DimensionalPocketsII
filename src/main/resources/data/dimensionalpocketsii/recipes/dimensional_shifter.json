@@ -10,13 +10,13 @@
 			"item": "dimensionalpocketsii:dimensional_ingot"
 		},
 		"I": {
-			"item": "minecraft:diamond"
+			"item": "dimensionalpocketsii:dimensional_gem"
 		},
 		"C": {
 			"item": "dimensionalpocketsii:block_dimensional_core"
 		},
 		"R": {
-			"item": "minecraft:redstone"
+			"item": "dimensionalpocketsii:dimensional_device_base"
 		}
 	},
 	"result": {

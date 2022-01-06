@@ -4,8 +4,12 @@
 		"icon": {
 			"item": "dimensionalpocketsii:dimensional_ingot"
 		},
-		"title":"Gearing Up!",
-		"description": "Obtain some Dimensional Ingots.",
+		"title": {
+			"translate": "dimensionalpocketsii.advancements.ingot.title"
+		},
+		"description": {
+			"translate": "dimensionalpocketsii.advancements.ingot.desc"
+		},
 		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
 		"frame": "task",
 		"show_toast": true,
@@ -18,11 +22,9 @@
 			"conditions": {
 				"items": [
 					{
-						"item": "dimensionalpocketsii:dimensional_ingot",
-						"count": {
-							"min": 1,
-							"max": 64
-						}
+						"items": [
+							"dimensionalpocketsii:dimensional_ingot"
+						]
 					}
 				]
 			}

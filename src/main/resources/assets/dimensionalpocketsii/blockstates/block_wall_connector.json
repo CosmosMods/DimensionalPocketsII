@@ -1,24 +1,25 @@
 {
-    "forge_marker": 1,
-    "variants": {
-        "mode=0,type=0": { "model": "dimensionalpocketsii:block/connector/screen" },
-        "mode=1,type=0": { "model": "dimensionalpocketsii:block/connector/screen" },
-        "mode=2,type=0": { "model": "dimensionalpocketsii:block/connector/screen" },
-        "mode=3,type=0": { "model": "dimensionalpocketsii:block/connector/screen" },
-        
-        "mode=0,type=1": { "model": "dimensionalpocketsii:block/connector/energy" },
-        "mode=1,type=1": { "model": "dimensionalpocketsii:block/connector/energy_output" },
-        "mode=2,type=1": { "model": "dimensionalpocketsii:block/connector/energy_input" },
-        "mode=3,type=1": { "model": "dimensionalpocketsii:block/connector/energy_disabled" },
-        
-        "mode=0,type=2": { "model": "dimensionalpocketsii:block/connector/fluid" },
-        "mode=1,type=2": { "model": "dimensionalpocketsii:block/connector/fluid_output" },
-        "mode=2,type=2": { "model": "dimensionalpocketsii:block/connector/fluid_input" },
-        "mode=3,type=2": { "model": "dimensionalpocketsii:block/connector/fluid_disabled" },
-        
-        "mode=0,type=3": { "model": "dimensionalpocketsii:block/connector/item" },
-        "mode=1,type=3": { "model": "dimensionalpocketsii:block/connector/item_output" },
-        "mode=2,type=3": { "model": "dimensionalpocketsii:block/connector/item_input" },
-        "mode=3,type=3": { "model": "dimensionalpocketsii:block/connector/item_disabled" }
-    }
+    "multipart": [
+    	{ "apply": { "model": "dimensionalpocketsii:block/module/connector/base" } },
+    	
+    	{ "when": { "AND": [ { "mode": "0", "type": "0" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/screen" } },
+    	{ "when": { "AND": [ { "mode": "1", "type": "0" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/screen" } },
+    	{ "when": { "AND": [ { "mode": "2", "type": "0" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/screen" } },
+    	{ "when": { "AND": [ { "mode": "3", "type": "0" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/screen" } },
+    	
+    	{ "when": { "AND": [ { "mode": "0", "type": "1" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/energy" } },
+    	{ "when": { "AND": [ { "mode": "1", "type": "1" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/energy_output" } },
+    	{ "when": { "AND": [ { "mode": "2", "type": "1" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/energy_input" } },
+    	{ "when": { "AND": [ { "mode": "3", "type": "1" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/energy_disabled" } },
+    	
+    	{ "when": { "AND": [ { "mode": "0", "type": "2" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/fluid" } },
+    	{ "when": { "AND": [ { "mode": "1", "type": "2" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/fluid_output" } },
+    	{ "when": { "AND": [ { "mode": "2", "type": "2" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/fluid_input" } },
+    	{ "when": { "AND": [ { "mode": "3", "type": "2" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/fluid_disabled" } },
+    	
+    	{ "when": { "AND": [ { "mode": "0", "type": "3" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/item" } },
+    	{ "when": { "AND": [ { "mode": "1", "type": "3" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/item_output" } },
+    	{ "when": { "AND": [ { "mode": "2", "type": "3" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/item_input" } },
+    	{ "when": { "AND": [ { "mode": "3", "type": "3" } ] }, "apply": { "model": "dimensionalpocketsii:block/module/connector/item_disabled" } }
+    ]
 }

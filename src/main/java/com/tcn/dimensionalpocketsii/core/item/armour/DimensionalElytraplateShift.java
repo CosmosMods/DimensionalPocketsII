@@ -1,0 +1,181 @@
+package com.tcn.dimensionalpocketsii.core.item.armour;
+
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
+import com.tcn.cosmoslibrary.common.lib.ComponentColour;
+import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
+import com.tcn.cosmoslibrary.common.lib.ComponentHelper.Value;
+import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
+import com.tcn.cosmoslibrary.energy.item.CosmosEnergyArmourItemElytra;
+import com.tcn.cosmoslibrary.energy.item.CosmosEnergyItem;
+import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
+import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityPocket;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+public class DimensionalElytraplateShift extends CosmosEnergyArmourItemElytra {
+
+	public DimensionalElytraplateShift(ArmorMaterial materialIn, EquipmentSlot slot, Item.Properties builderIn, boolean damageableIn, CosmosEnergyItem.Properties energyProperties) {
+		super(materialIn, slot, builderIn, damageableIn, energyProperties);
+	}
+
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		tooltip.add(ComponentHelper.getTooltipLimit("dimensionalpocketsii.item.info.elytraplate_shift"));
+		tooltip.add(ComponentHelper.getTooltipTwo("dimensionalpocketsii.item.info.elytraplate_shift_one"));
+		
+		if (stack.hasTag()) {
+			CompoundTag tag = stack.getTag();
+			
+			if (tag.contains("nbt_data") || tag.contains("moduleList")) {
+				CompoundTag nbt_data = tag.getCompound("nbt_data");
+				
+				if (!ComponentHelper.isControlKeyDown(Minecraft.getInstance())) {
+					tooltip.add(ComponentHelper.ctrlForMoreDetails());
+				} else {
+					if (nbt_data.contains("chunk_pos")) {
+						CompoundTag pos_tag = nbt_data.getCompound("chunk_pos");
+						
+						int x = pos_tag.getInt("x");
+						int z = pos_tag.getInt("z");
+						
+						tooltip.add(ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.info.shifter.pocket").append(ComponentHelper.locComp(Value.LIGHT_GRAY + "[ " + Value.BRIGHT_BLUE + x + Value.LIGHT_GRAY + ", " + Value.BRIGHT_BLUE + z + Value.LIGHT_GRAY + " ]")));
+					}
+				
+					if (nbt_data.contains("player_pos")) {
+						CompoundTag player_pos = nbt_data.getCompound("player_pos");
+						
+						int x = player_pos.getInt("x");
+						int y = player_pos.getInt("y");
+						int z = player_pos.getInt("z");
+						
+						tooltip.add(ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.info.shifter_player_pos").append(ComponentHelper.locComp(Value.LIGHT_GRAY + "[ " + Value.CYAN + x + Value.LIGHT_GRAY + ", " + Value.CYAN + y + Value.LIGHT_GRAY + ", " + Value.CYAN + z + Value.LIGHT_GRAY + " ]")));
+									
+					}
+					
+					if (nbt_data.contains("dimension")) {
+						CompoundTag dimension = nbt_data.getCompound("dimension");
+						
+						String namespace = dimension.getString("namespace");
+						String path = dimension.getString("path");
+						
+						tooltip.add(ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.info.shifter_source_dimension").append(ComponentHelper.locComp(Value.LIGHT_GRAY + "[ " + Value.BRIGHT_GREEN + namespace + Value.LIGHT_GRAY + ": " + Value.BRIGHT_GREEN + path + Value.LIGHT_GRAY + " ]")));
+					}
+					
+					tooltip.add(ComponentHelper.ctrlForLessDetails());
+				}
+			}
+		}
+		
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
+	}
+	
+	@Override
+	public int getMaxEnergyStored(ItemStack stackIn) {
+		Item item = stackIn.getItem();
+		return !(item instanceof DimensionalElytraplateShift) ? 0 : ((DimensionalElytraplateShift)item).maxEnergyStored;
+	}
+	
+	@Override
+	public boolean isFlyEnabled(ItemStack stackIn) {
+		return false;
+	}
+
+	@Override
+	public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
+		return isFlyEnabled(stack);
+	}
+
+	@Override
+	public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player) {
+		return true;
+	}
+	
+	@Override
+	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+		Player playerIn = context.getPlayer();
+		BlockPos pos = context.getClickedPos();
+		Level world = context.getLevel();
+		BlockEntity entity = world.getBlockEntity(pos);
+		
+		if (entity != null) {
+			if (entity instanceof BlockEntityPocket) {
+				Pocket pocket = ((BlockEntityPocket) entity).getPocket();
+				
+				if (this.addOrUpdateShifterInformation(stack, pocket, world, playerIn)) {
+					return InteractionResult.SUCCESS;
+				}
+			} else {
+				return InteractionResult.PASS;
+			}
+		}
+		
+		return InteractionResult.FAIL;
+	}
+	
+	public boolean addOrUpdateShifterInformation(ItemStack stackIn, Pocket pocketIn, Level levelIn, Player playerIn) {
+		BlockPos player_pos = playerIn.blockPosition();
+		
+		if (pocketIn != null) {
+			if (pocketIn.checkIfOwner(playerIn)) {
+				CosmosChunkPos chunk_pos = pocketIn.getChunkPos();
+
+				int x = chunk_pos.getX();
+				int z = chunk_pos.getZ();
+
+				if (playerIn.isShiftKeyDown()) {
+					CompoundTag stack_tag = stackIn.getOrCreateTag();
+					CompoundTag nbt_data = new CompoundTag();
+					
+					CompoundTag chunk_tag = new CompoundTag();
+					chunk_tag.putInt("x", x);
+					chunk_tag.putInt("z", z);
+					nbt_data.put("chunk_pos", chunk_tag);
+					
+					nbt_data.putInt("colour", pocketIn.getDisplayColour());
+					
+					CompoundTag pos_tag = new CompoundTag();
+					pos_tag.putInt("x", player_pos.getX());
+					pos_tag.putInt("y", player_pos.getY());
+					pos_tag.putInt("z", player_pos.getZ());
+					pos_tag.putFloat("yaw", playerIn.getRotationVector().y);
+					pos_tag.putFloat("pitch", playerIn.getRotationVector().x);
+					nbt_data.put("player_pos", pos_tag);
+
+					CompoundTag dimension = new CompoundTag();
+					dimension.putString("namespace", levelIn.dimension().location().getNamespace());
+					dimension.putString("path", levelIn.dimension().location().getPath());
+					nbt_data.put("dimension", dimension);
+					
+					stack_tag.put("nbt_data", nbt_data);
+					
+					stackIn.setTag(stack_tag);
+					CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.locComp(ComponentColour.PURPLE, false, "dimensionalpocketsii.item.message.elytraplate.linked").append(ComponentHelper.locComp(Value.LIGHT_GRAY + " {" + x + ", " + z + "}")));
+					
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+}

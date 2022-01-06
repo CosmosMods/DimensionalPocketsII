@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"": {
-			"model": "dimensionalpocketsii:block/charger/block_charger"
+			"model": "dimensionalpocketsii:block/module/charger"
 		}
 	}
 }

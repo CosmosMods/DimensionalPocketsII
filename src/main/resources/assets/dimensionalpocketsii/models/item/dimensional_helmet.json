@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "dimensionalpocketsii:items/armour/colour/helmet_base",
+        "layer1": "dimensionalpocketsii:items/armour/colour/helmet_overlay"
+    }
+}
