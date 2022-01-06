@@ -1,28 +1,35 @@
 package com.tcn.dimensionalpocketsii.pocket.core.block;
 
-import com.tcn.cosmoslibrary.impl.nbt.BlockRemovableNBT;
-import com.tcn.dimensionalpocketsii.pocket.core.tileentity.TileEntityPocket;
+import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import com.tcn.cosmoslibrary.common.nbt.CosmosBlockRemovableNBT;
+import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityPocket;
 
-public class BlockPocket extends BlockRemovableNBT {
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.BlockHitResult;
+
+public class BlockPocket extends CosmosBlockRemovableNBT implements EntityBlock {
 	
 	public static final IntegerProperty NORTH = IntegerProperty.create("north", 0, 3);
 	public static final IntegerProperty EAST = IntegerProperty.create("east", 0, 3);
@@ -31,109 +38,158 @@ public class BlockPocket extends BlockRemovableNBT {
 	public static final IntegerProperty UP = IntegerProperty.create("up", 0, 3);
 	public static final IntegerProperty DOWN = IntegerProperty.create("down", 0, 3);
 	public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
+	public static final BooleanProperty SIDE_GUIDE = BooleanProperty.create("side_guide");
 
 	public BlockPocket(Block.Properties prop) {
 		super(prop);
 		
-		this.setDefaultState(this.getDefaultState()
-				.with(NORTH, 0).with(EAST, 0)
-				.with(SOUTH, 0).with(WEST, 0)
-				.with(UP, 0).with(DOWN, 0)
-				.with(LOCKED, false));
+		this.registerDefaultState(this.defaultBlockState()
+				.setValue(NORTH, 0).setValue(EAST, 0)
+				.setValue(SOUTH, 0).setValue(WEST, 0)
+				.setValue(UP, 0).setValue(DOWN, 0)
+				.setValue(LOCKED, false).setValue(SIDE_GUIDE, false));
 	}
 
 	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader worldIn) {
-		return new TileEntityPocket();
+	public BlockEntity newBlockEntity(BlockPos posIn, BlockState stateIn) {
+		return new BlockEntityPocket(posIn, stateIn);
+	}
+
+	@Nullable
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
+		return createTicker(levelIn, entityTypeIn, ModBusManager.POCKET_TILE_TYPE);
+	}
+
+	@Nullable
+	protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level levelIn, BlockEntityType<T> entityTypeIn, BlockEntityType<? extends BlockEntityPocket> entityIn) {
+		return createTickerHelper(entityTypeIn, entityIn, BlockEntityPocket::tick);
 	}
 	
 	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
+	public void attack(BlockState state, Level world, BlockPos pos, Player player) {
+		BlockEntity tileEntity = world.getBlockEntity(pos);
+		
+		if (tileEntity instanceof BlockEntityPocket) {
+			((BlockEntityPocket) tileEntity).attack(state, world, pos, player);
+		}
+	}
+
+	@Override
+	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
+		
+		if (tileEntity instanceof BlockEntityPocket) {
+			return ((BlockEntityPocket) tileEntity).use(state, worldIn, pos, playerIn, handIn, hit);
+		}
+		return InteractionResult.FAIL;
 	}
 	
 	@Override
-	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-		TileEntity tileEntity = world.getTileEntity(pos);
+	public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 		
-		if (tileEntity instanceof TileEntityPocket) {
-			((TileEntityPocket) tileEntity).onBlockClicked(state, world, pos, player);
+		if (tileEntity instanceof BlockEntityPocket) {
+			((BlockEntityPocket) tileEntity).onPlace(state, worldIn, pos, oldState, isMoving);
 		}
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+	public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 		
-		if (tileEntity instanceof TileEntityPocket) {
-			return ((TileEntityPocket) tileEntity).onBlockActivated(state, worldIn, pos, playerIn, handIn, hit);
-		}
-		return ActionResultType.FAIL;
-	}
-	
-	@Override
-	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
-		
-		if (tileEntity instanceof TileEntityPocket) {
-			((TileEntityPocket) tileEntity).onBlockAdded(state, worldIn, pos, oldState, isMoving);
+		if (tileEntity instanceof BlockEntityPocket) {
+			((BlockEntityPocket) tileEntity).setPlacedBy(worldIn, pos, state, placer, stack);
 		}
 	}
 
 	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+	public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
+		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 		
-		if (tileEntity instanceof TileEntityPocket) {
-			((TileEntityPocket) tileEntity).onBlockPlacedBy(worldIn, pos, state, placer, stack);
+		if (tileEntity instanceof BlockEntityPocket) {
+			((BlockEntityPocket) tileEntity).playerWillDestroy(worldIn, pos, state, player);
 		}
 	}
 
 	@Override
-	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
+	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+	BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 		
-		if (tileEntity instanceof TileEntityPocket) {
-			((TileEntityPocket) tileEntity).onBlockHarvested(worldIn, pos, state, player);
+		if (tileEntity instanceof BlockEntityPocket) {
+			((BlockEntityPocket) tileEntity).neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
 		}
 	}
 
-	@Override
-	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-	TileEntity tileEntity = worldIn.getTileEntity(pos);
-		
-		if (tileEntity instanceof TileEntityPocket) {
-			((TileEntityPocket) tileEntity).neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
-		}
-	}
-	
-	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.MODEL;
-	}
-
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		builder.add(NORTH, EAST, WEST, SOUTH, UP, DOWN, LOCKED);
-	}
-
-	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {	
-		TileEntity tile_in = worldIn.getTileEntity(currentPos);
-		
-		if (tile_in instanceof TileEntityPocket) {
-			TileEntityPocket tile = (TileEntityPocket) worldIn.getTileEntity(currentPos);
-
-			return stateIn.with(NORTH, tile.getSide(Direction.NORTH).getIndex())
-					.with(EAST, tile.getSide(Direction.EAST).getIndex())
-					.with(SOUTH, tile.getSide(Direction.SOUTH).getIndex())
-					.with(WEST, tile.getSide(Direction.WEST).getIndex())
-					.with(UP, tile.getSide(Direction.UP).getIndex())
-					.with(DOWN, tile.getSide(Direction.DOWN).getIndex())
-					.with(LOCKED, tile.getLockState());
+	public BlockState updateState(BlockState state, BlockPos posIn, Level worldIn) {
+		if (!worldIn.isClientSide) {
+			BlockEntity entity = worldIn.getBlockEntity(posIn);
+			
+			if (entity instanceof BlockEntityPocket) {
+				BlockEntityPocket tile = (BlockEntityPocket) entity;
+				
+				if (tile.getPocket() != null) {
+					return this.defaultBlockState()
+							.setValue(NORTH, tile.getSide(Direction.NORTH).getIndex())
+							.setValue(EAST, tile.getSide(Direction.EAST).getIndex())
+							.setValue(SOUTH, tile.getSide(Direction.SOUTH).getIndex())
+							.setValue(WEST, tile.getSide(Direction.WEST).getIndex())
+							.setValue(UP, tile.getSide(Direction.UP).getIndex())
+							.setValue(DOWN, tile.getSide(Direction.DOWN).getIndex())
+							.setValue(LOCKED, tile.getLockState())
+							.setValue(SIDE_GUIDE, tile.getSideGuideValue());
+				} else {
+					return this.defaultBlockState();
+				}
+			} else {
+				return this.defaultBlockState();
+			}
 		} else {
-			return this.getDefaultState();
+			return this.defaultBlockState();
 		}
 	}
 	
+	@Override
+	public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
+		return false;
+    }
+	
+	@Override
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.MODEL;
+	}
+
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		builder.add(NORTH, EAST, WEST, SOUTH, UP, DOWN, LOCKED, SIDE_GUIDE);
+	}
+
+	@Override
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
+		BlockEntity tile_in = worldIn.getBlockEntity(currentPos);
+		
+		if (tile_in instanceof BlockEntityPocket) {
+			BlockEntityPocket tile = (BlockEntityPocket) worldIn.getBlockEntity(currentPos);
+
+			if (tile.getPocket() != null) {
+				return this.defaultBlockState()
+						.setValue(NORTH, tile.getSide(Direction.NORTH).getIndex())
+						.setValue(EAST, tile.getSide(Direction.EAST).getIndex())
+						.setValue(SOUTH, tile.getSide(Direction.SOUTH).getIndex())
+						.setValue(WEST, tile.getSide(Direction.WEST).getIndex())
+						.setValue(UP, tile.getSide(Direction.UP).getIndex())
+						.setValue(DOWN, tile.getSide(Direction.DOWN).getIndex())
+						.setValue(LOCKED, tile.getLockState())
+						.setValue(SIDE_GUIDE, tile.getSideGuideValue());
+			} else {
+				return this.defaultBlockState();
+			}
+		} else {
+			return this.defaultBlockState();
+		}
+	}
+
+	@Override
+	public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
+        return true;
+    }
 }

@@ -4,316 +4,325 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
-import com.tcn.cosmoslibrary.impl.util.CosmosChatUtil;
-import com.tcn.cosmoslibrary.math.ChunkPos;
-import com.tcn.dimensionalpocketsii.core.management.CoreDimensionManager;
+import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
+import com.tcn.cosmoslibrary.common.lib.ComponentColour;
+import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
+import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
+import com.tcn.cosmoslibrary.common.lib.ComponentHelper.Value;
+import com.tcn.cosmoslibrary.energy.item.CosmosEnergyItem;
+import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
+import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleCharger;
+import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityPocket;
 import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.Shifter;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.ShifterCore;
-import com.tcn.dimensionalpocketsii.pocket.core.tileentity.TileEntityCharger;
-import com.tcn.dimensionalpocketsii.pocket.core.tileentity.TileEntityPocket;
 import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class DimensionalShifter extends Item {
+public class DimensionalShifter extends CosmosEnergyItem {
 
-	public String info = "Allows access to a Pocket from anywhere!";
-	public String shift_desc_one = "To link: Shift-Right click this on a Pocket!";
-	public String shift_desc_two = "To use: Shift-Right click this item facing open air!";
-	public String shift_desc_three = "To change mode: Right click this item facing air!";
-	public String limitation = "Limited to 30 charges.";
-	
-	public DimensionalShifter(Item.Properties properties) {
-		super(properties.maxStackSize(1));
+	public DimensionalShifter(Item.Properties properties, CosmosEnergyItem.Properties energyProperties) {
+		super(properties, energyProperties);
 	}
 	
 	@Override
-	public boolean canPlayerBreakBlockWhileHolding(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
+	public boolean canAttackBlock(BlockState state, Level worldIn, BlockPos pos, Player player) {
 		return false;
 	}
 	
 	@Override
-	public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
+	public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player) {
 		return true;
 	}
 	
 	@Override
-	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-		PlayerEntity playerIn = context.getPlayer();
+	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+		Player playerIn = context.getPlayer();
 		
-		BlockPos pos = context.getPos();
-		BlockPos player_pos = playerIn.getPosition();
-		World world = context.getWorld();
-		TileEntity entity = world.getTileEntity(pos);
+		BlockPos pos = context.getClickedPos();
+		BlockPos player_pos = playerIn.blockPosition();
+		Level world = context.getLevel();
+		BlockEntity entity = world.getBlockEntity(pos);
 		
 		if (entity != null) {
-			if (entity instanceof TileEntityPocket) {
-				Pocket pocket = ((TileEntityPocket) entity).getPocket();
+			if (entity instanceof BlockEntityPocket) {
+				Pocket pocket = ((BlockEntityPocket) entity).getPocket();
 				
 				if (pocket != null) {
-					ChunkPos pocket_get_pos = pocket.getChunkPos();
-					
-					CompoundNBT stack_tag = new CompoundNBT();
-					CompoundNBT use_data = new CompoundNBT();
-					CompoundNBT nbt_data = new CompoundNBT();
-					CompoundNBT chunk_tag = new CompoundNBT();
-					
-					if (playerIn.isSneaking()) {
-						int x = pocket_get_pos.getX();
-						int z = pocket_get_pos.getZ();
+					if (pocket.checkIfOwner(playerIn)) {
+						CosmosChunkPos pocket_get_pos = pocket.getChunkPos();
 						
-						chunk_tag.putInt("x", x);
-						chunk_tag.putInt("z", z);
+						CompoundTag stack_tag = new CompoundTag();
+						CompoundTag nbt_data = new CompoundTag();
 						
-						nbt_data.put("chunk_pos", chunk_tag);
-						stack_tag.put("nbt_data", nbt_data);
-						
-						if (!(PocketUtil.isDimensionEqual(world, CoreDimensionManager.POCKET_WORLD))) {
-							CompoundNBT pos_tag = new CompoundNBT();
-							pos_tag.putInt("x", player_pos.getX());
-							pos_tag.putInt("y", player_pos.getY());
-							pos_tag.putInt("z", player_pos.getZ());
-							pos_tag.putFloat("yaw", playerIn.getPitchYaw().y);
-							pos_tag.putFloat("pitch", playerIn.getPitchYaw().x);
-							pos_tag.putBoolean("tele_to_block", true);
+						if (playerIn.isShiftKeyDown()) {
+							CompoundTag chunkPos = new CompoundTag();
+							int x = pocket_get_pos.getX();
+							int z = pocket_get_pos.getZ();
 							
-							stack_tag.put("player_pos", pos_tag);
-						}
-						
-						if (stack.hasTag()) {
-							CompoundNBT stack_tag_get = stack.getTag();
+							chunkPos.putInt("x", x);
+							chunkPos.putInt("z", z);
 							
-							if (stack_tag_get.contains("use_data")) {
-								CompoundNBT use_data_get = stack_tag_get.getCompound("use_data");
+							CompoundTag playerData = new CompoundTag();
+							playerData.putInt("x", player_pos.getX());
+							playerData.putInt("y", player_pos.getY());
+							playerData.putInt("z", player_pos.getZ());
+							playerData.putFloat("yaw", playerIn.getRotationVector().y);
+							playerData.putFloat("pitch", playerIn.getRotationVector().x);
+							playerData.putBoolean("tele_to_block", true);
+							playerData.putString("dimension", world.dimension().location().getPath());
+	
+							CompoundTag dimensionData = new CompoundTag();
+							dimensionData.putString("namespace", world.dimension().location().getNamespace());
+							dimensionData.putString("path", world.dimension().location().getPath());
+	
+							if (stack.hasTag()) {
+								CompoundTag stackTag = stack.getTag();
 								
-								int uses_get = use_data_get.getInt("uses");
-								
-								use_data.putInt("uses", uses_get);
-								stack_tag.put("use_data", use_data);
-							}
-						} else {
-							use_data.putInt("uses", 30);
-							stack_tag.put("use_data", use_data);
+								if (stackTag.contains("energy")) {
+									stack_tag.putInt("energy", stackTag.getInt("energy"));
+								}
+							} 
+	
+							nbt_data.put("chunk_pos", chunkPos);
+							nbt_data.putInt("colour", pocket.getDisplayColour());
+							nbt_data.put("player_data", playerData);
+							nbt_data.put("dimension_data", dimensionData);
+							
+							stack_tag.put("nbt_data", nbt_data);
+							stack.setTag(stack_tag);
+							
+							CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.locComp(ComponentColour.PURPLE, false, "dimensionalpocketsii.item.message.shifter.linked").append(ComponentHelper.locComp(Value.LIGHT_GRAY + " {" + x + ", " + z + "}")));
+							
+							playerIn.swing(context.getHand());
+							return InteractionResult.FAIL;
 						}
-						
-						stack.setTag(stack_tag);
-						CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.PURPLE + "Dimensional Shifter Linked to Pocket:" + TextHelper.LIGHT_GRAY + " {" + x + ", " + z + "}");
-						
-						playerIn.swingArm(Hand.MAIN_HAND);
-						return ActionResultType.FAIL;
+					} else {
+						CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.item.message.shifter.not_owner"));
 					}
-				}
-			} else if (entity instanceof TileEntityCharger) {
-				return ActionResultType.PASS;
+				} 
+			} else if (entity instanceof BlockEntityModuleCharger) {
+				return InteractionResult.PASS;
 			}
 		}
-		return ActionResultType.FAIL;
+		return InteractionResult.FAIL;
 	}
 
 	@SuppressWarnings("unused")
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-		ItemStack stack = playerIn.getHeldItem(handIn);
-		World world = playerIn.getEntityWorld();
-		BlockPos player_pos_actual = playerIn.getPosition();
-		BlockPos pos = playerIn.getPosition();
+	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+		ItemStack stack = playerIn.getItemInHand(handIn);
+		BlockPos player_pos_actual = playerIn.blockPosition();
 		
 		if (stack.hasTag()) {
-			CompoundNBT stack_tag = stack.getTag();
+			CompoundTag stack_tag = stack.getTag();
 			
-			if (playerIn.isSneaking()) {
-				if (stack_tag.contains("nbt_data")) {
-					CompoundNBT nbt_data = stack_tag.getCompound("nbt_data");
-					
-					if (nbt_data.contains("chunk_pos")) {
-						CompoundNBT chunk_tag = nbt_data.getCompound("chunk_pos");
+			if (stack_tag.contains("nbt_data")) {
+				CompoundTag nbtData = stack_tag.getCompound("nbt_data");
+				
+				if (playerIn.isShiftKeyDown()) {
 						
-						if (stack_tag.contains("player_pos")) {
-							CompoundNBT player_pos = stack_tag.getCompound("player_pos");
-							
-							int player_x = player_pos.getInt("x");
-							int player_y = player_pos.getInt("y");
-							int player_z = player_pos.getInt("z");
-							float player_pitch = player_pos.getFloat("pitch");
-							float player_yaw = player_pos.getFloat("yaw");
-							boolean tele_to_block = player_pos.getBoolean("tele_to_block");
-							
-							BlockPos teleport_pos = new BlockPos(player_x, player_y, player_z);
-							
-							int x = chunk_tag.getInt("x");
-							int z = chunk_tag.getInt("z");
-	
-							ChunkPos chunk_pos = new ChunkPos(x, z);
-							ChunkPos chunk_pos_actual = PocketUtil.scaleToChunkPos(playerIn.getPosition());
-							Pocket pocket = PocketRegistryManager.getPocketFromChunk(chunk_pos);
-							
-							if (stack_tag.contains("use_data")) {
-								CompoundNBT use_data = stack_tag.getCompound("use_data");
-								int uses = use_data.getInt("uses");
-								
-								if (uses > 0) {
-									use_data.putInt("uses", uses - 1);
-									stack_tag.put("use_data", use_data);
+					if (nbtData.contains("chunk_pos")) {
+						CompoundTag chunkPos = nbtData.getCompound("chunk_pos");
+						
+						if (nbtData.contains("player_data")) {
+							CompoundTag playerData = nbtData.getCompound("player_data");
+
+							if (nbtData.contains("dimension_data")) {
+								CompoundTag dimensionData = nbtData.getCompound("dimension_data");
+
+									int[] chunk = new int[] { chunkPos.getInt("x"), chunkPos.getInt("z") };
+									CosmosChunkPos savedChunkPos = new CosmosChunkPos(chunk[0], chunk[1]);
+									Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(savedChunkPos);
 									
-									if (pocket != null) {
-										if (PocketUtil.isDimensionEqual(worldIn, CoreDimensionManager.POCKET_WORLD)) {
-											if (chunk_pos.equals(chunk_pos_actual)) {
-												if (tele_to_block) {
-													pocket.shift(playerIn, EnumShiftDirection.LEAVE, null, stack);
+									int player_x = playerData.getInt("x");
+									int player_y = playerData.getInt("y");
+									int player_z = playerData.getInt("z");
+									float player_pitch = playerData.getFloat("pitch");
+									float player_yaw = playerData.getFloat("yaw");
+									boolean tele_to_block = playerData.getBoolean("tele_to_block");
+									BlockPos teleport_pos = new BlockPos(player_x, player_y, player_z);
+	
+									String namespace = dimensionData.getString("namespace");
+									String path = dimensionData.getString("path");
+									ResourceKey<Level> saved_dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(namespace, path));
+									
+									if (this.hasEnergy(stack)) {
+										if (pocket.exists()) {
+											if (PocketUtil.isDimensionEqual(worldIn, DimensionManager.POCKET_WORLD)) {
+												CosmosChunkPos playerChunkPos = CosmosChunkPos.scaleToChunkPos(playerIn.blockPosition());
+												
+												if (savedChunkPos.equals(playerChunkPos)) {
+													if (tele_to_block) {
+														this.extractEnergy(stack, this.getMaxUse(stack), false);
+														
+														pocket.shift(playerIn, EnumShiftDirection.LEAVE, null, null, stack);
+													} else {
+														this.extractEnergy(stack, this.getMaxUse(stack), false);
+														
+														Shifter shifter = Shifter.createTeleporter(pocket.getSourceBlockDimension(), EnumShiftDirection.LEAVE, teleport_pos, player_yaw, player_pitch, false, true, true);
+														ShifterCore.shiftPlayerToDimension(playerIn, shifter);
+														return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
+													}
 												} else {
-													Shifter shifter = Shifter.createTeleporter(pocket.getSourceBlockDimension(), EnumShiftDirection.LEAVE, teleport_pos, player_yaw, player_pitch);
-													ShifterCore.shiftPlayerToDimension(playerIn, shifter);
+													this.extractEnergy(stack, this.getMaxUse(stack), false);
 													
-													return ActionResult.resultPass(playerIn.getHeldItem(handIn));
+													pocket.shift(playerIn, EnumShiftDirection.ENTER, null, null, stack);
+													return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
 												}
 											} else {
-												pocket.shift(playerIn, EnumShiftDirection.ENTER, null, stack);
+												CompoundTag playerDataNew = new CompoundTag();
+												playerDataNew.putInt("x", player_pos_actual.getX());
+												playerDataNew.putInt("y", player_pos_actual.getY());
+												playerDataNew.putInt("z", player_pos_actual.getZ());
+												playerDataNew.putFloat("yaw", playerIn.getRotationVector().y);
+												playerDataNew.putFloat("pitch", playerIn.getRotationVector().x);
+												playerDataNew.putBoolean("tele_to_block", tele_to_block);
+
+												CompoundTag dimensionDataNew = new CompoundTag();
+												dimensionDataNew.putString("namespace", worldIn.dimension().location().getNamespace());
+												dimensionDataNew.putString("path", worldIn.dimension().location().getPath());
+
+												nbtData.put("player_data", playerDataNew);
+												nbtData.put("dimension_data", dimensionDataNew);
 												
-												return ActionResult.resultPass(playerIn.getHeldItem(handIn));
+												stack_tag.put("nbt_data", nbtData);
+												stack.setTag(stack_tag);
+
+												this.extractEnergy(stack, this.getMaxUse(stack), false);
+												
+												pocket.shift(playerIn, EnumShiftDirection.ENTER, null, null, stack);
+												return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
 											}
 										} else {
-											CompoundNBT pos_tag = new CompoundNBT();
-											pos_tag.putInt("x", player_pos_actual.getX());
-											pos_tag.putInt("y", player_pos_actual.getY());
-											pos_tag.putInt("z", player_pos_actual.getZ());
-											pos_tag.putFloat("yaw", playerIn.getPitchYaw().y);
-											pos_tag.putFloat("pitch", playerIn.getPitchYaw().x);
-											pos_tag.putBoolean("tele_to_block", tele_to_block);
-											
-											stack_tag.put("player_pos", pos_tag);
-											stack.setTag(stack_tag);
-											
-											pocket.shift(playerIn, EnumShiftDirection.ENTER, null, stack);
-											
-											return ActionResult.resultPass(playerIn.getHeldItem(handIn));
+											CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.status.action.null"));
 										}
-									}
-								} else {
-									CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.LIGHT_RED + "Your Dimensional Shifter is out of charges!");
-								}
-							} else {
-								CompoundNBT use_data = new CompoundNBT();
-								use_data.putInt("uses", 30);
-								stack_tag.put("use_data", use_data);
-								
-								if (pocket != null) {
-									if (world.getDimensionKey().equals(CoreDimensionManager.POCKET_WORLD)) {
-										pocket.shift(playerIn, EnumShiftDirection.LEAVE, null, stack);
-										
-										return ActionResult.resultPass(playerIn.getHeldItem(handIn));
 									} else {
-										pocket.shift(playerIn, EnumShiftDirection.ENTER, null, stack);
-										
-										return ActionResult.resultPass(playerIn.getHeldItem(handIn));
+										CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.item.message.shifter.no_energy"));
 									}
 								}
 							}
-						}
 					}
-				}
-			} else {
-				if (stack_tag.contains("player_pos")) {
-					CompoundNBT player_pos_tag = stack_tag.getCompound("player_pos");
-					boolean change = player_pos_tag.getBoolean("tele_to_block");
-					
-					player_pos_tag.putBoolean("tele_to_block", !change);
-					stack_tag.put("player_pos", player_pos_tag);
-					stack.setTag(stack_tag);
-					
-					if (!change) {
-						CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.PURPLE + "Mode changed: " + TextHelper.LIGHT_GRAY + "{Teleport to Block: " + TextHelper.RED + "False" + TextHelper.LIGHT_GRAY + "}");
-					} else {
-						CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.PURPLE + "Mode changed: " + TextHelper.LIGHT_GRAY + "{Teleport to Block: " + TextHelper.GREEN + "True" + TextHelper.LIGHT_GRAY + "}");
+				} else {
+					if (nbtData.contains("player_data")) {
+						CompoundTag playerData = nbtData.getCompound("player_data");
+						boolean change = playerData.getBoolean("tele_to_block");
+						
+						playerData.putBoolean("tele_to_block", !change);
+						nbtData.put("player_data", playerData);
+						stack.setTag(stack_tag);
+						
+						if (!change) {
+							CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.locComp(ComponentColour.PURPLE, false, "dimensionalpocketsii.item.message.shifter.mode_change")
+									.append(ComponentHelper.locComp(ComponentColour.LIGHT_GRAY, false, "dimensionalpocketsii.item.message.shifter.mode_change_prefix")
+											.append(ComponentHelper.locComp(ComponentColour.GREEN, false, "dimensionalpocketsii.item.message.shifter.mode_change_true").append(ComponentHelper.locComp(Value.LIGHT_GRAY + " ]")))));
+						} else {
+							CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.locComp(ComponentColour.PURPLE, false, "dimensionalpocketsii.item.message.shifter.mode_change")
+									.append(ComponentHelper.locComp(ComponentColour.LIGHT_GRAY, false, "dimensionalpocketsii.item.message.shifter.mode_change_prefix")
+											.append(ComponentHelper.locComp(ComponentColour.RED, false, "dimensionalpocketsii.item.message.shifter.mode_change_false").append(ComponentHelper.locComp(Value.LIGHT_GRAY + " ]")))));
+						}
 					}
 				}
 			}
 		} else {
-			CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.LIGHT_RED + "You havent linked this Shifter to a Pocket yet!");
+			CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.item.message.shifter.not_linked"));
 		}
 		
-		return ActionResult.resultPass(playerIn.getHeldItem(handIn));
+		return InteractionResultHolder.pass(playerIn.getItemInHand(handIn));
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		super.addInformation(stack, worldIn, tooltip, flagIn);
+	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+		if (!ComponentHelper.isShiftKeyDown(Minecraft.getInstance())) {
+			tooltip.add(ComponentHelper.getTooltipInfo("dimensionalpocketsii.info.shifter_info"));
+			
+			if (ComponentHelper.displayShiftForDetail) {
+				tooltip.add(ComponentHelper.shiftForMoreDetails());
+			} 
+			
+		} else {
+			tooltip.add(ComponentHelper.getTooltipOne("dimensionalpocketsii.info.shifter_shift_one"));
+			tooltip.add(ComponentHelper.getTooltipTwo("dimensionalpocketsii.info.shifter_shift_two"));
+			tooltip.add(ComponentHelper.getTooltipThree("dimensionalpocketsii.info.shifter_shift_three"));
+			tooltip.add(ComponentHelper.getTooltipLimit("dimensionalpocketsii.info.shifter_limitation"));
+			
+			tooltip.add(ComponentHelper.shiftForLessDetails());
+		}
 		
-		if (!shift_desc_one.isEmpty() && !shift_desc_two.isEmpty()) {
-			if (!TextHelper.isShiftKeyDown(Minecraft.getInstance())) {
-				tooltip.add(new StringTextComponent(TextHelper.getInfoText(this.info)));
-				
-				if (TextHelper.displayShiftForDetail) {
-					tooltip.add(new StringTextComponent(TextHelper.shiftForMoreDetails()));
-				}
-			} else {
-				tooltip.add(new StringTextComponent(TextHelper.getDescOneText(shift_desc_one)));
-				tooltip.add(new StringTextComponent(TextHelper.getDescTwoText(shift_desc_two)));
-				tooltip.add(new StringTextComponent(TextHelper.getDescThreeText(shift_desc_three)));
-				tooltip.add(new StringTextComponent(TextHelper.getLimitationText(limitation)));
-				
-				tooltip.add(new StringTextComponent(TextHelper.shiftForLessDetails()));
-			}
-		} 
-
 		if (stack.hasTag()) {
-			CompoundNBT tag = stack.getTag();
+			CompoundTag stackTag = stack.getTag();
 			
-			if (tag.contains("use_data")) {
-				CompoundNBT use_data = tag.getCompound("use_data");
-				
-				int uses = use_data.getInt("uses");
-				
-				tooltip.add(new StringTextComponent(TextHelper.GRAY + "Current remaining charges: " + TextHelper.LIGHT_GRAY + "[ " + uses + " ]"));
-			}
-			
-			if (tag.contains("nbt_data")) {
-				CompoundNBT compound_tag = tag.getCompound("nbt_data");
-				
-				if (compound_tag.contains("chunk_pos")) {
-					CompoundNBT pos_tag = compound_tag.getCompound("chunk_pos");
+			if (!ComponentHelper.isControlKeyDown(Minecraft.getInstance())) {
+				tooltip.add(ComponentHelper.ctrlForMoreDetails());
+			} else {
+				if (stackTag.contains("nbt_data")) {
+					CompoundTag nbtData = stackTag.getCompound("nbt_data");
+
+					if (nbtData.contains("chunk_pos")) {
+						CompoundTag chunkPos = nbtData.getCompound("chunk_pos");
+						
+						int[] chunk = new int [] { chunkPos.getInt("x"), chunkPos.getInt("z") };
+						tooltip.add(ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.info.shifter.pocket").append(ComponentHelper.locComp(Value.LIGHT_GRAY + "[ " + Value.BRIGHT_BLUE + chunk[0] + Value.LIGHT_GRAY + ", " + Value.BRIGHT_BLUE + chunk[1] + Value.LIGHT_GRAY + " ]")));
+					}
 					
-					int x = pos_tag.getInt("x");
-					int z = pos_tag.getInt("z");
-					
-					tooltip.add(new StringTextComponent(TextHelper.GRAY + "Currently linked to Pocket: " + TextHelper.LIGHT_GRAY + "[ " + TextHelper.BRIGHT_BLUE + x + TextHelper.LIGHT_GRAY + ", " + TextHelper.BRIGHT_BLUE + z + TextHelper.LIGHT_GRAY + " ]"));
+					if (nbtData.contains("player_data")) {
+						CompoundTag player_pos = nbtData.getCompound("player_data");
+						
+						int x = player_pos.getInt("x");
+						int y = player_pos.getInt("y");
+						int z = player_pos.getInt("z");
+						boolean tele_to_block = player_pos.getBoolean("tele_to_block");
+						
+						if (tele_to_block) {
+							tooltip.add(ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.item.message.shifter.mode_change_prefix").append(ComponentHelper.locComp(Value.LIGHT_GRAY + "[ ")
+									.append(ComponentHelper.locComp(ComponentColour.GREEN, false, "dimensionalpocketsii.item.message.shifter.mode_change_true")).append(ComponentHelper.locComp(Value.LIGHT_GRAY + " ]"))));
+						} else {
+							tooltip.add(ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.item.message.shifter.mode_change_prefix").append(ComponentHelper.locComp(Value.LIGHT_GRAY + "[ ")
+									.append(ComponentHelper.locComp(ComponentColour.RED, false, "dimensionalpocketsii.item.message.shifter.mode_change_false")).append(ComponentHelper.locComp(Value.LIGHT_GRAY + " ]"))));
+						}
+						
+						tooltip.add(ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.info.shifter_player_pos").append(ComponentHelper.locComp(Value.LIGHT_GRAY + "[ " + Value.CYAN + x + Value.LIGHT_GRAY + ", " + Value.CYAN + y + Value.LIGHT_GRAY + ", " + Value.CYAN + z + Value.LIGHT_GRAY + " ]")));	
+					}
+
+					if (nbtData.contains("dimension_data")) {
+						CompoundTag dimension = nbtData.getCompound("dimension_data");
+						
+						String namespace = dimension.getString("namespace");
+						String path = dimension.getString("path");
+						
+						tooltip.add(ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.info.shifter_source_dimension").append(ComponentHelper.locComp(Value.LIGHT_GRAY + "[ " + Value.BRIGHT_GREEN + namespace + Value.LIGHT_GRAY + ": " + Value.BRIGHT_GREEN + path + Value.LIGHT_GRAY + " ]")));
+					}
 				}
-			}
-			
-			if (tag.contains("player_pos")) {
-				CompoundNBT player_pos = tag.getCompound("player_pos");
 				
-				int x = player_pos.getInt("x");
-				int y = player_pos.getInt("y");
-				int z = player_pos.getInt("z");
-				
-				boolean tele_to_block = player_pos.getBoolean("tele_to_block");
-				
-				if (tele_to_block) {
-					tooltip.add(new StringTextComponent(TextHelper.GRAY + "Teleport to Block: " + TextHelper.LIGHT_GRAY + "[ " + TextHelper.GREEN + "True" + TextHelper.LIGHT_GRAY + " ]"));
-				} else {
-					tooltip.add(new StringTextComponent(TextHelper.GRAY + "Teleport to Block: " + TextHelper.LIGHT_GRAY + "[ " + TextHelper.RED + "False" + TextHelper.LIGHT_GRAY + " ]"));
-				}
-				tooltip.add(new StringTextComponent(TextHelper.GRAY + "Saved Player Position: " + TextHelper.LIGHT_GRAY + "[ " + TextHelper.TEAL + x + TextHelper.LIGHT_GRAY + ", " + TextHelper.TEAL + y + TextHelper.LIGHT_GRAY + ", " + TextHelper.TEAL + z + TextHelper.LIGHT_GRAY + " ]"));
+				tooltip.add(ComponentHelper.ctrlForLessDetails());
 			}
 		}
+		
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
+	}
+	
+	@Override
+	public boolean isDamageable(ItemStack stack) {
+		return false;
 	}
 }

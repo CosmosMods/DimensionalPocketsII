@@ -1,6 +1,6 @@
 {
-    "parent": "dimensionalpocketsii:block/wall/wall",
+    "parent": "cosmoslibrary:block/tinted_cube_all",
     "textures": {
-    	 "normal": "dimensionalpocketsii:blocks/pocket/wall/edge_connected/normal"
+    	 "all": "dimensionalpocketsii:blocks/wall/edge_connected/normal"
     }
 }

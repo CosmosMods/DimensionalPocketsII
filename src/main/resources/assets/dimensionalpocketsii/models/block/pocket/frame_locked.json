@@ -1,6 +1,6 @@
 {
     "parent": "block/block",
-    "ambientocclusion": false,
+    "ambientocclusion": true,
     "display": {
         "gui": {
             "rotation": [ 30, 135, 0 ],
@@ -14,21 +14,22 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/pocket/mid/mid_face",
-        "frame_face": "dimensionalpocketsii:blocks/pocket/frame/frame_face_locked"
+        "particle": "dimensionalpocketsii:blocks/pocket/frame/locked",
+        "outside": "dimensionalpocketsii:blocks/pocket/frame/locked",
+        "inside": "dimensionalpocketsii:blocks/pocket/frame/locked_inside"
     },
     "elements": [
         {
             "from": [0, 0, 0],
-            "to": [16, 16, 0],
+            "to": [16, 16, 0.95],
             "faces": {
                 "north": {
                     "uv": [0,0,16,16],
-                    "texture": "#frame_face"
+                    "texture": "#outside"
                 },
                 "south": {
                     "uv": [0,0,16,16],
-                    "texture": "#frame_face"
+                    "texture": "#inside"
                 }
             }
         }

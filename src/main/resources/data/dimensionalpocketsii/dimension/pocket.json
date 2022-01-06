@@ -3,7 +3,7 @@
 		"name": "dimensionalpocketsii:pocket",
 		"ultrawarm": false,
 		"natural": true,
-		"piglin_safe": true,
+		"piglin_safe": false,
 		"respawn_anchor_works": true,
 		"bed_works": true,
 		"has_raids": false,
@@ -13,11 +13,13 @@
 		"ambient_light": 1,
 		"fixed_time": 6000,
 		"logical_height": 256,
-		"infiniburn": "minecraft:infiniburn_overworld"
+		"effects": "minecraft:overworld",
+		"infiniburn": "minecraft:infiniburn_overworld",
+		"min_y": 0,
+		"height": 256
 	},
 	"generator": {
 		"type": "minecraft:flat",
-		"seed": 259029914,
 		"settings": {
 			"biome": "dimensionalpocketsii:pocket",
 			"lakes": false,
@@ -33,9 +35,7 @@
 				}
 			],
 			"structures": {
-				"structures": {
-					
-				}
+				"structures": {}
 			}
 		}
 	}

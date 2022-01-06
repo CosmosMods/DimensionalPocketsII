@@ -2,30 +2,32 @@ package com.tcn.dimensionalpocketsii.pocket.core.block;
 
 import javax.annotation.Nonnull;
 
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
-import com.tcn.cosmoslibrary.impl.block.CosmosBlockConnectedUnbreakable;
-import com.tcn.cosmoslibrary.impl.util.CosmosChatUtil;
-import com.tcn.dimensionalpocketsii.core.management.CoreConfigurationManager;
-import com.tcn.dimensionalpocketsii.core.management.CoreDimensionManager;
+import com.tcn.cosmoslibrary.common.block.CosmosBlockConnectedUnbreakable;
+import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
+import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
+import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
+import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
+import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
 import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
 import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
 import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.network.DebugPacketSender;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.DebugPackets;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class BlockWallEdge extends CosmosBlockConnectedUnbreakable {
 
@@ -34,80 +36,76 @@ public class BlockWallEdge extends CosmosBlockConnectedUnbreakable {
 	}
 	
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
-		if (PocketUtil.isDimensionEqual(worldIn, CoreDimensionManager.POCKET_WORLD)) {
-			Pocket pocket = PocketRegistryManager.getPocketFromChunk(PocketUtil.scaleToChunkPos(pos));
-			
-			System.out.println(PocketRegistryManager.getPocketMap());
-			
-			if (!worldIn.isRemote) {
-				if (pocket != null) {
-					if (playerIn.isSneaking()) {
-						if (playerIn.getHeldItem(Hand.MAIN_HAND).isEmpty()) {
-							if (!worldIn.isRemote) {
-								pocket.shift(playerIn, EnumShiftDirection.LEAVE, null, null);
-								return ActionResultType.SUCCESS;
+	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+		if (!worldIn.isClientSide) {
+			if (PocketUtil.isDimensionEqual(worldIn, DimensionManager.POCKET_WORLD)) {
+				Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(CosmosChunkPos.scaleToChunkPos(pos));
+				
+				if (pocket.exists()) {
+					if (playerIn.isShiftKeyDown()) {
+						if (playerIn.getItemInHand(handIn).isEmpty()) {
+							if (!worldIn.isClientSide) {
+								pocket.shift(playerIn, EnumShiftDirection.LEAVE, null, null, null);
+								return InteractionResult.SUCCESS;
 							}
 						} 
 					}
 				} else {
-					CosmosChatUtil.sendPlayerMessage(playerIn, false, TextHelper.RED + "Unable to shift to complete action. Pocket is null.");
-					return ActionResultType.FAIL;
+					CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.status.action.null"));
+					return InteractionResult.FAIL;
 				}
 			}
 		}
-		return ActionResultType.FAIL;
+		return InteractionResult.FAIL;
 	}
 	
 	@Override
-	public boolean canEntityDestroy(BlockState state, IBlockReader world, BlockPos pos, Entity entity) {
-		return CoreConfigurationManager.getInstance().getCanDestroyWalls();
+	public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
+		return false;
     }
 	
 	@Override
 	protected boolean canConnect(@Nonnull BlockState orig, @Nonnull BlockState conn) {
-		if (CoreConfigurationManager.getInstance().getConnectedTexturesInsidePocket()) {
+		if (ConfigurationManager.getInstance().getConnectedTexturesInsidePocket()) {
 			if (conn.getBlock().equals(Blocks.AIR)) {
 				return false;
 			} else if (orig.getBlock().equals(conn.getBlock())) {
 				return true;
 			} else if (conn.getBlock().equals(ModBusManager.BLOCK_WALL)) {
 				return true;
-			} else if (conn.getBlock().equals(ModBusManager.BLOCK_WALL_CONNECTOR)) {
+			} else if (conn.getBlock() instanceof BlockWallModule) {
 				return true;
-			} else if (conn.getBlock().equals(ModBusManager.BLOCK_WALL_CHARGER)) {
-				return true;
-			} 
-			
-			
-			else {
+			} else {
 				return false;
 			}
-			
-			/*else if (conn.getBlock().equals(BlockManager.BLOCK_DIMENSIONAL_POCKET_WALL_ENERGY_DISPLAY)) {
-				return true;
-			} else if (conn.getBlock().equals(BlockManager.BLOCK_DIMENSIONAL_POCKET_WALL_FLUID_DISPLAY)) {
-				return true;
-			}*/
 		}
 		return false;
 	}
 
 	@Override
-	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
 		return true;
 	}
 	
 	@Override
-	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-		DebugPacketSender.func_218806_a(worldIn, pos);
+	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
+		DebugPackets.sendNeighborsUpdatePacket(worldIn, pos);
 	}
-	
+
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		if (CoreConfigurationManager.getInstance().getCanDestroyWalls()) {
-			return this.getDefaultState();
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		if (ConfigurationManager.getInstance().getCanDestroyWalls()) {
+			return this.defaultBlockState();
 		}
-		return Blocks.AIR.getDefaultState();
+		return Blocks.AIR.defaultBlockState();
+	}
+
+	@Override
+	public ItemStack getCloneItemStack(BlockGetter blockReader, BlockPos posIn, BlockState stateIn) {
+		if (ConfigurationManager.getInstance().getCanDestroyWalls()) {
+			return new ItemStack(this);
+		} else {
+			return ItemStack.EMPTY;
+		}
 	}
 }

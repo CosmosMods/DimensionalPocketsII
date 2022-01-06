@@ -1,7 +1,7 @@
 {
-    "forge_marker": 1,
-    "variants": {
-        "inventory": { "model": "dimensionalpocketsii:block/display/fluid/block_dimensional_pocket_wall_fluid_display" },
-        "normal": { "model" : "dimensionalpocketsii:block/display/fluid/block_dimensional_pocket_wall_fluid_display" }
-    }
+	"variants": {
+		"": {
+			"model": "dimensionalpocketsii:block/module/fluid_display"
+		}
+	}
 }

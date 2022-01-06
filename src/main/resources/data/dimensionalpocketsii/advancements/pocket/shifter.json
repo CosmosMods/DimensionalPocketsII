@@ -1,11 +1,15 @@
 {
-	"parent": "dimensionalpocketsii:pocket/core",
+	"parent": "dimensionalpocketsii:pocket/device_base",
 	"display": {
 		"icon": {
 			"item": "dimensionalpocketsii:dimensional_shifter"
 		},
-		"title":"Portable Travel!",
-		"description": "Craft a Dimensional Shifter.",
+		"title": {
+			"translate": "dimensionalpocketsii.advancements.shifter.title"
+		},
+		"description": {
+			"translate": "dimensionalpocketsii.advancements.shifter.desc"
+		},
 		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
 		"frame": "task",
 		"show_toast": true,
@@ -18,8 +22,9 @@
 			"conditions": {
 				"items": [
 					{
-						"item": "dimensionalpocketsii:dimensional_shifter",
-						"count": 1
+						"items": [
+							"dimensionalpocketsii:dimensional_shifter"
+						]
 					}
 				]
 			}

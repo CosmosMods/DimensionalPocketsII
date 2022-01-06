@@ -74,6 +74,7 @@
         { "when": { "down": "3" },
             "apply": { "model": "dimensionalpocketsii:block/pocket/side_disabled", "x": 90, "uvlock": true }
         },
+        
         { "when": { "locked": "true" },
             "apply": { "model": "dimensionalpocketsii:block/pocket/frame_locked", "uvlock": true }
         },
@@ -92,6 +93,7 @@
         { "when": { "locked": "true" },
             "apply": { "model": "dimensionalpocketsii:block/pocket/frame_locked", "x": 90, "uvlock": true }
         },
+        
         { "when": { "locked": "false" },
             "apply": { "model": "dimensionalpocketsii:block/pocket/frame_unlocked", "uvlock": true }
         },
@@ -109,6 +111,25 @@
         },
         { "when": { "locked": "false" },
             "apply": { "model": "dimensionalpocketsii:block/pocket/frame_unlocked", "x": 90, "uvlock": true }
+        },
+        
+        { "when": { "side_guide": "true" },
+            "apply": { "model": "dimensionalpocketsii:block/pocket/guide_north", "uvlock": true }
+        },
+        { "when": { "side_guide": "true" },
+            "apply": { "model": "dimensionalpocketsii:block/pocket/guide_east", "y": 90, "uvlock": true }
+        },
+        { "when": { "side_guide": "true" },
+            "apply": { "model": "dimensionalpocketsii:block/pocket/guide_south", "y": 180, "uvlock": true }
+        },
+        { "when": { "side_guide": "true" },
+            "apply": { "model": "dimensionalpocketsii:block/pocket/guide_west", "y": 270, "uvlock": true }
+        },
+        { "when": { "side_guide": "true" },
+            "apply": { "model": "dimensionalpocketsii:block/pocket/guide_up", "x": 270, "uvlock": true }
+        },
+        { "when": { "side_guide": "true" },
+            "apply": { "model": "dimensionalpocketsii:block/pocket/guide_down", "x": 90, "uvlock": true }
         }
     ]
 }

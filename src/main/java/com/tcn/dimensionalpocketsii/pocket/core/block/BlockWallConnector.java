@@ -1,30 +1,35 @@
 package com.tcn.dimensionalpocketsii.pocket.core.block;
 
-import com.tcn.cosmoslibrary.impl.block.CosmosBlockUnbreakable;
-import com.tcn.dimensionalpocketsii.core.management.CoreConfigurationManager;
-import com.tcn.dimensionalpocketsii.pocket.core.tileentity.TileEntityConnector;
+import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import com.tcn.cosmoslibrary.common.interfaces.IBlankCreativeTab;
+import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
+import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleConnector;
 
-public class BlockWallConnector extends CosmosBlockUnbreakable {
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.BlockHitResult;
+
+public class BlockWallConnector extends BlockWallModule implements IBlankCreativeTab, EntityBlock {
 	
 	public static final IntegerProperty MODE = IntegerProperty.create("mode", 0, 3);
 	public static final IntegerProperty TYPE = IntegerProperty.create("type", 0, 3);
@@ -32,102 +37,94 @@ public class BlockWallConnector extends CosmosBlockUnbreakable {
 	public BlockWallConnector(Block.Properties prop) {
 		super(prop);
 		
-		this.setDefaultState(this.getDefaultState().with(MODE, 0).with(TYPE, 0));
+		this.registerDefaultState(this.defaultBlockState().setValue(MODE, 0).setValue(TYPE, 0));
+	}
+
+	@Override
+	public BlockEntity newBlockEntity(BlockPos posIn, BlockState stateIn) {
+		return new BlockEntityModuleConnector(posIn, stateIn);
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
+		return createTicker(levelIn, entityTypeIn, ModBusManager.CONNECTOR_TILE_TYPE);
+	}
+
+	@Nullable
+	protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level levelIn, BlockEntityType<T> entityTypeIn, BlockEntityType<? extends BlockEntityModuleConnector> entityIn) {
+		return createTickerHelper(entityTypeIn, entityIn, BlockEntityModuleConnector::tick);
 	}
 	
 	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader worldIn) {
-		return new TileEntityConnector();
+	public void attack(BlockState state, Level world, BlockPos pos, Player player) {
+		BlockEntity tileEntity = world.getBlockEntity(pos);
+		
+		if (tileEntity instanceof BlockEntityModuleConnector) {
+			((BlockEntityModuleConnector) tileEntity).attack(state, world, pos, player);
+		}
 	}
 
 	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
+	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
+		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
+		
+		if (tileEntity instanceof BlockEntityModuleConnector) {
+			return ((BlockEntityModuleConnector) tileEntity).use(state, worldIn, pos, playerIn, handIn, hit);
+		}
+		return InteractionResult.PASS;
 	}
 	
 	@Override
-	public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-		TileEntity tileEntity = world.getTileEntity(pos);
-		
-		if (tileEntity instanceof TileEntityConnector) {
-			((TileEntityConnector) tileEntity).onBlockClicked(state, world, pos, player);
-		}
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.MODEL;
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
-		
-		if (tileEntity instanceof TileEntityConnector) {
-			return ((TileEntityConnector) tileEntity).onBlockActivated(state, worldIn, pos, playerIn, handIn, hit);
-		}
-		return ActionResultType.PASS;
-	}
-	
-	@Override
-	public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
-		
-		if (tileEntity instanceof TileEntityConnector) {
-			((TileEntityConnector) tileEntity).onBlockAdded(state, worldIn, pos, oldState, isMoving);
-		}
-	}
-
-	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
-		
-		if (tileEntity instanceof TileEntityConnector) {
-			((TileEntityConnector) tileEntity).onBlockPlacedBy(worldIn, pos, state, placer, stack);
-		}
-	}
-
-	@Override
-	public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-		TileEntity tileEntity = worldIn.getTileEntity(pos);
-		
-		if (tileEntity instanceof TileEntityConnector) {
-			((TileEntityConnector) tileEntity).onBlockHarvested(worldIn, pos, state, player);
-		}
-	}
-
-	@Override
-	public void neighborChanged(BlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
-	TileEntity tileEntity = worldIn.getTileEntity(pos);
-		
-		if (tileEntity instanceof TileEntityConnector) {
-			((TileEntityConnector) tileEntity).neighborChanged(state, worldIn, pos, blockIn, fromPos, isMoving);
-		}
-	}
-	
-	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.MODEL;
-	}
-
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(MODE, TYPE);
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {	
-		TileEntity tile_in = worldIn.getTileEntity(currentPos);
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {	
+		BlockEntity tile_in = worldIn.getBlockEntity(currentPos);
 		
-		if (tile_in instanceof TileEntityConnector) {
-			TileEntityConnector tile = (TileEntityConnector) worldIn.getTileEntity(currentPos);
+		if (tile_in instanceof BlockEntityModuleConnector) {
+			BlockEntityModuleConnector tile = (BlockEntityModuleConnector) worldIn.getBlockEntity(currentPos);
 
-			return stateIn.with(MODE, tile.getSide(Direction.UP).getIndex()).with(TYPE, tile.getConnectionType().getIndex());
+			return stateIn.setValue(MODE, tile.getSide(Direction.UP).getIndex()).setValue(TYPE, tile.getConnectionType().getIndex());
 		} else {
-			return this.getDefaultState();
+			return this.defaultBlockState();
+		}
+	}
+
+	public BlockState updateState(BlockState state, BlockPos posIn, Level worldIn) {
+		if (!worldIn.isClientSide) {
+			BlockEntity entity = worldIn.getBlockEntity(posIn);
+			
+			if (entity instanceof BlockEntityModuleConnector) {
+				BlockEntityModuleConnector connector = (BlockEntityModuleConnector) entity;
+				
+				return this.defaultBlockState().setValue(MODE, connector.getSide(Direction.UP).getIndex()).setValue(TYPE, connector.getConnectionType().getIndex());
+			} else {
+				return this.defaultBlockState();
+			}
+		} else {
+			return this.defaultBlockState();
 		}
 	}
 	
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		if (CoreConfigurationManager.getInstance().getCanDestroyWalls()) {
-			return this.getDefaultState();
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		if (ConfigurationManager.getInstance().getCanDestroyWalls()) {
+			return this.defaultBlockState();
 		}
-		return Blocks.AIR.getDefaultState();
+		return Blocks.AIR.defaultBlockState();
 	}
+
+
+	@Override
+	public ItemStack getCloneItemStack(BlockGetter blockReader, BlockPos posIn, BlockState stateIn) {
+       return new ItemStack(ModBusManager.MODULE_CONNECTOR);
+    }
 }

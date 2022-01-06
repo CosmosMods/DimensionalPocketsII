@@ -3,8 +3,12 @@
 		"icon": {
 			"item": "dimensionalpocketsii:block_pocket"
 		},
-		"title": "DimensionalPockets!",
-		"description": "Welcome to Dimensional Pockets!",
+		"title": {
+			"translate": "dimensionalpocketsii.advancements.root.title"
+		},
+		"description": {
+			"translate": "dimensionalpocketsii.advancements.root.desc"
+		},
 		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
 		"frame": "task",
 		"show_toast": false,
@@ -17,7 +21,9 @@
 			"conditions": {
 				"items": [
 					{
-						"item": "minecraft:crafting_table"
+						"items": [
+							"minecraft:crafting_table"
+						]
 					}
 				]
 			}

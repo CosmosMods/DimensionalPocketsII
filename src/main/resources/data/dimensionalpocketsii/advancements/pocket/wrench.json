@@ -4,8 +4,12 @@
 		"icon": {
 			"item": "dimensionalpocketsii:dimensional_wrench"
 		},
-		"title":"You're a tool Harry!",
-		"description": "Craft a Dimensional Wrench.",
+		"title": {
+			"translate": "dimensionalpocketsii.advancements.wrench.title"
+		},
+		"description": {
+			"translate": "dimensionalpocketsii.advancements.wrench.desc"
+		},
 		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
 		"frame": "task",
 		"show_toast": true,
@@ -18,8 +22,9 @@
 			"conditions": {
 				"items": [
 					{
-						"item": "dimensionalpocketsii:dimensional_wrench",
-						"count": 1
+						"items": [
+							"dimensionalpocketsii:dimensional_wrench"
+						]
 					}
 				]
 			}

@@ -1,64 +1,64 @@
 #dimensionalpocketsii
 modLoader="javafml" #mandatory
-loaderVersion="[34,)" #mandatory
+loaderVersion="[37.0,)" #mandatory
 license="All Rights Reserved" #mandatory
 logoFile="dimensional_logo.png" #optional
 	
 [[mods]] #mandatory
 	modId="dimensionalpocketsii" #mandatory
-	version="1.16.3-0.9.90" #mandatory
+	version="1.17.1-1.0.130" #mandatory
 	displayName="Dimensional Pockets II" #mandatory
 	displayURL="https://www.curseforge.com/minecraft/mc-mods/dimensional-pockets-ii" #optional
-	credits="NPException, Rechalow (Translation)" #optional
+	credits="NPException, VsnGamer (Elevator Code), Scarlet Spark, Apolybrium, Rechalow, Discord Members" #optional
 	authors="TheCosmicNebula" #optional
 	description='''
-    Create pocket dimensions!
-	'''
+Create pocket dimensions!
+'''
 
 [[dependencies.dimensionalpocketsii]] #optional
     modId="cosmoslibrary" #mandatory
     mandatory=true #mandatory
-    versionRange="[1.16.3-3.0,)" #mandatory
+    versionRange="[1.17.1-2.3,)" #mandatory
     ordering="BEFORE"
     side="BOTH"
 [[dependencies.dimensionalpocketsii]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[34,)" #mandatory
+    versionRange="[37.0,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.dimensionalpocketsii]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.3]"
+    versionRange="[1.17.1]"
     ordering="NONE"
     side="BOTH"
 
 #cosmoslibrary
 modLoader="javafml" #mandatory
-loaderVersion="[34,)" #mandatory
+loaderVersion="[37.0,)" #mandatory
 license="All Rights Reserved" #mandatory
 logoFile="cosmos_logo.png" #optional
 
 [[mods]] #mandatory
 	modId="cosmoslibrary" #mandatory
-	version="1.16.3-3.0.10" #mandatory
+	version="1.17.1-2.3.50" #mandatory
 	displayName="Cosmos Library" #mandatory
-	displayURL="https://www.curseforge.com/minecraft/mc-mods/cosmoslibrary" #optional
+	displayURL="https://www.curseforge.com/minecraft/mc-mods/cosmos-library" #optional
 	authors="TheCosmicNebula" #optional
 	description='''
-    Library and API for TheCosmicNebula's Mods.
-	'''
+Library and API for TheCosmicNebula_'s Mods.
+'''
 
 [[dependencies.cosmoslibrary]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[34,)" #mandatory
+    versionRange="[37.0,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.cosmoslibrary]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.3]"
+    versionRange="[1.17.1]"
     ordering="NONE"
     side="BOTH"

@@ -2,34 +2,34 @@ package com.tcn.dimensionalpocketsii.pocket.core.shift;
 
 import javax.annotation.Nullable;
 
-import com.tcn.cosmoslibrary.client.impl.util.TextHelper;
-import com.tcn.dimensionalpocketsii.core.management.CoreSoundHandler;
+import com.tcn.cosmoslibrary.common.lib.ComponentColour;
+import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
+import com.tcn.dimensionalpocketsii.core.management.SoundManager;
 
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 
 public enum EnumShiftDirection {
 	
-	ENTER(0, "enter", "Leave", "Leaving", "pocket.direction.enter", TextHelper.BOLD + TextHelper.GREEN, CoreSoundHandler.GENERIC.PORTAL_IN),
-	LEAVE(1, "leave", "Enter", "Entering", "pocket.direction.leave", TextHelper.BOLD + TextHelper.ORANGE, CoreSoundHandler.GENERIC.PORTAL_OUT),
-	UNKNOWN(-1, "unknown", "Unknown", "Unknown", "pocket.direction.unknown", TextHelper.RED, null);
+	ENTER(0, "enter", "Enter", "dimensionalpocketsii.pocket.direction.enter", ComponentColour.GREEN, SoundManager.GENERIC.PORTAL),
+	LEAVE(1, "leave", "Leave", "dimensionalpocketsii.pocket.direction.leave", ComponentColour.ORANGE, SoundManager.GENERIC.PORTAL),
+	GENERIC(2, "generic", "Generic", "dimensionalpocketsii.pocket.direcion.generic", ComponentColour.CYAN, SoundEvents.PORTAL_TRAVEL),
+	UNKNOWN(-1, "unknown", "Unknown", "dimensionalpocketsii.pocket.direction.unknown", ComponentColour.RED, null);
 	
 	private final int index;
 	private final String name;
 	private final String display_name;
-	private final String use_name;
 	private final String localized_name;
-	private final String display_colour;
+	private final ComponentColour display_colour;
 	private final SoundEvent sound;
 	
 	private static final EnumShiftDirection[] VALUES = values();
 	
-	EnumShiftDirection(int indexIn, String nameIn, String displayNameIn, String useNameIn, String localizedNameIn, String displayColourIn, @Nullable SoundEvent soundIn) {
+	EnumShiftDirection(int indexIn, String nameIn, String displayNameIn, String localizedNameIn, ComponentColour displayColourIn, @Nullable SoundEvent soundIn) {
 		this.index = indexIn;
 		this.name = nameIn;
 		this.display_name = displayNameIn;
-		this.use_name = useNameIn;
 		this.localized_name = localizedNameIn;
 		this.display_colour = displayColourIn;
 		this.sound = soundIn;
@@ -47,8 +47,8 @@ public enum EnumShiftDirection {
 		return this.display_name;
 	}
 
-	public String getUseName() {
-		return this.use_name;
+	public Component getUseName() {
+		return ComponentHelper.locComp(display_colour, true, this.localized_name);
 	}
 
 	public String getLocalizedName() {
@@ -66,7 +66,7 @@ public enum EnumShiftDirection {
 		}
 	}
 
-	public String getDisplayColour() {
+	public ComponentColour getDisplayColour() {
 		return display_colour;
 	}
 
@@ -74,12 +74,8 @@ public enum EnumShiftDirection {
 		return VALUES;
 	}
 	
-	public String getChatStringForDirection() {
-		return TextHelper.TEAL + "You are now: " + this.display_colour + this.use_name + TextHelper.END + TextHelper.TEAL + " the Pocket Dimension." + TextHelper.END;
-	}
-
-	public ITextComponent getChatComponentForDirection() {
-		return new StringTextComponent(this.getChatStringForDirection());
+	public Component getChatComponentForDirection() {
+		return ComponentHelper.locComp(ComponentColour.CYAN, false, "dimensionalpocketsii.pocket.direction.pre").append(getUseName()).append(ComponentHelper.locComp(ComponentColour.CYAN, false, "dimensionalpocketsii.pocket.direction.suff"));
 	}
 
 	public SoundEvent getSound() {

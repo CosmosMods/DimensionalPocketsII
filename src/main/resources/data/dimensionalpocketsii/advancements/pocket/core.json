@@ -4,8 +4,12 @@
 		"icon": {
 			"item": "dimensionalpocketsii:block_dimensional_core"
 		},
-		"title":"The Secret to Portal Travel!",
-		"description": "Craft a Dimensional Core.",
+		"title": {
+			"translate": "dimensionalpocketsii.advancements.core.title"
+		},
+		"description": {
+			"translate": "dimensionalpocketsii.advancements.core.desc"
+		},
 		"background": "dimensionalpocketsii:textures/gui/advancements/backgrounds/dimensional.png",
 		"frame": "goal",
 		"show_toast": true,
@@ -18,8 +22,9 @@
 			"conditions": {
 				"items": [
 					{
-						"item": "dimensionalpocketsii:block_dimensional_core",
-						"count": 1
+						"items": [
+							"dimensionalpocketsii:block_dimensional_core"
+						]
 					}
 				]
 			}
