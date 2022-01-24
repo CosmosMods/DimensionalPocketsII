@@ -30,10 +30,13 @@ This repo does not have a licence. This means that by default, it is All Rights 
 If you wish to view the original DimensionalPockets code, please refer to [NPException's GitHub](https://github.com/NPException/Dimensional-Pockets).
 
 ## Mod Page
-[Dimensional Pockets II on CurseForge](https://minecraft.curseforge.com/projects/cosmos-industry) [NOT YET LIVE]
+[Dimensional Pockets II on CurseForge](https://minecraft.curseforge.com/projects/dimensional-pockets-ii)
 
 ## Development Team:
 - TheCosmicNebula (Main Author)
+- Rechalow (Chinese Translation)
+- 343GuiltySpark (Mod Bug Testing)
+- Apolybrium (Texture and sound Artist)
 
 ### Development Team Applications:
  - Please feel free to email: thecosmicnebula_@outlook.com
