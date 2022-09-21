@@ -9,7 +9,7 @@ import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
 import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleConnector;
 import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
@@ -59,35 +59,34 @@ public class BlockWallEnergyDisplay extends BlockWallModule implements IBlankCre
 			return InteractionResult.FAIL;
 		}
 		
-		if(!worldIn.isClientSide) {
-			CosmosChunkPos chunkPos = CosmosChunkPos.scaleToChunkPos(pos);
-			Pocket pocketIn = PocketRegistryManager.getPocketFromChunkPosition(chunkPos);
-			
-			if (playerIn.isShiftKeyDown()) {
-				if(pocketIn.exists()) {
-					if (CosmosUtil.holdingWrench(playerIn)) {
-						if (pocketIn.checkIfOwner(playerIn)) {
-							worldIn.setBlockAndUpdate(pos, ModBusManager.BLOCK_WALL.defaultBlockState());
+		CosmosChunkPos chunkPos = CosmosChunkPos.scaleToChunkPos(pos);
+		Pocket pocketIn = PocketRegistryManager.getPocketFromChunkPosition(chunkPos);
+		
+		if (playerIn.isShiftKeyDown()) {
+			if(pocketIn.exists()) {
+				if (CosmosUtil.holdingWrench(playerIn)) {
+					if (pocketIn.checkIfOwner(playerIn)) {
+						if(!worldIn.isClientSide) {
+							worldIn.setBlockAndUpdate(pos, ObjectManager.block_wall.defaultBlockState());
 							
-							if (!playerIn.isCreative()) {
-								CosmosUtil.addItem(worldIn, playerIn, ModBusManager.MODULE_ENERGY_DISPLAY, 1);
-							}
-							
-							return InteractionResult.SUCCESS;
-						} else {
-							CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.status.no_access"));
-							return InteractionResult.FAIL;
+							CosmosUtil.addItem(worldIn, playerIn, ObjectManager.module_energy_display, 1);
+							pocketIn.removeUpdateable(pos);
 						}
-					} 
-					
-					else if (CosmosUtil.handEmpty(playerIn)) {
-						pocketIn.shift(playerIn, EnumShiftDirection.LEAVE, null, null, null);
+						
 						return InteractionResult.SUCCESS;
+					} else {
+						CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.status.no_access"));
+						return InteractionResult.FAIL;
 					}
+				} 
+				
+				else if (CosmosUtil.handEmpty(playerIn)) {
+					pocketIn.shift(playerIn, EnumShiftDirection.LEAVE, null, null, null);
+					return InteractionResult.SUCCESS;
 				}
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.FAIL;
 	}
 	
 	@Override
@@ -173,6 +172,6 @@ public class BlockWallEnergyDisplay extends BlockWallModule implements IBlankCre
 
 	@Override
 	public ItemStack getCloneItemStack(BlockGetter blockReader, BlockPos posIn, BlockState stateIn) {
-       return new ItemStack(ModBusManager.MODULE_ENERGY_DISPLAY);
+       return new ItemStack(ObjectManager.module_energy_display);
     }
 }

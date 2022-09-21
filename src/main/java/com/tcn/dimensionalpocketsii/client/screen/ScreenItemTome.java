@@ -3,7 +3,6 @@ package com.tcn.dimensionalpocketsii.client.screen;
 import java.util.Arrays;
 import java.util.UUID;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
 import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem.FONT;
@@ -16,10 +15,11 @@ import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.client.screen.button.TomeButton;
 import com.tcn.dimensionalpocketsii.client.screen.button.TomeChangeButton;
 import com.tcn.dimensionalpocketsii.core.item.DimensionalTome;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
 import com.tcn.dimensionalpocketsii.core.management.NetworkManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.core.network.PacketTomeUpdate;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -45,7 +45,7 @@ public class ScreenItemTome extends Screen {
 	private int flipTimerMulti = 0;
 	
 	private int currPage;
-	private int pageCount = 47;
+	private int pageCount = 48;
 
 	protected CosmosButtonUIMode uiModeButton;
 	private UUID playerUUID;
@@ -71,7 +71,7 @@ public class ScreenItemTome extends Screen {
 	private final boolean pageTurnSounds;
 
 	public ScreenItemTome(boolean pageTurnSoundsIn, UUID playerUUIDIn, ItemStack stackIn) {
-		super(ComponentHelper.locComp("dimensionalpocketsii.tome_heading"));
+		super(ComponentHelper.title("dimensionalpocketsii.tome_heading"));
 		
 		this.pageTurnSounds = pageTurnSoundsIn;
 		this.stack = stackIn;
@@ -96,11 +96,7 @@ public class ScreenItemTome extends Screen {
 		super.renderBackground(poseStack);
 		int[] screen_coords = CosmosUISystem.getScreenCoords(this, 202, 225);
 		
-		if (this.stack != null) {
-			CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, screen_coords, 0, 0, 0, 0, 202, 225, this.getUIMode(), TEXTURE);
-		} else {
-			CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, screen_coords, 0, 0, 0, 0, 202, 225, EnumUIMode.DARK, TEXTURE);
-		}
+		CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, screen_coords, 0, 0, 0, 0, 202, 225, this.getUIMode(), TEXTURE);
 	}
 
 	@Override
@@ -111,21 +107,21 @@ public class ScreenItemTome extends Screen {
 		int[] screen_coords = CosmosUISystem.getScreenCoords(this, 202, 225);
 		
 		if (this.flipTimer < 2000) {
-			this.flipTimer++;
+			this.flipTimer += 2;
 		} else {
 			this.flipTimer = 0;
 		}
 
 		if (this.flipTimerMulti < 8000) {
-			this.flipTimerMulti++;
+			this.flipTimerMulti += 2;
 		} else {
 			this.flipTimerMulti = 0;
 		}
 
 		this.addButtons();
 
-		FONT.drawString(poseStack, font, screen_coords, 23, 10, true, ComponentHelper.locComp(ComponentColour.BLACK, false, "dimensionalpocketsii.tome_page", Integer.toString(this.currPage)));
-		FONT.drawString(poseStack, font, screen_coords, 69, 10, true, ComponentHelper.locComp(ComponentColour.POCKET_PURPLE_LIGHT, false, true, "dimensionalpocketsii.tome_heading"));
+		FONT.drawString(poseStack, font, screen_coords, 23, 10, true, ComponentHelper.style2(ComponentColour.BLACK, "dimensionalpocketsii.tome_page", Integer.toString(this.currPage)));
+		FONT.drawString(poseStack, font, screen_coords, 69, 10, true, ComponentHelper.style(ComponentColour.POCKET_PURPLE_LIGHT, "underline", "dimensionalpocketsii.tome_heading"));
 		
 		if (this.currPage == 0) {
 			FONT.drawWrappedStringBR(poseStack, font, screen_coords, 104, -9, 0, ComponentColour.BLACK.dec(), ComponentHelper.locString("dimensionalpocketsii.tome_one_body") 
@@ -133,26 +129,26 @@ public class ScreenItemTome extends Screen {
 			
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 58, ComponentColour.POCKET_PURPLE.dec(), ComponentHelper.locString(Value.UNDERLINE + Value.BOLD, "dimensionalpocketsii.tome_one_body_heading"), false);
 			
-			FONT.drawString(poseStack, font, screen_coords, 30, 105, true, ComponentHelper.locComp(ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.tome_two_heading"));
-			FONT.drawString(poseStack, font, screen_coords, 173, 105, true, ComponentHelper.locComp(ComponentColour.POCKET_PURPLE_LIGHT, false, "1"));
+			FONT.drawString(poseStack, font, screen_coords, 30, 105, true, ComponentHelper.style(ComponentColour.POCKET_PURPLE_LIGHT, "dimensionalpocketsii.tome_two_heading"));
+			FONT.drawString(poseStack, font, screen_coords, 173, 105, true, ComponentHelper.style(ComponentColour.POCKET_PURPLE_LIGHT, "1"));
 			
-			FONT.drawString(poseStack, font, screen_coords, 30, 115, true, ComponentHelper.locComp(ComponentColour.DARK_CYAN, false, "dimensionalpocketsii.tome_three_heading"));
-			FONT.drawString(poseStack, font, screen_coords, 161, 115, true, ComponentHelper.locComp(ComponentColour.DARK_CYAN, false, "2-5"));
+			FONT.drawString(poseStack, font, screen_coords, 30, 115, true, ComponentHelper.style(ComponentColour.DARK_CYAN, "dimensionalpocketsii.tome_three_heading"));
+			FONT.drawString(poseStack, font, screen_coords, 161, 115, true, ComponentHelper.style(ComponentColour.DARK_CYAN, "2-5"));
 			
-			FONT.drawString(poseStack, font, screen_coords, 30, 125, true, ComponentHelper.locComp(ComponentColour.BLUE, false, "dimensionalpocketsii.tome_four_heading"));
-			FONT.drawString(poseStack, font, screen_coords, 155, 125, true, ComponentHelper.locComp(ComponentColour.BLUE, false, "6-15"));
+			FONT.drawString(poseStack, font, screen_coords, 30, 125, true, ComponentHelper.style(ComponentColour.BLUE, "dimensionalpocketsii.tome_four_heading"));
+			FONT.drawString(poseStack, font, screen_coords, 155, 125, true, ComponentHelper.style(ComponentColour.BLUE, "6-15"));
 			
-			FONT.drawString(poseStack, font, screen_coords, 30, 135, true, ComponentHelper.locComp(ComponentColour.LIGHT_BLUE, false, "dimensionalpocketsii.tome_five_heading"));
-			FONT.drawString(poseStack, font, screen_coords, 149, 135, true, ComponentHelper.locComp(ComponentColour.LIGHT_BLUE, false, "16-20"));
+			FONT.drawString(poseStack, font, screen_coords, 30, 135, true, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.tome_five_heading"));
+			FONT.drawString(poseStack, font, screen_coords, 149, 135, true, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "16-20"));
 			
-			FONT.drawString(poseStack, font, screen_coords, 30, 145, true, ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.tome_seven_heading"));
-			FONT.drawString(poseStack, font, screen_coords, 149, 145, true, ComponentHelper.locComp(ComponentColour.GRAY, false, "24-27"));
+			FONT.drawString(poseStack, font, screen_coords, 30, 145, true, ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.tome_seven_heading"));
+			FONT.drawString(poseStack, font, screen_coords, 149, 145, true, ComponentHelper.style(ComponentColour.GRAY, "24-27"));
 			
-			FONT.drawString(poseStack, font, screen_coords, 30, 155, true, ComponentHelper.locComp(ComponentColour.DARK_GREEN, false, "dimensionalpocketsii.tome_nine_heading"));
-			FONT.drawString(poseStack, font, screen_coords, 149, 155, true, ComponentHelper.locComp(ComponentColour.DARK_GREEN, false, "28-43"));
+			FONT.drawString(poseStack, font, screen_coords, 30, 155, true, ComponentHelper.style(ComponentColour.DARK_GREEN, "dimensionalpocketsii.tome_nine_heading"));
+			FONT.drawString(poseStack, font, screen_coords, 149, 155, true, ComponentHelper.style(ComponentColour.DARK_GREEN, "28-44"));
 			
-			FONT.drawString(poseStack, font, screen_coords, 30, 165, true, ComponentHelper.locComp(ComponentColour.RED, false, "dimensionalpocketsii.tome_ten_tab"));
-			FONT.drawString(poseStack, font, screen_coords, 149, 165, true, ComponentHelper.locComp(ComponentColour.RED, false, "44-45"));
+			FONT.drawString(poseStack, font, screen_coords, 30, 165, true, ComponentHelper.style(ComponentColour.RED, "dimensionalpocketsii.tome_ten_tab"));
+			FONT.drawString(poseStack, font, screen_coords, 149, 165, true, ComponentHelper.style(ComponentColour.RED, "45-46"));
 
 			FONT.drawWrappedStringBR(poseStack, font, screen_coords, 104, 142, 0, ComponentColour.BLACK.dec(), ComponentHelper.locString("dimensionalpocketsii.tome_two_body_three"));
 			
@@ -165,18 +161,18 @@ public class ScreenItemTome extends Screen {
 			FONT.drawWrappedStringBR(poseStack, font, screen_coords, 104, 4, 0, ComponentColour.BLACK.dec(), ComponentHelper.locString("dimensionalpocketsii.tome_two_body_one"));
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 65, ComponentColour.POCKET_PURPLE_LIGHT.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_two_body_two"), false);
 			
-			FONT.drawString(poseStack, font, screen_coords, 25, 110, true, ComponentHelper.locComp(ComponentColour.CYAN, false, "dimensionalpocketsii.tome_two_sub_one"));
-			FONT.drawString(poseStack, font, screen_coords, 25, 120, true, ComponentHelper.locComp(ComponentColour.BLUE, false, "dimensionalpocketsii.tome_two_sub_two"));
-			FONT.drawString(poseStack, font, screen_coords, 25, 130, true, ComponentHelper.locComp(ComponentColour.LIGHT_BLUE, false, "dimensionalpocketsii.tome_two_sub_three"));
-			FONT.drawString(poseStack, font, screen_coords, 25, 140, true, ComponentHelper.locComp(ComponentColour.GREEN, false, "dimensionalpocketsii.tome_two_sub_four"));
-			FONT.drawString(poseStack, font, screen_coords, 25, 150, true, ComponentHelper.locComp(ComponentColour.GRAY, false, "dimensionalpocketsii.tome_two_sub_five"));
-			FONT.drawString(poseStack, font, screen_coords, 25, 160, true, ComponentHelper.locComp(ComponentColour.DARK_GREEN, false, "dimensionalpocketsii.tome_two_sub_six"));
+			FONT.drawString(poseStack, font, screen_coords, 25, 110, true, ComponentHelper.style(ComponentColour.DARK_CYAN, "dimensionalpocketsii.tome_two_sub_one"));
+			FONT.drawString(poseStack, font, screen_coords, 25, 120, true, ComponentHelper.style(ComponentColour.BLUE, "dimensionalpocketsii.tome_two_sub_two"));
+			FONT.drawString(poseStack, font, screen_coords, 25, 130, true, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.tome_two_sub_three"));
+			FONT.drawString(poseStack, font, screen_coords, 25, 140, true, ComponentHelper.style(ComponentColour.GREEN, "dimensionalpocketsii.tome_two_sub_four"));
+			FONT.drawString(poseStack, font, screen_coords, 25, 150, true, ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.tome_two_sub_five"));
+			FONT.drawString(poseStack, font, screen_coords, 25, 160, true, ComponentHelper.style(ComponentColour.DARK_GREEN, "dimensionalpocketsii.tome_two_sub_six"));
 			
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 174, ComponentColour.BLACK.dec(), ComponentHelper.locString("[ ", "dimensionalpocketsii.tome_foot_two", " ]"), false);
 		}
 		
 		else if (this.currPage == 2) {
-			FONT.drawCenteredString(poseStack, font, screen_coords, 104, -8, ComponentColour.CYAN.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_three_heading"), false);
+			FONT.drawCenteredString(poseStack, font, screen_coords, 104, -8, ComponentColour.DARK_CYAN.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_three_heading"), false);
 			
 			CosmosUISystem.setTextureWithColour(poseStack, BLOCK_TEXTURES, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
 			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 75, 40, 0, 0, 60, 60);
@@ -187,12 +183,65 @@ public class ScreenItemTome extends Screen {
 		} 
 		
 		else if (this.currPage == 3) {
-			FONT.drawWrappedStringBR(poseStack, font, screen_coords, 104, -4, 0, ComponentColour.BLACK.dec(), ComponentHelper.locString("dimensionalpocketsii.tome_three_body_one_"));
+			FONT.drawCenteredString(poseStack, font, screen_coords, 104, -8, ComponentColour.DARK_CYAN.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_three_heading_one"), false);
+			
+			FONT.drawWrappedStringBR(poseStack, font, screen_coords, 104, 6, 0, ComponentColour.BLACK.dec(), ComponentHelper.locString("dimensionalpocketsii.tome_three_body_two"));
+			FONT.drawWrappedStringBR(poseStack, font, screen_coords, 104, 35, 0, ComponentColour.BLACK.dec(), ComponentHelper.locString("dimensionalpocketsii.tome_three_body_three"));
+			
+			FONT.drawString(poseStack, font, screen_coords, 42, 90, true, ComponentHelper.style(ComponentColour.BLUE, "bold", "dimensionalpocketsii.tome_three_sub_one"));
+			FONT.drawString(poseStack, font, screen_coords, 84, 90, true, ComponentHelper.style(ComponentColour.DARK_GREEN, "bold", "dimensionalpocketsii.tome_three_sub_two"));
+			FONT.drawString(poseStack, font, screen_coords, 126, 90, true, ComponentHelper.style(ComponentColour.GRAY, "bold", "dimensionalpocketsii.tome_three_sub_three"));
+
+			CosmosUISystem.setTextureWithColour(poseStack, FLAT_TEXTURES_0, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 101 - 60, 102, 32, 96, 32, 32);
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 101 - 14, 102, 64, 96, 32, 32);
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 101 + 32, 102, 96, 96, 32, 32);
+			
+			FONT.drawWrappedStringBR(poseStack, font, screen_coords, 104, 108, 0, ComponentColour.BLACK.dec(), ComponentHelper.locString("dimensionalpocketsii.tome_three_body_four"));
+
+			CosmosUISystem.setTextureWithColour(poseStack, FLAT_TEXTURES, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 47, 168, 128, 192, 32, 32);
+			
+			CosmosUISystem.setTextureWithColour(poseStack, this.getUIMode().equals(EnumUIMode.DARK) ? TEXTURE[0] : TEXTURE[1], new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 92, 178, 236, 242, 20, 14);
+			
+			CosmosUISystem.setTextureWithColour(poseStack, FLAT_TEXTURES_0, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
+			if (this.flipTimerMulti < 2000) {
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 127, 168, 0, 96, 32, 32);
+			} else if (this.flipTimerMulti > 2000 && this.flipTimerMulti < 4000) {
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 127, 168, 32, 96, 32, 32);
+			} else if (this.flipTimerMulti > 4000 && this.flipTimerMulti < 6000) {
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 127, 168, 64, 96, 32, 32);
+			} else if (this.flipTimerMulti > 6000 && this.flipTimerMulti < 8000) {
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 127, 168, 96, 96, 32, 32);
+			}
 			
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 174, ComponentColour.BLACK.dec(), ComponentHelper.locString("[ ", "dimensionalpocketsii.tome_foot_three", " 2 ]"), false);
 		} 
 		
 		else if (this.currPage == 4) {
+			FONT.drawCenteredString(poseStack, font, screen_coords, 104, -8, ComponentColour.DARK_CYAN.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_three_heading_two"), false);
+
+			FONT.drawWrappedStringBR(poseStack, font, screen_coords, 104, 6, 0, ComponentColour.BLACK.dec(), ComponentHelper.locString("You can also colour your<br>Pocket to any of the 16<br>vanilla Minecraft colours,<br>or any Mod colours.<br> <br>To apply a colour, right<br>click your Pocket Block,<br>or Connector with a Dye<br>Item.<br> <br>To reset the colour back<br>to purple, use a Dimensional<br>Shard instead of a Dye."));
+			//FONT.drawWrappedStringBR(poseStack, font, screen_coords, 104, 35, 0, ComponentColour.BLACK.dec(), ComponentHelper.locString("dimensionalpocketsii.tome_three_body_three"));
+
+			CosmosUISystem.setTextureWithColour(poseStack, this.getUIMode().equals(EnumUIMode.DARK) ? TEXTURE[0] : TEXTURE[1], new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 92, 170, 236, 242, 20, 14);
+			
+			CosmosUISystem.setTextureWithColour(poseStack, FLAT_TEXTURES_0, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
+			if (this.flipTimerMulti < 2000) {
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 127, 160, 0, 64, 32, 32);
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 47, 160, 0, 128, 32, 32);
+			} else if (this.flipTimerMulti > 2000 && this.flipTimerMulti < 4000) {
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 127, 160, 32, 64, 32, 32);
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 47, 160, 32, 128, 32, 32);
+			} else if (this.flipTimerMulti > 4000 && this.flipTimerMulti < 6000) {
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 127, 160, 64, 64, 32, 32);
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 47, 160, 64, 128, 32, 32);
+			} else if (this.flipTimerMulti > 6000 && this.flipTimerMulti < 8000) {
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 127, 160, 96, 64, 32, 32);
+				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 47, 160, 96, 128, 32, 32);
+			}
 			
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 174, ComponentColour.BLACK.dec(), ComponentHelper.locString("[ ", "dimensionalpocketsii.tome_foot_three", " 3 ]"), false);
 		} 
@@ -500,8 +549,7 @@ public class ScreenItemTome extends Screen {
 		}
 		
 		else if (this.currPage >= 29 && this.currPage <= 38) {
-			CosmosUISystem.setTextureWithColour(poseStack, FLAT_TEXTURES, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
-			RenderSystem.enableBlend(); RenderSystem.defaultBlendFunc(); RenderSystem.enableDepthTest();
+			CosmosUISystem.setTextureWithColourAlpha(poseStack, FLAT_TEXTURES, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
 			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 202 / 2 - 30, 225 / 2 - 30, 0, 64, 64, 64);
 
 			CosmosUISystem.setTextureWithColour(poseStack, this.getTexture(), new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
@@ -533,9 +581,8 @@ public class ScreenItemTome extends Screen {
 			}
 		}
 		
-		else if (this.currPage >= 37 && this.currPage <= 41) {
-			CosmosUISystem.setTextureWithColour(poseStack, FLAT_TEXTURES, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
-			RenderSystem.enableBlend(); RenderSystem.defaultBlendFunc(); RenderSystem.enableDepthTest();
+		else if (this.currPage >= 39 && this.currPage <= 42) {
+			CosmosUISystem.setTextureWithColourAlpha(poseStack, FLAT_TEXTURES, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
 			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 202 / 2 - 30, 225 / 2 - 30, 128, 64, 64, 64);
 
 			CosmosUISystem.setTextureWithColour(poseStack, this.getTexture(), new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
@@ -547,84 +594,72 @@ public class ScreenItemTome extends Screen {
 			if (this.currPage == 39) {
 				FONT.drawCenteredString(poseStack, font, screen_coords, 104, -10, ComponentColour.DARK_GREEN.dec(),ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_nine_heading_two"), false);
 			}
+
+			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 174, ComponentColour.BLACK.dec(), ComponentHelper.locString("[ ", "dimensionalpocketsii.tome_foot_nine", " " + (this.currPage - 27) + " ]"), false);
 		}
 		
-		else if (this.currPage >= 40 && this.currPage <= 43) {
+		else if (this.currPage >= 43 && this.currPage <= 44) {
 			CosmosUISystem.setTextureWithColourAlpha(poseStack, FLAT_TEXTURES, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
 			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 202 / 2 - 30, 225 / 2 - 30, 64, 64, 64, 64);
-			
-			if (this.currPage == 42) {
-				FONT.drawCenteredString(poseStack, font, screen_coords, 104, -10, ComponentColour.DARK_GREEN.dec(),ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_nine_heading_three"), false);
-				
-				CosmosUISystem.setTextureWithColour(poseStack, this.getTexture(), new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 35, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 77, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 119, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 161, 202, 76, 54, 38);
-				
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 35, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 77, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 119, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 161, 202, 76, 54, 38);
 
-				FONT.drawCenteredString(poseStack, font, screen_coords, 104, 174, ComponentColour.BLACK.dec(), ComponentHelper.locString("[ ", "dimensionalpocketsii.tome_foot_nine", " " + (this.currPage - 27) + " ]"), false);
-			}
+			CosmosUISystem.setTextureWithColour(poseStack, this.getTexture(), new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 35, 202, 76, 54, 38);
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 77, 202, 76, 54, 38);
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 119, 202, 76, 54, 38);
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 161, 202, 76, 54, 38);
+			
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 35, 202, 76, 54, 38);
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 77, 202, 76, 54, 38);
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 119, 202, 76, 54, 38);
+			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 161, 202, 76, 54, 38);
 
 			if (this.currPage == 43) {
-				CosmosUISystem.setTextureWithColour(poseStack, this.getTexture(), new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
+				FONT.drawCenteredString(poseStack, font, screen_coords, 104, -10, ComponentColour.DARK_GREEN.dec(),ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_nine_heading_three"), false);
 				
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 35, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 77, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 119, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 30, 161, 202, 76, 54, 38);
-				
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 35, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 77, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 119, 202, 76, 54, 38);
-				CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 123, 161, 202, 76, 54, 38);
-
-				FONT.drawCenteredString(poseStack, font, screen_coords, 104, 174, ComponentColour.BLACK.dec(), ComponentHelper.locString("[ ", "dimensionalpocketsii.tome_foot_nine", " " + (this.currPage - 27) + " ]"), false);
 			}
+
+			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 174, ComponentColour.BLACK.dec(), ComponentHelper.locString("[ ", "dimensionalpocketsii.tome_foot_nine", " " + (this.currPage - 27) + " ]"), false);
 		}
 		
-		else if (this.currPage == 44) {
+		else if (this.currPage == 45) {
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, -8, ComponentColour.RED.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_ten_heading"), false);
 			
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 5, ComponentColour.POCKET_PURPLE_LIGHT.dec(), "TheCosmicNebula", false);
-			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 15, ComponentHelper.locComp(ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.tome_ten"), false);
+			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 15, ComponentHelper.style(ComponentColour.POCKET_PURPLE_LIGHT, "dimensionalpocketsii.tome_ten"), false);
 			
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 30, ComponentColour.DARK_GREEN.dec(), "Apolybrium", false);
-			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 40, ComponentHelper.locComp(ComponentColour.DARK_GREEN, false, "dimensionalpocketsii.tome_ten_one"), false);
-			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 50, ComponentHelper.locComp(ComponentColour.DARK_GREEN, false, "dimensionalpocketsii.tome_ten_one_"), false);
+			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 40, ComponentHelper.style(ComponentColour.DARK_GREEN, "dimensionalpocketsii.tome_ten_one"), false);
+			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 50, ComponentHelper.style(ComponentColour.DARK_GREEN, "dimensionalpocketsii.tome_ten_one_"), false);
 
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 65, ComponentColour.BLUE.dec(), "Scarlet Spark", false);
-			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 75, ComponentHelper.locComp(ComponentColour.BLUE, false, "dimensionalpocketsii.tome_ten_two"), false);
-			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 85, ComponentHelper.locComp(ComponentColour.BLUE, false, "dimensionalpocketsii.tome_ten_two_"), false);
+			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 75, ComponentHelper.style(ComponentColour.BLUE, "dimensionalpocketsii.tome_ten_two"), false);
+			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 85, ComponentHelper.style(ComponentColour.BLUE, "dimensionalpocketsii.tome_ten_two_"), false);
 			
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 100, ComponentColour.PURPLE.dec(), "Rechalow", false);
-			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 110, ComponentHelper.locComp(ComponentColour.PURPLE, false, "dimensionalpocketsii.tome_ten_three"), false);
+			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 110, ComponentHelper.style(ComponentColour.PURPLE, "dimensionalpocketsii.tome_ten_three"), false);
 
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 125, ComponentColour.BLUE.dec(), "NPException + Team", false);
-			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 135, ComponentHelper.locComp(ComponentColour.BLUE, false, "dimensionalpocketsii.tome_ten_four"), false);
+			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 135, ComponentHelper.style(ComponentColour.BLUE, "dimensionalpocketsii.tome_ten_four"), false);
 
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 150, ComponentColour.RED.dec(), "VsnGamer", false);
-			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 160, ComponentHelper.locComp(ComponentColour.RED, false, "dimensionalpocketsii.tome_ten_five"), false);
+			FONT.drawCenteredComponent(poseStack, font, screen_coords, 104, 160, ComponentHelper.style(ComponentColour.RED, "dimensionalpocketsii.tome_ten_five"), false);
 			
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 174, ComponentColour.BLACK.dec(), ComponentHelper.locString("[ ", "dimensionalpocketsii.tome_foot_ten", " 1 ]"), false);
 		}
 		
-		else if (this.currPage == 45) {
+		else if (this.currPage == 46) {
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, -8, ComponentColour.BLURPLE_LIGHT.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_eleven_heading"), false);
 			
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 10, ComponentColour.BLACK.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_eleven_body_one"), false);
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 22, ComponentColour.ORANGE.dec(), "Azrael", false);
 			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 35, ComponentColour.ORANGE.dec(), "Jiale556276", false);
+			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 48, ComponentColour.ORANGE.dec(), "Imjustleo", false);
 			
-			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 50, ComponentColour.BLACK.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_eleven_body_two"), false);
-			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 62, ComponentColour.LIGHT_RED.dec(), "Tahlavos17", false);
+			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 66, ComponentColour.BLACK.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_eleven_body_two"), false);
+			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 78, ComponentColour.LIGHT_RED.dec(), "Tahlavos17", false);
 			
-			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 80, ComponentColour.BLACK.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_eleven_body_three"), false);
-			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 92, ComponentColour.RED.dec(), "Plær1â€™", false);
+			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 98, ComponentColour.BLACK.dec(), ComponentHelper.locString(Value.UNDERLINE, "dimensionalpocketsii.tome_eleven_body_three"), false);
+			FONT.drawCenteredString(poseStack, font, screen_coords, 104, 111, ComponentColour.RED.dec(), "Plær1â€™", false);
 
 			FONT.drawWrappedStringBR(poseStack, font, screen_coords, 104, 130, 0, ComponentColour.BLURPLE_LIGHT.dec(), ComponentHelper.locString("dimensionalpocketsii.tome_eleven_body_four"));
 			
@@ -642,39 +677,39 @@ public class ScreenItemTome extends Screen {
 		int[] screen_coords = CosmosUISystem.getScreenCoords(this, 202, 225);
 		
 		if (this.buttonExit.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.RED, false, "dimensionalpocketsii.tome_button_one"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.RED, "dimensionalpocketsii.tome_button_one"), mouseX, mouseY);
 		} else if (this.buttonHome.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.GREEN, false, "dimensionalpocketsii.tome_button_two"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.GREEN, "dimensionalpocketsii.tome_button_two"), mouseX, mouseY);
 		} 
 		
 		else if (this.buttonNextPage.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.tome_button_three"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.POCKET_PURPLE_LIGHT, "dimensionalpocketsii.tome_button_three"), mouseX, mouseY);
 		} else if (this.buttonPreviousPage.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.tome_button_four"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.POCKET_PURPLE_LIGHT, "dimensionalpocketsii.tome_button_four"), mouseX, mouseY);
 		} 
 		
 		else if (this.tabIntroduction.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.POCKET_PURPLE_LIGHT, true, "dimensionalpocketsii.tome_two_heading"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.POCKET_PURPLE_LIGHT, "bold", "dimensionalpocketsii.tome_two_heading"), mouseX, mouseY);
 		} else if (this.tabPockets.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.CYAN, true, "dimensionalpocketsii.tome_three_heading"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.CYAN, "bold", "dimensionalpocketsii.tome_three_heading"), mouseX, mouseY);
 		} else if (this.tabModules.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.BLUE, true, "dimensionalpocketsii.tome_four_heading"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.BLUE, "bold", "dimensionalpocketsii.tome_four_heading"), mouseX, mouseY);
 		} else if (this.tabItems.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.LIGHT_BLUE, true, "dimensionalpocketsii.tome_five_heading"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "bold", "dimensionalpocketsii.tome_five_heading"), mouseX, mouseY);
 		} else if (this.tabArmourWeapons.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.GRAY, true, "dimensionalpocketsii.tome_seven_heading"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.GRAY, "bold", "dimensionalpocketsii.tome_seven_heading"), mouseX, mouseY);
 		} else if (this.tabRecipes.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.DARK_GREEN, true, "dimensionalpocketsii.tome_nine_heading"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.DARK_GREEN, "bold", "dimensionalpocketsii.tome_nine_heading"), mouseX, mouseY);
 		} else if (this.tabCredits.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(ComponentColour.RED, true, "dimensionalpocketsii.tome_ten_tab"), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.style(ComponentColour.RED, "bold", "dimensionalpocketsii.tome_ten_tab"), mouseX, mouseY);
 		} else if (this.buttonMiss.isMouseOver(mouseX, mouseY)) {
-			this.renderTooltip(poseStack, ComponentHelper.locComp(""), mouseX, mouseY);
+			this.renderTooltip(poseStack, ComponentHelper.empty(), mouseX, mouseY);
 		}
 		
 		else if (this.uiModeButton.isMouseOver(mouseX, mouseY)) {
 			Component[] comp = new Component[] { 
-				ComponentHelper.locComp(ComponentColour.WHITE, false, "cosmoslibrary.gui.ui_mode.info"),
-				ComponentHelper.locComp(ComponentColour.GRAY, false, "cosmoslibrary.gui.ui_mode.value").append(this.getUIMode().getColouredComp())
+				ComponentHelper.style(ComponentColour.WHITE, "cosmoslibrary.gui.ui_mode.info"),
+				ComponentHelper.style(ComponentColour.GRAY, "cosmoslibrary.gui.ui_mode.value").append(this.getUIMode().getColouredComp())
 			};
 			
 			this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
@@ -705,8 +740,8 @@ public class ScreenItemTome extends Screen {
 		} 
 		
 		else if (this.currPage == 32) {
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 45, 3, 45, 3, 44, 3, 45, 3, 45, 46 }, 0);
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 43, 42, 43, 42, 6, 42, 43, 42, 43, 44 }, 1);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 43, 42, 43, 42, 6, 42, 43, 42, 43, 44 }, 0);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 45, 3, 45, 3, 44, 3, 45, 3, 45, 46 }, 1);
 			
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 45, 52, 45, 52, 87, 52, 45, 52, 45, 98 }, 2);
 			
@@ -737,7 +772,7 @@ public class ScreenItemTome extends Screen {
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 94, 3, 11, 8, 11, 3, 89, 3, 95 }, 0);
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 89, 8, 89, 3, 12, 3, 96 }, 1);
 			
-			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 94, 3, 11, 8, 11, 3, 89, 3, 95 }, 2);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 18, 8, 18, 3, 108, 3, 109 }, 2);
 			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 89, 8, 89, 3, 12, 3, 96 }, 3);
 		}
 
@@ -750,46 +785,54 @@ public class ScreenItemTome extends Screen {
 		} 
 		
 		else if (this.currPage == 37) {
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 9, 3, 9, 8, 9, 3, 56, 3, 64 }, 0);
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 71, 3, 71, 8, 71, 3, 42, 3, 70 }, 1);
-			
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 67, 3, 7, 8, 7, 3, 45, 3, 68 }, 2);
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 87, 3, 67, 8, 67, 3, 45, 3, 97 }, 3);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { -1, -1, -1, -1, 101, -1, -1, 8, -1, 100 }, 0);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { -1, -1, -1, -1, 103, -1, -1, 8, -1, 102 }, 1);
+
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 9, 3, 9, 8, 9, 3, 56, 3, 64 }, 2);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 71, 3, 71, 8, 71, 3, 42, 3, 70 }, 3);
 		}
 
 		else if (this.currPage == 38) {
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 65, 3, 71, 8, 71, 3, 89, 3, 91 }, 0);
-			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 65, 3, 71, 8, 71, 3, 89, 3, 91 }, 1);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 67, 3, 7, 8, 7, 3, 45, 3, 68 }, 0);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 87, 3, 67, 8, 67, 3, 45, 3, 97 }, 1);
 			
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 14, 3, 13, 15, 13, -1, 3, -1, 16 }, 2);
-			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 43, -1, 43, 48, 83, 48, 16, 13, 16, 39 }, 3);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 65, 3, 71, 8, 71, 3, 89, 3, 91 }, 2);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 14, 3, 13, 15, 13, -1, 3, -1, 16 }, 3);
 		}
 		
 		else if (this.currPage == 39) {
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 22, 87, 11, 87, 27 }, 20);
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 23, 87, 11, 87, 28 }, 21);
-			
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 21, 87, 11, 87, 26 }, 22);
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 24, 87, 11, 87, 29 }, 23);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 87, 3, 11, 22, 11, 3, 87, 3, 27 }, 20);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 87, 3, 11, 23, 11, 3, 87, 3, 28 }, 21);
+
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 87, 3, 11, 21, 11, 3, 87, 3, 26 }, 22);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 87, 3, 11, 24, 11, 3, 87, 3, 29 }, 23);
 		} 
 
 		else if (this.currPage == 40) {
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 25, 87, 11, 87, 30 }, 20);
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 11, 3, 11, 19, 20, 20, 20, 51 }, 21);
-			
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 62, 87, 11, 87, 63 }, 22);
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 48, 88, 48, 83, 16, 13, 16, 39 }, 23);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 87, 3, 11, 25, 11, 3, 87, 3, 30 }, 20);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { -1, 11, 20, 3, 19, 20, -1, 11, 20, 51 }, 21);
+
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 87, 3, 11, 62, 11, 3, 87, 3, 63 }, 22);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 48, 88, 48, 16, 83, 16, 13, 3, 13, 39 }, 23);
 		}
 
 		else if (this.currPage == 41) {
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 87, 11, 87, 31, 11, 87, 11, 35 }, 20);
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 87, 11, 87, 32, 11, 87, 11, 36 }, 21);
-			
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 87, 11, 87, 33, 11, 87, 11, 37 }, 22);
-			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 87, 11, 87, 34, 11, 87, 11, 38 }, 23);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 87, 31, 87, 11, 3, 11, 35 }, 20);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 87, 32, 87, 11, 3, 11, 36 }, 21);
+
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 87, 33, 87, 11, 3, 11, 37 }, 22);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 11, 3, 87, 34, 87, 11, 3, 11, 38 }, 23);
 		}
 
 		else if (this.currPage == 42) {
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 3, 87, 3, 11, 104, 11, 3, 87, 3, 105 }, 20);
+			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 87, 11, 87, -1, 32, -1, 11, 87, 11, 36 }, 21);
+			
+			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 87, 11, 87, -1, 33, -1, 11, 87, 11, 37 }, 22);
+			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 87, 11, 87, -1, 34, -1, 11, 87, 11, 38 }, 23);
+		}
+
+		else if (this.currPage == 43) {
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 27, 86, 76 }, 10);
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 26, 86, 77 }, 11);
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 28, 86, 78 }, 12);
@@ -801,14 +844,14 @@ public class ScreenItemTome extends Screen {
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 74, 86, 75 }, 17);
 		}
 		
-		else if (this.currPage == 43) {
+		else if (this.currPage == 44) {
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 35, 86, 82 }, 10);
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 36, 86, 83 }, 11);
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 37, 86, 84 }, 12);
 			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 38, 86, 85 }, 13);
-			
-			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 30, 86, 80 }, 14);
-			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 63, 86, 81 }, 15);
+
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 51, 86, 107 }, 14);
+			this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 105, 86, 106 }, 15);
 			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 10, 86, 12 }, 16);
 			//this.renderCraftingGrid(poseStack, screen_coords, mouseX, mouseY, new int[] { 74, 86, 75 }, 17);
 		}
@@ -832,6 +875,21 @@ public class ScreenItemTome extends Screen {
 				return false;
 			}
 		}
+	}
+	
+	@Override
+	public void resize(Minecraft mc, int intOne, int intTwo) {
+		int page = this.currPage;
+		super.resize(mc, intOne, intTwo);
+		this.currPage = page;
+	}
+	
+	@Override
+	public boolean mouseScrolled(double mouseX, double MouseY, double direction) {
+		
+		this.showPage(this.currPage -= (int) direction);
+		
+		return super.mouseScrolled(mouseX, MouseY, direction);
 	}
 
 	@Override
@@ -866,7 +924,7 @@ public class ScreenItemTome extends Screen {
 	protected void addButtons() {
 		this.clearWidgets();
 		
-		this.uiModeButton = this.addRenderableWidget(new CosmosButtonUIMode(this.getUIMode(), this.width / 2 + 71, this.height / 2 - 90, true, true, ComponentHelper.locComp(""), (button) -> { this.changeUIMode(); } ));
+		this.uiModeButton = this.addRenderableWidget(new CosmosButtonUIMode(this.getUIMode(), this.width / 2 + 71, this.height / 2 - 90, true, true, ComponentHelper.empty(), (button) -> { this.changeUIMode(); } ));
 		
 		this.buttonNextPage = this.addRenderableWidget(new TomeChangeButton(this.width / 2 + 58, this.height / 2 + 92, true, this.pageTurnSounds, this.getTexture(), (button) -> { this.nextPage(); }));
 		this.buttonPreviousPage = this.addRenderableWidget(new TomeChangeButton(this.width / 2 - 79, this.height / 2 + 92, false, this.pageTurnSounds, this.getTexture(), (button) -> { this.previousPage(); }));
@@ -880,11 +938,11 @@ public class ScreenItemTome extends Screen {
 		this.tabItems = this.addRenderableWidget(new TomeButton(this.width / 2 + 85, this.height / 2 - 28, ComponentColour.LIGHT_BLUE.dec(), this.getTexture(), (button) -> { this.showPage(17); }));
 		this.tabArmourWeapons = this.addRenderableWidget(new TomeButton(this.width / 2 + 85, this.height / 2 - 2, ComponentColour.GRAY.dec(), this.getTexture(), (button) -> { this.showPage(22); }));
 		this.tabRecipes = this.addRenderableWidget(new TomeButton(this.width / 2 + 85, this.height / 2 + 24, ComponentColour.DARK_GREEN.dec(), this.getTexture(), (button) -> { this.showPage(28); }));
-		this.tabCredits = this.addRenderableWidget(new TomeButton(this.width / 2 + 85, this.height / 2 + 50, ComponentColour.RED.dec(), this.getTexture(), (button) -> { this.showPage(44); }));
+		this.tabCredits = this.addRenderableWidget(new TomeButton(this.width / 2 + 85, this.height / 2 + 50, ComponentColour.RED.dec(), this.getTexture(), (button) -> { this.showPage(45); }));
 		
 		this.tabConfiguration = this.addRenderableWidget(new TomeButton(this.width / 2 + 85, this.height / 2 +76,  ComponentColour.BLACK.dec(), this.getTexture(), (button) -> {  }));
 		
-		this.buttonMiss = this.addRenderableWidget(new TomeButton(0, 0, 10, 10, ComponentColour.WHITE.dec(), this.getTexture(), (button) -> { this.showPage(46); }));
+		this.buttonMiss = this.addRenderableWidget(new TomeButton(0, 0, 10, 10, ComponentColour.WHITE.dec(), this.getTexture(), (button) -> { this.currPage = this.pageCount - 1; }));
 		
 		this.updateButtons();
 	}
@@ -918,7 +976,7 @@ public class ScreenItemTome extends Screen {
 	}
 
 	public boolean showPage(int pageNum) {
-		int i = Mth.clamp(pageNum, 0, this.pageCount - 1);
+		int i = Mth.clamp(pageNum, 0, this.pageCount - 2);
 		if (i != this.currPage) {
 			this.currPage = i;
 			this.updateButtons();
@@ -980,120 +1038,133 @@ public class ScreenItemTome extends Screen {
 		
 		final ItemStack[] items = new ItemStack[] {
 				ItemStack.EMPTY, // 0
-				
-				new ItemStack(Items.IRON_INGOT), //  1
-				new ItemStack(ModBusManager.DIMENSIONAL_SHARD), //  2
-				new ItemStack(ModBusManager.DIMENSIONAL_INGOT), //  3
-				new ItemStack(Items.DIAMOND), //  4
-				new ItemStack(Items.NETHER_STAR), //  5
-				new ItemStack(ModBusManager.NETHER_STAR_SHARD), // 6
-				new ItemStack(ModBusManager.DIMENSIONAL_WRENCH), // 7
-				new ItemStack(ModBusManager.MODULE_BASE), //  8
-				new ItemStack(Items.REDSTONE), //  9
-				new ItemStack(ModBusManager.DIMENSIONAL_SHIFTER), // 10
-				new ItemStack(Items.NETHERITE_INGOT), //  11
-				new ItemStack(ModBusManager.DIMENSIONAL_SHIFTER_ENHANCED), // 12
-				new ItemStack(Items.BLAZE_POWDER), //  13
-				new ItemStack(Items.PHANTOM_MEMBRANE), //  14
+
+				new ItemStack(Items.IRON_INGOT), // 1
+				new ItemStack(ObjectManager.dimensional_shard), // 2
+				new ItemStack(ObjectManager.dimensional_ingot), // 3
+				new ItemStack(Items.DIAMOND), // 4
+				new ItemStack(Items.NETHER_STAR), // 5
+				new ItemStack(ObjectManager.nether_star_shard), // 6
+				new ItemStack(ObjectManager.dimensional_wrench), // 7
+				new ItemStack(ObjectManager.module_base), // 8
+				new ItemStack(Items.REDSTONE), // 9
+				new ItemStack(ObjectManager.dimensional_shifter), // 10
+				new ItemStack(Items.NETHERITE_INGOT), // 11
+				new ItemStack(ObjectManager.dimensional_shifter_enhanced), // 12
+				new ItemStack(Items.BLAZE_POWDER), // 13
+				new ItemStack(Items.PHANTOM_MEMBRANE), // 14
 				new ItemStack(Items.ELYTRA), // 15
-				new ItemStack(ModBusManager.ELYTRA_WING), //  16
-				new ItemStack(ModBusManager.MODULE_CONNECTOR), // 17
-				new ItemStack(ModBusManager.DIMENSIONAL_PEARL), //  18
-				new ItemStack(Items.BOW), //  19
-				new ItemStack(ModBusManager.DIMENSIONAL_THREAD), // 20
-				
-				new ItemStack(Items.NETHERITE_PICKAXE), //  21
-				new ItemStack(Items.NETHERITE_SWORD), //  22
-				new ItemStack(Items.NETHERITE_AXE), //  23
+				new ItemStack(ObjectManager.elytra_wing), // 16
+				new ItemStack(ObjectManager.module_connector), // 17
+				new ItemStack(ObjectManager.dimensional_pearl), // 18
+				new ItemStack(Items.BOW), // 19
+				new ItemStack(ObjectManager.dimensional_thread), // 20
+
+				new ItemStack(Items.NETHERITE_PICKAXE), // 21
+				new ItemStack(Items.NETHERITE_SWORD), // 22
+				new ItemStack(Items.NETHERITE_AXE), // 23
 				new ItemStack(Items.NETHERITE_SHOVEL), // 24
-				new ItemStack(Items.NETHERITE_HOE), //  25
-				
-				new ItemStack(ModBusManager.DIMENSIONAL_PICKAXE), //  26
-				new ItemStack(ModBusManager.DIMENSIONAL_SWORD), //  27
-				new ItemStack(ModBusManager.DIMENSIONAL_AXE), //  28
-				new ItemStack(ModBusManager.DIMENSIONAL_SHOVEL), //  29
-				new ItemStack(ModBusManager.DIMENSIONAL_HOE), //  30
-				
-				new ItemStack(Items.NETHERITE_HELMET), //  31
+				new ItemStack(Items.NETHERITE_HOE), // 25
+
+				new ItemStack(ObjectManager.dimensional_pickaxe), // 26
+				new ItemStack(ObjectManager.dimensional_sword), // 27
+				new ItemStack(ObjectManager.dimensional_axe), // 28
+				new ItemStack(ObjectManager.dimensional_shovel), // 29
+				new ItemStack(ObjectManager.dimensional_hoe), // 30
+
+				new ItemStack(Items.NETHERITE_HELMET), // 31
 				new ItemStack(Items.NETHERITE_CHESTPLATE), // 32
-				new ItemStack(Items.NETHERITE_LEGGINGS), //  33
-				new ItemStack(Items.NETHERITE_BOOTS), //  34
-				
-				new ItemStack(ModBusManager.DIMENSIONAL_HELMET), //  35
-				new ItemStack(ModBusManager.DIMENSIONAL_CHESTPLATE), //  36 
-				new ItemStack(ModBusManager.DIMENSIONAL_LEGGINGS), //  37
-				new ItemStack(ModBusManager.DIMENSIONAL_BOOTS), //  38
-				new ItemStack(ModBusManager.DIMENSIONAL_ELYTRAPLATE), //  39
-				new ItemStack(ModBusManager.ARMOUR_MODULE_SCREEN),//  40
-				new ItemStack(ModBusManager.ARMOUR_MODULE_SHIFTER), //  41
-				
-				new ItemStack(Blocks.IRON_BLOCK), //  42
-				new ItemStack(ModBusManager.BLOCK_DIMENSIONAL_METAL), //  43
-				new ItemStack(ModBusManager.BLOCK_DIMENSIONAL_CORE), //  44
-				new ItemStack(ModBusManager.BLOCK_DIMENSIONAL), //  45
-				new ItemStack(ModBusManager.BLOCK_POCKET), //  46
-				new ItemStack(Blocks.DIAMOND_BLOCK), //  47
-				new ItemStack(Blocks.NETHERITE_BLOCK), //  48
-				new ItemStack(Blocks.CHEST), //  49
-				new ItemStack(ModBusManager.DIMENSIONAL_DUST), //  50
-				new ItemStack(ModBusManager.DIMENSIONAL_BOW), //  51
-				new ItemStack(Items.GLOWSTONE_DUST), //  52
-				new ItemStack(Items.STRING), //  53
-				new ItemStack(Items.ENDER_PEARL), //  54
-				new ItemStack(Items.EMERALD), //  55
-				new ItemStack(Blocks.REDSTONE_BLOCK), //  56
-				new ItemStack(ModBusManager.MODULE_CHARGER), //  57
-				new ItemStack(Items.BOOK), //  58
-				new ItemStack(ModBusManager.DIMENSIONAL_TOME), //  59
-				new ItemStack(ModBusManager.MODULE_CRAFTER), //  60
+				new ItemStack(Items.NETHERITE_LEGGINGS), // 33
+				new ItemStack(Items.NETHERITE_BOOTS), // 34
+
+				new ItemStack(ObjectManager.dimensional_helmet), // 35
+				new ItemStack(ObjectManager.dimensional_chestplate), // 36
+				new ItemStack(ObjectManager.dimensional_leggings), // 37
+				new ItemStack(ObjectManager.dimensional_boots), // 38
+				new ItemStack(ObjectManager.dimensional_elytraplate), // 39
+				new ItemStack(ObjectManager.armour_module_screen), // 40
+				new ItemStack(ObjectManager.armour_module_shifter), // 41
+
+				new ItemStack(Blocks.IRON_BLOCK), // 42
+				new ItemStack(ObjectManager.block_dimensional_metal), // 43
+				new ItemStack(ObjectManager.block_dimensional_core), // 44
+				new ItemStack(ObjectManager.block_dimensional), // 45
+				new ItemStack(ObjectManager.block_pocket), // 46
+				new ItemStack(Blocks.DIAMOND_BLOCK), // 47
+				new ItemStack(Blocks.NETHERITE_BLOCK), // 48
+				new ItemStack(Blocks.CHEST), // 49
+				new ItemStack(ObjectManager.dimensional_dust), // 50
+				new ItemStack(ObjectManager.dimensional_bow), // 51
+				new ItemStack(Items.GLOWSTONE_DUST), // 52
+				new ItemStack(Items.STRING), // 53
+				new ItemStack(Items.ENDER_PEARL), // 54
+				new ItemStack(Items.EMERALD), // 55
+				new ItemStack(Blocks.REDSTONE_BLOCK), // 56
+				new ItemStack(ObjectManager.module_charger), // 57
+				new ItemStack(Items.BOOK), // 58
+				new ItemStack(ObjectManager.dimensional_tome), // 59
+				new ItemStack(ObjectManager.module_crafter), // 60
 				new ItemStack(Blocks.CRAFTING_TABLE), // 61
-				new ItemStack(Items.TRIDENT), //  62
-				new ItemStack(ModBusManager.DIMENSIONAL_TRIDENT), //  63
-				new ItemStack(ModBusManager.MODULE_ENERGY_DISPLAY), //  64
-				new ItemStack(Blocks.FURNACE), //  65
-				new ItemStack(ModBusManager.MODULE_FURNACE), //  66
-				new ItemStack(Blocks.SMITHING_TABLE), //  67
-				new ItemStack(ModBusManager.MODULE_ARMOUR_WORKBENCH), //  68
-				new ItemStack(Blocks.GLOWSTONE), //  69
-				new ItemStack(ModBusManager.MODULE_FLUID_DISPLAY), //  70
-				new ItemStack(Items.BUCKET), //  71
-				
-				new ItemStack(ModBusManager.DIMENSIONAL_DEVICE_BASE), //  72
-				new ItemStack(ModBusManager.DIMENSIONAL_EJECTOR), //  73
-				new ItemStack(ModBusManager.DIMENSIONAL_ENERGY_CELL), //  74
-				new ItemStack(ModBusManager.DIMENSIONAL_ENERGY_CELL_ENHANCED), //  75 
-				
-				new ItemStack(ModBusManager.DIMENSIONAL_SWORD_ENHANCED), //  76
-				new ItemStack(ModBusManager.DIMENSIONAL_PICKAXE_ENHANCED), // 77
-				new ItemStack(ModBusManager.DIMENSIONAL_AXE_ENHANCED), // 78
-				new ItemStack(ModBusManager.DIMENSIONAL_SHOVEL_ENHANCED), // 79
-				new ItemStack(ModBusManager.DIMENSIONAL_HOE_ENHANCED), // 80
-				new ItemStack(ModBusManager.DIMENSIONAL_TRIDENT_ENHANCED), // 81
-				
-				new ItemStack(ModBusManager.DIMENSIONAL_HELMET_ENHANCED), // 82
-				new ItemStack(ModBusManager.DIMENSIONAL_CHESTPLATE_ENHANCED), // 83
-				new ItemStack(ModBusManager.DIMENSIONAL_LEGGINGS_ENHANCED), // 84
-				new ItemStack(ModBusManager.DIMENSIONAL_BOOTS_ENHANCED), // 85
-				new ItemStack(ModBusManager.DIMENSIONAL_INGOT_ENHANCED), // 86
-				
-				new ItemStack(ModBusManager.DIMENSIONAL_GEM), // 87
-				new ItemStack(ModBusManager.BLOCK_DIMENSIONAL_GEM), // 88
-				
+				new ItemStack(Items.TRIDENT), // 62
+				new ItemStack(ObjectManager.dimensional_trident), // 63
+				new ItemStack(ObjectManager.module_energy_display), // 64
+				new ItemStack(Blocks.FURNACE), // 65
+				new ItemStack(ObjectManager.module_furnace), // 66
+				new ItemStack(Blocks.SMITHING_TABLE), // 67
+				new ItemStack(ObjectManager.module_armour_workbench), // 68
+				new ItemStack(Blocks.GLOWSTONE), // 69
+				new ItemStack(ObjectManager.module_fluid_display), // 70
+				new ItemStack(Items.BUCKET), // 71
+
+				new ItemStack(ObjectManager.dimensional_device_base), // 72
+				new ItemStack(ObjectManager.dimensional_ejector), // 73
+				new ItemStack(ObjectManager.dimensional_energy_cell), // 74
+				new ItemStack(ObjectManager.dimensional_energy_cell_enhanced), // 75
+
+				new ItemStack(ObjectManager.dimensional_sword_enhanced), // 76
+				new ItemStack(ObjectManager.dimensional_pickaxe_enhanced), // 77
+				new ItemStack(ObjectManager.dimensional_axe_enhanced), // 78
+				new ItemStack(ObjectManager.dimensional_shovel_enhanced), // 79
+				new ItemStack(ObjectManager.dimensional_hoe_enhanced), // 80
+				new ItemStack(ObjectManager.dimensional_trident_enhanced), // 81
+
+				new ItemStack(ObjectManager.dimensional_helmet_enhanced), // 82
+				new ItemStack(ObjectManager.dimensional_chestplate_enhanced), // 83
+				new ItemStack(ObjectManager.dimensional_leggings_enhanced), // 84
+				new ItemStack(ObjectManager.dimensional_boots_enhanced), // 85
+				new ItemStack(ObjectManager.dimensional_ingot_enhanced), // 86
+
+				new ItemStack(ObjectManager.dimensional_gem), // 87
+				new ItemStack(ObjectManager.block_dimensional_gem), // 88
+
 				new ItemStack(Blocks.COPPER_BLOCK), // 89
 				new ItemStack(Items.COPPER_INGOT), // 90
-				
-				new ItemStack(ModBusManager.MODULE_GENERATOR), //91
-				new ItemStack(ModBusManager.ARMOUR_MODULE_VISOR), //92
-				new ItemStack(Items.CLOCK), //93
-				new ItemStack(Items.DAYLIGHT_DETECTOR), //94
-				new ItemStack(ModBusManager.ARMOUR_MODULE_SOLAR), //95
-				new ItemStack(ModBusManager.ARMOUR_MODULE_BATTERY), //96
-				
-				new ItemStack(ModBusManager.MODULE_UPGRADE_STATION), //97
-				new ItemStack(ModBusManager.BLOCK_FOCUS), //98
-				new ItemStack(ModBusManager.MODULE_FOCUS) //99
-				
-				//TODO: 
+
+				new ItemStack(ObjectManager.module_generator), // 91
+				new ItemStack(ObjectManager.armour_module_visor), // 92
+				new ItemStack(Items.CLOCK), // 93
+				new ItemStack(Items.DAYLIGHT_DETECTOR), // 94
+				new ItemStack(ObjectManager.armour_module_solar), // 95
+				new ItemStack(ObjectManager.armour_module_battery), // 96
+
+				new ItemStack(ObjectManager.module_upgrade_station), // 97
+				new ItemStack(ObjectManager.block_dimensional_focus), // 98
+				new ItemStack(ObjectManager.module_focus), // 99
+
+				new ItemStack(ObjectManager.module_blast_furnace), // 100
+				new ItemStack(Blocks.BLAST_FURNACE), // 101
+				new ItemStack(ObjectManager.module_smithing_table), // 102
+				new ItemStack(Blocks.SMITHING_TABLE), // 103
+
+				new ItemStack(Items.SHIELD), // 104
+				new ItemStack(ObjectManager.dimensional_shield), // 105
+				new ItemStack(ObjectManager.dimensional_shield_enhanced), // 106
+
+				new ItemStack(ObjectManager.dimensional_bow_enhanced), // 107
+
+				new ItemStack(Blocks.ENDER_CHEST), // 108
+				new ItemStack(ObjectManager.armour_module_ender_chest), // 109
+				// TODO:
 		};
 		
 		//Vanilla Crafting
@@ -1172,7 +1243,7 @@ public class ScreenItemTome extends Screen {
 			if (ref[0] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[0]], screen_coords, SLX[0], STY[6], mouseX, mouseY, true); }// 0
 			if (ref[1] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[1]], screen_coords, SLX[1], STY[6], mouseX, mouseY, true); }// 1
 			if (ref[2] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[2]], screen_coords, SLX[2], STY[7], mouseX, mouseY, true); }// Out
-		}else if (grid_ref == 14) {
+		} else if (grid_ref == 14) {
 			
 			if (ref[0] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[0]], screen_coords, SLX[3], STY[0], mouseX, mouseY, true); }// 0
 			if (ref[1] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[1]], screen_coords, SLX[4], STY[0], mouseX, mouseY, true); }// 1
@@ -1201,49 +1272,57 @@ public class ScreenItemTome extends Screen {
 			if (ref[0] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[0]], screen_coords, LX[0], TY[0], mouseX, mouseY, true); }// 0
 			if (ref[1] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[1]], screen_coords, LX[1], TY[0], mouseX, mouseY, true); }// 1
 			if (ref[2] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[2]], screen_coords, LX[2], TY[0], mouseX, mouseY, true); }// 2
-			if (ref[3] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[3]], screen_coords, LX[1], TY[1], mouseX, mouseY, true); }// Focus
-			if (ref[4] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[4]], screen_coords, LX[0], TY[2], mouseX, mouseY, true); }// 3
-			if (ref[5] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[5]], screen_coords, LX[1], TY[2], mouseX, mouseY, true); }// 4
-			if (ref[6] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[6]], screen_coords, LX[2], TY[2], mouseX, mouseY, true); }// 5
-			if (ref[7] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[7]], screen_coords, LX[1], TY[3], mouseX, mouseY, true); }// Out
+			if (ref[3] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[3]], screen_coords, LX[0], TY[1], mouseX, mouseY, true); }// 3
+			if (ref[4] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[4]], screen_coords, LX[1], TY[1], mouseX, mouseY, true); }// Focus
+			if (ref[5] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[5]], screen_coords, LX[2], TY[1], mouseX, mouseY, true); }// 5
+			if (ref[6] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[6]], screen_coords, LX[0], TY[2], mouseX, mouseY, true); }// 6
+			if (ref[7] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[7]], screen_coords, LX[1], TY[2], mouseX, mouseY, true); }// 7
+			if (ref[8] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[8]], screen_coords, LX[2], TY[2], mouseX, mouseY, true); }// 8
+			if (ref[9] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[9]], screen_coords, LX[1], TY[3], mouseX, mouseY, true); }// Out
 		} else if (grid_ref == 21) {
 			
 			//Bottom Left
 			if (ref[0] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[0]], screen_coords, LX[0], BY[0], mouseX, mouseY, true); }// 0
 			if (ref[1] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[1]], screen_coords, LX[1], BY[0], mouseX, mouseY, true); }// 1
 			if (ref[2] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[2]], screen_coords, LX[2], BY[0], mouseX, mouseY, true); }// 2
-			if (ref[3] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[3]], screen_coords, LX[1], BY[1], mouseX, mouseY, true); }// Focus
-			if (ref[4] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[4]], screen_coords, LX[0], BY[2], mouseX, mouseY, true); }// 3
-			if (ref[5] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[5]], screen_coords, LX[1], BY[2], mouseX, mouseY, true); }// 4
-			if (ref[6] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[6]], screen_coords, LX[2], BY[2], mouseX, mouseY, true); }// 5
-			if (ref[7] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[7]], screen_coords, LX[1], BY[3], mouseX, mouseY, true); }// Out
+			if (ref[3] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[3]], screen_coords, LX[0], BY[1], mouseX, mouseY, true); }// 3
+			if (ref[4] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[4]], screen_coords, LX[1], BY[1], mouseX, mouseY, true); }// Focus
+			if (ref[5] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[5]], screen_coords, LX[2], BY[1], mouseX, mouseY, true); }// 5
+			if (ref[6] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[6]], screen_coords, LX[0], BY[2], mouseX, mouseY, true); }// 6
+			if (ref[7] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[7]], screen_coords, LX[1], BY[2], mouseX, mouseY, true); }// 7
+			if (ref[8] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[8]], screen_coords, LX[2], BY[2], mouseX, mouseY, true); }// 8
+			if (ref[9] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[9]], screen_coords, LX[1], BY[3], mouseX, mouseY, true); }// Out
 		} else if (grid_ref == 22) {
 			
 			//Top Right
 			if (ref[0] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[0]], screen_coords, RX[0], TY[0], mouseX, mouseY, true); }// 0
 			if (ref[1] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[1]], screen_coords, RX[1], TY[0], mouseX, mouseY, true); }// 1
 			if (ref[2] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[2]], screen_coords, RX[2], TY[0], mouseX, mouseY, true); }// 2
-			if (ref[3] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[3]], screen_coords, RX[1], TY[1], mouseX, mouseY, true); }// Focus
-			if (ref[4] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[4]], screen_coords, RX[0], TY[2], mouseX, mouseY, true); }// 3
-			if (ref[5] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[5]], screen_coords, RX[1], TY[2], mouseX, mouseY, true); }// 4
-			if (ref[6] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[6]], screen_coords, RX[2], TY[2], mouseX, mouseY, true); }// 5
-			if (ref[7] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[7]], screen_coords, RX[1], TY[3], mouseX, mouseY, true); }// Out
+			if (ref[3] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[3]], screen_coords, RX[0], TY[1], mouseX, mouseY, true); }// 3
+			if (ref[4] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[4]], screen_coords, RX[1], TY[1], mouseX, mouseY, true); }// Focus
+			if (ref[5] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[5]], screen_coords, RX[2], TY[1], mouseX, mouseY, true); }// 5
+			if (ref[6] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[6]], screen_coords, RX[0], TY[2], mouseX, mouseY, true); }// 6
+			if (ref[7] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[7]], screen_coords, RX[1], TY[2], mouseX, mouseY, true); }// 7
+			if (ref[8] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[8]], screen_coords, RX[2], TY[2], mouseX, mouseY, true); }// 8
+			if (ref[9] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[9]], screen_coords, RX[1], TY[3], mouseX, mouseY, true); }// Out
 		} else if (grid_ref == 23) {
 			
 			//Bottom Right
 			if (ref[0] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[0]], screen_coords, RX[0], BY[0], mouseX, mouseY, true); }// 0
 			if (ref[1] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[1]], screen_coords, RX[1], BY[0], mouseX, mouseY, true); }// 1
 			if (ref[2] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[2]], screen_coords, RX[2], BY[0], mouseX, mouseY, true); }// 2
-			if (ref[3] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[3]], screen_coords, RX[1], BY[1], mouseX, mouseY, true); }// Focus
-			if (ref[4] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[4]], screen_coords, RX[0], BY[2], mouseX, mouseY, true); }// 3
-			if (ref[5] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[5]], screen_coords, RX[1], BY[2], mouseX, mouseY, true); }// 4
-			if (ref[6] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[6]], screen_coords, RX[2], BY[2], mouseX, mouseY, true); }// 5
-			if (ref[7] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[7]], screen_coords, RX[1], BY[3], mouseX, mouseY, true); }// Out
+			if (ref[3] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[3]], screen_coords, RX[0], BY[1], mouseX, mouseY, true); }// 3
+			if (ref[4] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[4]], screen_coords, RX[1], BY[1], mouseX, mouseY, true); }// Focus
+			if (ref[5] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[5]], screen_coords, RX[2], BY[1], mouseX, mouseY, true); }// 5
+			if (ref[6] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[6]], screen_coords, RX[0], BY[2], mouseX, mouseY, true); }// 6
+			if (ref[7] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[7]], screen_coords, RX[1], BY[2], mouseX, mouseY, true); }// 7
+			if (ref[8] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[8]], screen_coords, RX[2], BY[2], mouseX, mouseY, true); }// 8
+			if (ref[9] != -1) { CosmosUISystem.renderItemStack(this, font, poseStack, items[ref[9]], screen_coords, RX[1], BY[3], mouseX, mouseY, true); }// Out
 		} 
 	}
 	
 	public void renderSecret(PoseStack poseStack, int[] screen_coords) {
-		if (this.currPage == 46) {
+		if (this.currPage == 47) {
 			CosmosUISystem.setTextureWithColour(poseStack, FLAT_TEXTURES_0, new float[] { 1.0F, 1.0F, 1.0F, 1.0F });
 			CosmosUISystem.renderStaticElement(this, poseStack, screen_coords, 202 / 2 - 16, 225 / 2 - 26, 223, 223, 32, 32);
 			

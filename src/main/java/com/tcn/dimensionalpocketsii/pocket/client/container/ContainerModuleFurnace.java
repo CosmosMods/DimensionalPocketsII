@@ -1,7 +1,7 @@
 package com.tcn.dimensionalpocketsii.pocket.client.container;
 
 import com.tcn.cosmoslibrary.client.container.CosmosContainerRecipeBookBlockEntity;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -35,7 +35,7 @@ public class ContainerModuleFurnace extends CosmosContainerRecipeBookBlockEntity
 	}
 	
 	public ContainerModuleFurnace(int indexIn, Inventory playerInventoryIn, Container furnaceInventoryIn, ContainerData furnaceDataIn, BlockPos posIn) {
-		super(ModBusManager.FURNACE_CONTAINER_TYPE, indexIn, playerInventoryIn, null, posIn);
+		super(ObjectManager.container_furnace, indexIn, playerInventoryIn, null, posIn);
 		
 		this.recipeType = RecipeType.SMELTING;
 		this.recipeBookType = RecipeBookType.FURNACE;

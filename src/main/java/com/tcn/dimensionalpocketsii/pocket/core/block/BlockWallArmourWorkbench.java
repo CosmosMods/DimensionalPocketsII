@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.common.interfaces.IBlankCreativeTab;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleArmourWorkbench;
 import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleArmourWorkbench;
 
@@ -46,7 +46,7 @@ public class BlockWallArmourWorkbench extends BlockWallModule implements IBlankC
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModBusManager.ARMOUR_WORKBENCH_TILE_TYPE);
+		return createTicker(levelIn, entityTypeIn, ObjectManager.tile_entity_armour_workbench);
 	}
 
 	@Nullable
@@ -101,6 +101,6 @@ public class BlockWallArmourWorkbench extends BlockWallModule implements IBlankC
 	
 	@Override
 	public ItemStack getCloneItemStack(BlockGetter blockReader, BlockPos posIn, BlockState stateIn) {
-       return new ItemStack(ModBusManager.MODULE_ARMOUR_WORKBENCH);
+       return new ItemStack(ObjectManager.module_armour_workbench);
     }
 }

@@ -3,7 +3,7 @@ package com.tcn.dimensionalpocketsii.pocket.core.block;
 import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.common.nbt.CosmosBlockRemovableNBT;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityPocket;
 
 import net.minecraft.core.BlockPos;
@@ -57,7 +57,7 @@ public class BlockPocket extends CosmosBlockRemovableNBT implements EntityBlock 
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModBusManager.POCKET_TILE_TYPE);
+		return createTicker(levelIn, entityTypeIn, ObjectManager.tile_entity_pocket);
 	}
 
 	@Nullable
@@ -190,6 +190,6 @@ public class BlockPocket extends CosmosBlockRemovableNBT implements EntityBlock 
 
 	@Override
 	public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
-        return true;
+        return false;
     }
 }

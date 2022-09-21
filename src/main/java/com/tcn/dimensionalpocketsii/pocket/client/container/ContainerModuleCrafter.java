@@ -3,7 +3,7 @@ package com.tcn.dimensionalpocketsii.pocket.client.container;
 import java.util.Optional;
 
 import com.tcn.cosmoslibrary.client.container.CosmosContainerRecipeBookBlockEntity;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,7 +37,7 @@ public class ContainerModuleCrafter extends CosmosContainerRecipeBookBlockEntity
 	}
 
 	public ContainerModuleCrafter(int indexIn, Inventory playerInventoryIn, ContainerLevelAccess accessIn, BlockPos posIn) {
-		super(ModBusManager.CRAFTER_CONTAINER_TYPE, indexIn, playerInventoryIn, accessIn, posIn);
+		super(ObjectManager.container_crafter, indexIn, playerInventoryIn, accessIn, posIn);
 		
 		this.addSlot(new ResultSlot(playerInventoryIn.player, this.craftSlots, this.resultSlots, 0, 128, 35));
 
@@ -106,7 +106,7 @@ public class ContainerModuleCrafter extends CosmosContainerRecipeBookBlockEntity
 
 	@Override
 	public boolean stillValid(Player playerIn) {
-		return stillValid(this.access, playerIn, ModBusManager.BLOCK_WALL_CRAFTER);
+		return stillValid(this.access, playerIn, ObjectManager.block_wall_crafter);
 	}
 
 	@Override

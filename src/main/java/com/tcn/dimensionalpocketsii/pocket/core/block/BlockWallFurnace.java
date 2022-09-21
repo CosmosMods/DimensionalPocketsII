@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.common.interfaces.IBlankCreativeTab;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleFurnace;
 import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleFurnace;
 
@@ -58,7 +58,7 @@ public class BlockWallFurnace extends BlockWallModule implements IBlankCreativeT
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModBusManager.FURNACE_TILE_TYPE);
+		return createTicker(levelIn, entityTypeIn, ObjectManager.tile_entity_furnace);
 	}
 
 	@Nullable
@@ -144,13 +144,8 @@ public class BlockWallFurnace extends BlockWallModule implements IBlankCreativeT
 		return Blocks.AIR.defaultBlockState();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public ItemStack getCloneItemStack(BlockGetter blockReader, BlockPos posIn, BlockState stateIn) {
-        if (ConfigurationManager.getInstance().getCanDestroyWalls()) {
-        	return this.asBlock().getCloneItemStack(blockReader, posIn, stateIn);
-        }
-        
-        return ItemStack.EMPTY;
+		return new ItemStack(ObjectManager.module_furnace);
     }
 }

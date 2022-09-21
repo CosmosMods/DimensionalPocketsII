@@ -1,7 +1,7 @@
 package com.tcn.dimensionalpocketsii.pocket.client.container;
 
 import com.tcn.cosmoslibrary.client.container.CosmosContainerMenuBlockEntity;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,7 +22,7 @@ public class ContainerFocus extends CosmosContainerMenuBlockEntity {
 	}
 	
 	public ContainerFocus(int indexIn, Inventory playerInventoryIn, ContainerLevelAccess accessIn, BlockPos posIn) {
-		super(ModBusManager.FOCUS_CONTAINER_TYPE, indexIn, playerInventoryIn, accessIn, posIn);
+		super(ObjectManager.container_focus, indexIn, playerInventoryIn, accessIn, posIn);
 		
 		//Player Inventory
 		for (int k = 0; k < 3; ++k) {

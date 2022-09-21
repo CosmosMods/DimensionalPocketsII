@@ -3,7 +3,7 @@ package com.tcn.dimensionalpocketsii.client.colour;
 import com.tcn.cosmoslibrary.common.item.CosmosArmourItemColourable;
 import com.tcn.cosmoslibrary.common.item.CosmosArmourItemElytra;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
@@ -16,7 +16,7 @@ public class ColourItem implements ItemColor {
 	public int getColor(ItemStack stack, int itemLayerIn) {
 		Item item = stack.getItem();
 		
-		if (item.equals(ModBusManager.BLOCK_ITEM_POCKET)) {
+		if (item.equals(ObjectManager.block_pocket.asItem())) {
 			if (stack.hasTag()) {
 				CompoundTag stack_tag = stack.getTag();
 				
@@ -34,7 +34,7 @@ public class ColourItem implements ItemColor {
 					}
 				}
 			}
-		} else if (item.equals(ModBusManager.DIMENSIONAL_SHIFTER) || item.equals(ModBusManager.DIMENSIONAL_SHIFTER_ENHANCED)) {
+		} else if (item.equals(ObjectManager.dimensional_shifter) || item.equals(ObjectManager.dimensional_shifter_enhanced)) {
 			if (stack.hasTag()) {
 				CompoundTag stack_tag = stack.getTag();
 				

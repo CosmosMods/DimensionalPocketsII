@@ -37,7 +37,6 @@ public class ConfigurationManager {
 	private final BooleanValue can_use_commands;
 	private final BooleanValue keep_chunks_loaded;
 	private final BooleanValue can_destroy_walls;
-	private final BooleanValue spawn_with_tome;
 	private final BooleanValue internal_replace;
 	private final BooleanValue stop_hostile_spawns;
 	
@@ -60,7 +59,6 @@ public class ConfigurationManager {
 			can_use_commands = builder.comment("Whether or not blocked Commands can be used inside of a Pocket").define("can_use_commands", false);
 			keep_chunks_loaded = builder.comment("Whether to keep the Chunks inside the Pocket Dimension Loaded").define("keep_chunks_loaded", true);
 			can_destroy_walls = builder.comment("Whether the walls of Pockets can be destroyed in Creative Mode").define("can_destroy_walls", false);
-			spawn_with_tome = builder.comment("Whether or not Players are given a Dimensional Tome upon new spawn").define("spawn_with_tome", true);
 			internal_replace = builder.comment("Whether if reducing the Internal Height of Pocket that is larger will make it smaller").define("internal_replace", false);
 			stop_hostile_spawns = builder.comment("Whether or not Hostile Mobs should be stopped from spawning").define("stop_hostile_spawns", true);
 		}
@@ -153,14 +151,6 @@ public class ConfigurationManager {
 		this.can_destroy_walls.set(value);
 	}
 	
-
-	public boolean getSpawnWithTome() {
-		return this.spawn_with_tome.get();
-	}
-	
-	public void setSpawnWithTome(boolean value) {
-		this.spawn_with_tome.set(value);
-	}
 	
 	public boolean getInternalReplace() {
 		return this.internal_replace.get();

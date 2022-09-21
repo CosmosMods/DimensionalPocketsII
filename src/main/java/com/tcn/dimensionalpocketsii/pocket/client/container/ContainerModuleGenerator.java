@@ -4,7 +4,7 @@ import com.tcn.cosmoslibrary.client.container.CosmosContainerMenuBlockEntity;
 import com.tcn.cosmoslibrary.client.container.slot.SlotBucket;
 import com.tcn.cosmoslibrary.client.container.slot.SlotBurnableItem;
 import com.tcn.cosmoslibrary.client.container.slot.SlotRestrictedAccess;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -35,7 +35,7 @@ public class ContainerModuleGenerator extends CosmosContainerMenuBlockEntity {
 	}
 
 	public ContainerModuleGenerator(int indexIn, Inventory playerInventoryIn, Container contentsIn, ContainerData containerDataIn, ContainerLevelAccess accessIn, BlockPos posIn) {
-		super(ModBusManager.GENERATOR_CONTAINER_TYPE, indexIn, playerInventoryIn, accessIn, posIn);
+		super(ObjectManager.container_generator, indexIn, playerInventoryIn, accessIn, posIn);
 		
 		this.data = containerDataIn;
 		
@@ -79,7 +79,7 @@ public class ContainerModuleGenerator extends CosmosContainerMenuBlockEntity {
 
 	@Override
 	public boolean stillValid(Player playerIn) {
-		return stillValid(this.access, playerIn, ModBusManager.BLOCK_WALL_GENERATOR);
+		return stillValid(this.access, playerIn, ObjectManager.block_wall_generator);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class ContainerModuleGenerator extends CosmosContainerMenuBlockEntity {
 					return ItemStack.EMPTY;
 				}
 				
-			} else if (indexIn > 3 && indexIn < this.slots.size()) {
+			} else if (indexIn >= 3 && indexIn < this.slots.size()) {
 				if (itemstack.getItem() instanceof BucketItem) {
 					if (!this.moveItemStackTo(itemstack1, 1, indexIn, false)) {
 						return ItemStack.EMPTY;
@@ -110,13 +110,13 @@ public class ContainerModuleGenerator extends CosmosContainerMenuBlockEntity {
 					}
 				}
 				
-				else if (indexIn > this.slots.size() - 9 && indexIn < this.slots.size()) {
+				else if (indexIn >= this.slots.size() - 9 && indexIn < this.slots.size()) {
 					if (!this.moveItemStackTo(itemstack1, 0, this.slots.size() - 9, false)) {
 						return ItemStack.EMPTY;
 					}
 				}
 				
-				else if (indexIn > 3 && indexIn < this.slots.size() - 9) {
+				else if (indexIn >= 3 && indexIn < this.slots.size() - 9) {
 					if (!this.moveItemStackTo(itemstack1, this.slots.size() - 9, this.slots.size(), false)) {
 						return ItemStack.EMPTY;
 					}

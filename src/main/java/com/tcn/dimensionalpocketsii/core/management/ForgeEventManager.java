@@ -2,11 +2,11 @@ package com.tcn.dimensionalpocketsii.core.management;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
+import com.tcn.cosmoslibrary.energy.item.CosmosEnergyArmourItemColourable;
 import com.tcn.dimensionalpocketsii.DimReference;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.client.screen.ScreenElytraplateVisor;
@@ -17,14 +17,21 @@ import com.tcn.dimensionalpocketsii.core.network.PacketDimensionChange;
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraItemStackTagUpdate;
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraShift;
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraUseEnergy;
-import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateOpenUI;
+import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateOpenConnector;
+import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateOpenEnderChest;
+import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateOpenSettings;
+import com.tcn.dimensionalpocketsii.pocket.core.chunkloading.ChunkTrackerBlock;
+import com.tcn.dimensionalpocketsii.pocket.core.chunkloading.ChunkTrackerRoom;
+import com.tcn.dimensionalpocketsii.pocket.core.chunkloading.PocketChunkLoadingManager;
 import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
 import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
+import cpw.mods.modlauncher.serviceapi.ILaunchPluginService.Phase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.features.FeatureUtils;
@@ -35,6 +42,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -42,10 +51,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -63,6 +70,7 @@ import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
+import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -74,24 +82,47 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @Mod.EventBusSubscriber(modid = DimensionalPockets.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
 public class ForgeEventManager {
 
-	private static final ArrayList<PlacedFeature> overworldOres = new ArrayList<>();
-	private static final ArrayList<PlacedFeature> netherOres = new ArrayList<>();
-	private static final ArrayList<PlacedFeature> endOres = new ArrayList<>();
-
-	@OnlyIn(Dist.CLIENT)
-	private static ScreenElytraplateVisor screenSettings = new ScreenElytraplateVisor();
+	private static final ArrayList<Holder<PlacedFeature>> overworldOres = new ArrayList<>();
+	private static final ArrayList<Holder<PlacedFeature>> netherOres = new ArrayList<>();
+	private static final ArrayList<Holder<PlacedFeature>> endOres = new ArrayList<>();
+	
 	private static final String GIVEN_INFO_BOOK = "givenInfoBook";
-
+	
+	@SubscribeEvent
+	public static void onLivingEquipmentChangeEvent(final LivingEquipmentChangeEvent event) {
+		EquipmentSlot slot = event.getSlot();
+		
+		if (!(slot.equals(EquipmentSlot.MAINHAND)) && !(slot.equals(EquipmentSlot.OFFHAND))) {
+			LivingEntity entity = event.getEntityLiving();
+	
+			if (!(entity instanceof Player)) {
+				ItemStack stackTo = event.getTo();
+				
+				if (stackTo.getItem() instanceof CosmosEnergyArmourItemColourable) {
+					CosmosEnergyArmourItemColourable item = (CosmosEnergyArmourItemColourable) stackTo.getItem();
+					
+					item.setDamage(stackTo, 0);
+					
+					if (!item.hasEnergy(stackTo)) {
+						item.setEnergy(stackTo, 1000);
+					}
+				}
+			}
+		}
+	}
+	
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void onRenderGameOverlayEvent(RenderGameOverlayEvent.Post event) {
+		ScreenElytraplateVisor screenSettings = new ScreenElytraplateVisor();
+		
 		Minecraft mc = Minecraft.getInstance();
 		ElementType type = event.getType();
 		Player player = mc.player;
 		Inventory playerInventory = player.getInventory();
 		
 		if (type.equals(ElementType.LAYER)) {
-			if (playerInventory.getArmor(2).getItem().equals(ModBusManager.DIMENSIONAL_ELYTRAPLATE)) {
+			if (playerInventory.getArmor(2).getItem().equals(ObjectManager.dimensional_elytraplate)) {
 				
 				if (screenSettings != null) {
 					screenSettings.renderOverlay(event.getMatrixStack());
@@ -110,26 +141,76 @@ public class ForgeEventManager {
 			Level world = playerIn.level;
 			if (ModBusManager.SUIT_SCREEN.isDown()) {
 				if (playerIn.getInventory().getArmor(2).getItem() != null) {
-					Item armour = playerIn.getInventory().getArmor(2).getItem();
+					ItemStack armourStack = playerIn.getInventory().getArmor(2);
+					Item armour = armourStack.getItem();
 					
 					if (armour instanceof DimensionalElytraplate) {
-						NetworkManager.sendToServer(new PacketElytraplateOpenUI(playerIn.getUUID(), 2, true));
+						DimensionalElytraplate elytraplate = (DimensionalElytraplate) armour;
+						
+						if (DimensionalElytraplate.hasModuleInstalled(armourStack, BaseElytraModule.SCREEN)) {
+							if (elytraplate.hasEnergy(armourStack)) {
+								NetworkManager.sendToServer(new PacketElytraplateOpenConnector(playerIn.getUUID(), 2));
+								NetworkManager.sendToServer(new PacketElytraUseEnergy(playerIn.getUUID(), 2, elytraplate.getMaxUse(armourStack)));
+							} else {
+								CosmosChatUtil.sendClientPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.item.message.elytraplate.no_energy"));
+							}
+						} else {
+							CosmosChatUtil.sendClientPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.item.message.elytraplate.no_screen"));
+						}
 					}
 				}
 			} 
+			
+			else if (ModBusManager.SUIT_SCREEN_ENDER_CHEST.isDown()) {
+				if (playerIn.getInventory().getArmor(2).getItem() != null) {
+					ItemStack armourStack = playerIn.getInventory().getArmor(2);
+					Item armour = armourStack.getItem();
+					
+					if (armour instanceof DimensionalElytraplate) {
+						DimensionalElytraplate elytraplate = (DimensionalElytraplate) armour;
+						
+						if (DimensionalElytraplate.hasModuleInstalled(armourStack, BaseElytraModule.ENDER_CHEST)) {
+							if (elytraplate.hasEnergy(armourStack)) {
+								NetworkManager.sendToServer(new PacketElytraplateOpenEnderChest(playerIn.getUUID(), 2));
+								NetworkManager.sendToServer(new PacketElytraUseEnergy(playerIn.getUUID(), 2, elytraplate.getMaxUse(armourStack)));
+							} else {
+								CosmosChatUtil.sendClientPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.item.message.elytraplate.no_energy"));
+							}
+						} else {
+							CosmosChatUtil.sendClientPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.item.message.elytraplate.no_ender_chest"));
+						}
+					}
+				}
+			}  
+			
+			else if (ModBusManager.SUIT_SETTINGS.isDown()) {
+				if (playerIn.getInventory().getArmor(2).getItem() != null) {
+					ItemStack armourStack = playerIn.getInventory().getArmor(2);
+					
+					if (armourStack.getItem() instanceof DimensionalElytraplate) {
+						DimensionalElytraplate elytraplate = (DimensionalElytraplate) armourStack.getItem();
+						
+						if (elytraplate.hasEnergy(armourStack)) {
+							NetworkManager.sendToServer(new PacketElytraplateOpenSettings(playerIn.getUUID(), 2));
+						} else {
+							CosmosChatUtil.sendClientPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.item.message.elytraplate.no_energy"));
+						}
+					}
+				}
+			}
 		
 			else if (ModBusManager.SUIT_SHIFT.isDown()) {
 				if (playerIn.getInventory().getArmor(2).getItem() != null) {
-					ItemStack stack = playerIn.getInventory().getArmor(2);
-					Item armour = playerIn.getInventory().getArmor(2).getItem();
+					ItemStack armourStack = playerIn.getInventory().getArmor(2);
+					Item armour = armourStack.getItem();
 					BlockPos player_pos_actual = playerIn.blockPosition();
 					
 					if (armour instanceof DimensionalElytraplate) {
 						DimensionalElytraplate elytraplate = (DimensionalElytraplate) armour;
 						
-						if (DimensionalElytraplate.hasModuleInstalled(stack, BaseElytraModule.SHIFTER)) {
-							if (stack.hasTag()) {
-								CompoundTag stack_nbt = stack.getTag();
+						if (DimensionalElytraplate.hasModuleInstalled(armourStack, BaseElytraModule.SHIFTER)) {
+							if (armourStack.hasTag()) {
+								CompoundTag stack_nbt = armourStack.getTag();
 								
 								if (stack_nbt.contains("nbt_data")) {
 									CompoundTag nbt_data = stack_nbt.getCompound("nbt_data");
@@ -146,7 +227,7 @@ public class ForgeEventManager {
 											float player_pitch = player_pos.getFloat("pitch");
 											float player_yaw = player_pos.getFloat("yaw");
 											
-											boolean tele_to_block = DimensionalElytraplate.getElytraSetting(stack, ElytraSettings.TELEPORT_TO_BLOCK)[1];
+											boolean tele_to_block = DimensionalElytraplate.getElytraSetting(armourStack, ElytraSettings.TELEPORT_TO_BLOCK)[1];
 											
 											CompoundTag dim = nbt_data.getCompound("dimension");
 											String namespace = dim.getString("namespace");
@@ -162,13 +243,13 @@ public class ForgeEventManager {
 											
 											CosmosChunkPos chunk = new CosmosChunkPos(x, z);
 											
-											if (elytraplate.hasEnergy(stack)) {
+											if (elytraplate.hasEnergy(armourStack)) {
 												if (PocketUtil.isDimensionEqual(world, DimensionManager.POCKET_WORLD)) {
 													if (tele_to_block) {
-														NetworkManager.sendToServer(new PacketElytraUseEnergy(playerIn.getUUID(), 2, elytraplate.getMaxUse(stack)));
+														NetworkManager.sendToServer(new PacketElytraUseEnergy(playerIn.getUUID(), 2, elytraplate.getMaxUse(armourStack)));
 														NetworkManager.sendToServer(new PacketElytraShift(playerIn.getUUID(), world.dimension(), chunk));
 													} else {
-														NetworkManager.sendToServer(new PacketElytraUseEnergy(playerIn.getUUID(), 2, elytraplate.getMaxUse(stack)));
+														NetworkManager.sendToServer(new PacketElytraUseEnergy(playerIn.getUUID(), 2, elytraplate.getMaxUse(armourStack)));
 														NetworkManager.sendToServer(new PacketDimensionChange(playerIn.getUUID(), source_dimension, EnumShiftDirection.LEAVE, teleport_pos, player_yaw, player_pitch, false, true, true));
 													}
 												} else {
@@ -189,7 +270,7 @@ public class ForgeEventManager {
 													stack_nbt.put("nbt_data", nbt_data);
 													
 													NetworkManager.sendToServer(new PacketElytraItemStackTagUpdate(playerIn.getUUID(), 2, stack_nbt));
-													NetworkManager.sendToServer(new PacketElytraUseEnergy(playerIn.getUUID(), 2, elytraplate.getMaxUse(stack)));
+													NetworkManager.sendToServer(new PacketElytraUseEnergy(playerIn.getUUID(), 2, elytraplate.getMaxUse(armourStack)));
 													NetworkManager.sendToServer(new PacketElytraShift(playerIn.getUUID(), world.dimension(), chunk));
 												}
 											} else {
@@ -208,14 +289,6 @@ public class ForgeEventManager {
 						}
 					}
 				}
-			} else if (ModBusManager.SUIT_SETTINGS.isDown()) {
-				if (playerIn.getInventory().getArmor(2).getItem() != null) {
-					Item armour = playerIn.getInventory().getArmor(2).getItem();
-					
-					if (armour instanceof DimensionalElytraplate) {
-						NetworkManager.sendToServer(new PacketElytraplateOpenUI(playerIn.getUUID(), 2, false));
-					}
-				}
 			}
 		}
 	}
@@ -223,15 +296,15 @@ public class ForgeEventManager {
 	@SubscribeEvent
 	public static void onBiomeLoadingEvent(final BiomeLoadingEvent event) {
 		BiomeGenerationSettingsBuilder generation = event.getGeneration();
-		final List<Supplier<PlacedFeature>> features = generation.getFeatures(Decoration.UNDERGROUND_ORES);
+		final List<Holder<PlacedFeature>> features = generation.getFeatures(Decoration.UNDERGROUND_ORES);
 		
 		switch (event.getCategory()) {
 			case THEEND:
-				endOres.forEach((ore) -> features.add(() -> ore));
+				endOres.forEach((ore) -> generation.addFeature(Decoration.UNDERGROUND_ORES, ore));
 			case NETHER:
-				netherOres.forEach((ore) -> features.add(() -> ore));
+				netherOres.forEach((ore) -> generation.addFeature(Decoration.UNDERGROUND_ORES, ore));
 			default:
-				overworldOres.forEach((ore) -> features.add(() -> ore));
+				overworldOres.forEach((ore) -> generation.addFeature(Decoration.UNDERGROUND_ORES, ore));
 		}
 	}
 	
@@ -240,12 +313,6 @@ public class ForgeEventManager {
 		LevelAccessor world = event.getWorld();
 		DimensionType type = world.dimensionType();
 		
-		//Do this ridiculousness to detect Pocket dimension
-		if (!type.ultraWarm() && type.natural() && !type.piglinSafe() && type.respawnAnchorWorks() && type.bedWorks() && !type.hasRaids() && type.hasSkyLight() &&
-				!type.hasCeiling() && type.coordinateScale() == 1 && type.hasFixedTime() && type.logicalHeight() == 256 && type.minY() == 0) {
-		}
-		
-		
 		if (!type.ultraWarm() && type.natural() && !type.piglinSafe() && !type.respawnAnchorWorks() && 
 				type.bedWorks() && type.hasRaids() && type.hasSkyLight() && !type.hasCeiling() &&
 					type.coordinateScale() == 1 && type.logicalHeight() == 384 && type.minY() == -64 &&
@@ -253,29 +320,19 @@ public class ForgeEventManager {
 			PocketRegistryManager.saveData();
 		}
 	}
-	
-	@SubscribeEvent
-	public static void onPlayerLoggedOutEvent(final PlayerEvent.PlayerLoggedOutEvent event) {
-		//PocketRegistryManager.saveData();
-	}
-	
-	@SubscribeEvent
-	public static void onPlayerLoggedInEvent(final PlayerEvent.PlayerLoggedInEvent event) {
-		Entity entity = event.getEntity();
-		Level world = entity.level;
-		
-		if (entity instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer) entity;
 
-			if (!hasHadBook(player)) {
-				CosmosChatUtil.sendServerPlayerMessage(player, DimReference.MESSAGES.WELCOME);
-			}
-			
-			if (!world.isClientSide) {
-				checkIfSpawnWithBook(player);
-			}
-		}
+	@SubscribeEvent
+	public static void onServerUnloadEvent(final WorldEvent.Unload event) {
+		ChunkTrackerBlock.BLOCKS.clear();
+		ChunkTrackerRoom.ROOMS.clear();
+		//clearMap();
 	}
+	
+	@SubscribeEvent
+	public static void onPlayerLoggedOutEvent(final PlayerEvent.PlayerLoggedOutEvent event) { }
+	
+	@SubscribeEvent
+	public static void onPlayerLoggedInEvent(final PlayerEvent.PlayerLoggedInEvent event) { }
 	
 	@OnlyIn(Dist.CLIENT)
 	public static void clearMap() {
@@ -283,65 +340,39 @@ public class ForgeEventManager {
 	}
 	
 	public static void registerOresForGeneration() {
-		final ConfiguredFeature<?, ?> dimensionalOre = FeatureUtils.register("dimensionalpocketsii:block_dimensional_ore",
-			Feature.ORE.configured(new OreConfiguration(List.of(
-				OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, ModBusManager.BLOCK_DIMENSIONAL_ORE.defaultBlockState()),
-				OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, ModBusManager.BLOCK_DEEPSLATE_DIMENSIONAL_ORE.defaultBlockState())
+		final Holder<ConfiguredFeature<OreConfiguration, ?>> dimensionalOre = FeatureUtils.register("dimensionalpocketsii:block_dimensional_ore",
+				Feature.ORE, new OreConfiguration(List.of(
+				OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, ObjectManager.block_dimensional_ore.defaultBlockState()),
+				OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, ObjectManager.block_deepslate_dimensional_ore.defaultBlockState())
 			),
-		12)));
+		6));
 
-		final PlacedFeature placedDimensionalOre = PlacementUtils.register("dimensionalpocketsii:block_dimensional_ore", 
-			dimensionalOre.placed(HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(80)), InSquarePlacement.spread(), CountPlacement.of(12))
+		final Holder<PlacedFeature> placedDimensionalOre = PlacementUtils.register("dimensionalpocketsii:block_dimensional_ore", 
+			dimensionalOre, HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(80)), InSquarePlacement.spread(), CountPlacement.of(12)
 		);
 		overworldOres.add(placedDimensionalOre);
 		
-		final ConfiguredFeature<?, ?> dimensionalOreNether = FeatureUtils.register("dimensionalpocketsii:block_dimensional_ore_nether",
-			Feature.ORE.configured(new OreConfiguration(List.of(
-				OreConfiguration.target(OreFeatures.NETHER_ORE_REPLACEABLES, ModBusManager.BLOCK_DIMENSIONAL_ORE_NETHER.defaultBlockState())
+		final Holder<ConfiguredFeature<OreConfiguration, ?>> dimensionalOreNether = FeatureUtils.register("dimensionalpocketsii:block_dimensional_ore_nether",
+			Feature.ORE, new OreConfiguration(List.of(
+				OreConfiguration.target(OreFeatures.NETHER_ORE_REPLACEABLES, ObjectManager.block_dimensional_ore_nether.defaultBlockState())
 			),
-		12)));
+		8));
 
-		final PlacedFeature placedDimensionalOreNether = PlacementUtils.register("dimensionalpocketsii:block_dimensional_ore_nether", 
-			dimensionalOre.placed(HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(48)), InSquarePlacement.spread(), CountPlacement.of(16))
+		final Holder<PlacedFeature> placedDimensionalOreNether = PlacementUtils.register("dimensionalpocketsii:block_dimensional_ore_nether", 
+			dimensionalOre, HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(48)), InSquarePlacement.spread(), CountPlacement.of(16)
 		);
 		netherOres.add(placedDimensionalOreNether);
 
-		final ConfiguredFeature<?, ?> dimensionalOreEnd = FeatureUtils.register("dimensionalpocketsii:block_dimensional_ore_end",
-			Feature.ORE.configured(new OreConfiguration(List.of(
-				OreConfiguration.target(new BlockMatchTest(Blocks.END_STONE), ModBusManager.BLOCK_DIMENSIONAL_ORE_END.defaultBlockState())
+		final Holder<ConfiguredFeature<OreConfiguration, ?>> dimensionalOreEnd = FeatureUtils.register("dimensionalpocketsii:block_dimensional_ore_end",
+			Feature.ORE, new OreConfiguration(List.of(
+				OreConfiguration.target(new BlockMatchTest(Blocks.END_STONE), ObjectManager.block_dimensional_ore_end.defaultBlockState())
 			),
-		12)));
+		10));
 
-		final PlacedFeature placedDimensionalOreEnd = PlacementUtils.register("dimensionalpocketsii:block_dimensional_ore_end", 
-			dimensionalOre.placed(HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(128)), InSquarePlacement.spread(), CountPlacement.of(20))
+		final Holder<PlacedFeature> placedDimensionalOreEnd = PlacementUtils.register("dimensionalpocketsii:block_dimensional_ore_end", 
+			dimensionalOre, HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(128)), InSquarePlacement.spread(), CountPlacement.of(20)
 		);
 		endOres.add(placedDimensionalOreEnd);
-	}
-	
-	private static boolean hasHadBook(Player player) {
-		CompoundTag pocketTag = PocketUtil.getPlayerPersistTag(player);
-		return pocketTag.getBoolean(GIVEN_INFO_BOOK);
-	}
-
-	private static void checkIfSpawnWithBook(Player player) {
-		CompoundTag pocketTag = PocketUtil.getPlayerPersistTag(player);
-		boolean shouldGiveManual = ConfigurationManager.getInstance().getSpawnWithTome() && !pocketTag.getBoolean(GIVEN_INFO_BOOK);
-		
-		if (shouldGiveManual) {
-			ItemStack infoBook = new ItemStack(ModBusManager.DIMENSIONAL_TOME);
-			if (!player.getInventory().add(infoBook)) {
-				Level playerWorld = player.level;
-				ItemEntity entityItem = new ItemEntity(playerWorld, player.getX(), player.getY(), player.getZ(), infoBook);
-				entityItem.setPickUpDelay(0);
-
-				playerWorld.addFreshEntity(entityItem);
-				pocketTag.putBoolean(GIVEN_INFO_BOOK, true);
-			}
-			
-			pocketTag.putBoolean(GIVEN_INFO_BOOK, true);
-			
-			player.getPersistentData().put(DimensionalPockets.MOD_ID, pocketTag);
-		}
 	}
 	
 	private static <FC extends FeatureConfiguration> ConfiguredFeature<FC, ?> register(String name, ConfiguredFeature<FC, ?> configuredFeature) {

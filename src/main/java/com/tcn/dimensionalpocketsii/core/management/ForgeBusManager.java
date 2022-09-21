@@ -32,14 +32,13 @@ public class ForgeBusManager {
 
 	@SubscribeEvent
 	public static void onServerStarted(final ServerStartedEvent event) {
-		PocketRegistryManager.beginChunkLoading();
-
 		DimensionalPockets.CONSOLE.startup("[Server Init] {server} <started> Server started.");
 	}
 
 	@SubscribeEvent
 	public static void onServerStopping(final ServerStoppingEvent event) {
 		PocketRegistryManager.saveData();
+		PocketRegistryManager.clearPocketMap();
 
 		DimensionalPockets.CONSOLE.startup("[Server Stopping] {server} <stopping> Server stopping.");
 	}
