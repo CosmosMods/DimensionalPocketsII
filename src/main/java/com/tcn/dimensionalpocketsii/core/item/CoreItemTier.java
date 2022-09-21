@@ -1,14 +1,14 @@
 package com.tcn.dimensionalpocketsii.core.item;
 
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public enum CoreItemTier implements Tier {
 	
-	DIMENSIONAL(4, 4000, 12.0F, 8.0F, 30, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT)),
-	DIMENSIONAL_ENHANCED(4, 6000, 16.0F, 14.0F, 40, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT));
+	DIMENSIONAL(4, 4000, 12.0F, 8.0F, 30, Ingredient.of(ObjectManager.dimensional_ingot)),
+	DIMENSIONAL_ENHANCED(4, 6000, 16.0F, 14.0F, 40, Ingredient.of(ObjectManager.dimensional_ingot));
 
 	private final int level;
 	private final int uses;

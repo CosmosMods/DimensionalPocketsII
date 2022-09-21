@@ -15,7 +15,6 @@ import com.tcn.cosmoslibrary.common.util.CosmosUtil;
 import com.tcn.cosmoslibrary.energy.interfaces.ICosmosEnergyItem;
 import com.tcn.cosmoslibrary.energy.interfaces.ICosmosEnergyItemBEWLR;
 import com.tcn.cosmoslibrary.energy.item.CosmosEnergyItem;
-import com.tcn.dimensionalpocketsii.DimReference;
 import com.tcn.dimensionalpocketsii.client.renderer.DimensionalTridentBEWLR;
 import com.tcn.dimensionalpocketsii.core.entity.DimensionalTridentEntity;
 
@@ -50,7 +49,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 
 @SuppressWarnings("unused")
@@ -64,6 +63,7 @@ public class DimensionalTrident extends TridentItem implements Vanishable, ICosm
 	private boolean doesExtract;
 	private boolean doesCharge;
 	private boolean doesDisplayEnergyInTooltip;
+	private ComponentColour barColour;
 
 	public DimensionalTrident(Item.Properties properties, CosmosEnergyItem.Properties energyProperties) {
 		super(properties);
@@ -79,6 +79,7 @@ public class DimensionalTrident extends TridentItem implements Vanishable, ICosm
 		this.doesExtract = energyProperties.doesExtract;
 		this.doesCharge = energyProperties.doesCharge;
 		this.doesDisplayEnergyInTooltip = energyProperties.doesDisplayEnergyInTooltip;
+		this.barColour = energyProperties.barColour;
 	}
 
 	@Override
@@ -101,17 +102,26 @@ public class DimensionalTrident extends TridentItem implements Vanishable, ICosm
 
 		if (stack.hasTag()) {
 			CompoundTag stackTag = stack.getTag();
-			tooltip.add(ComponentHelper.locComp(ComponentColour.GRAY, false, "cosmoslibrary.tooltip.energy_item.stored").append(ComponentHelper.locComp(Value.LIGHT_GRAY + "[ " + Value.RED + CosmosUtil.formatIntegerMillion(stackTag.getInt("energy")) + Value.LIGHT_GRAY + " / " + Value.RED + CosmosUtil.formatIntegerMillion(this.getMaxEnergyStored(stack)) + Value.LIGHT_GRAY + " ]")));
+			tooltip.add(ComponentHelper.style(ComponentColour.GRAY, "cosmoslibrary.tooltip.energy_item.stored").append(ComponentHelper.comp(Value.LIGHT_GRAY + "[ " + Value.RED + CosmosUtil.formatIntegerMillion(stackTag.getInt("energy")) + Value.LIGHT_GRAY + " / " + Value.RED + CosmosUtil.formatIntegerMillion(this.getMaxEnergyStored(stack)) + Value.LIGHT_GRAY + " ]")));
 		}
 		
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 	}
+
+	@Override
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slotIn, ItemStack stackIn) {
+		if (!this.hasEnergy(stackIn)) {
+			return ImmutableMultimap.of();
+		} else {
+			return this.getDefaultAttributeModifiers(slotIn);
+		}
+	}
 	
 	@Override
-	public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-		consumer.accept(new IItemRenderProperties() {
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		consumer.accept(new IClientItemExtensions() {
 			@Override
-			public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
 				return new DimensionalTridentBEWLR();
 			}
 		});
@@ -368,7 +378,7 @@ public class DimensionalTrident extends TridentItem implements Vanishable, ICosm
 	
 	@Override
 	public int getBarColor(ItemStack stackIn) {
-		return DimReference.CONSTANT.ENERGYBARCOLOUR.dec();
+		return this.barColour.dec();
 	}
 	
 	@Override

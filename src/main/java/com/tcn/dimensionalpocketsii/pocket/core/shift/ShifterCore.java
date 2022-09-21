@@ -9,7 +9,7 @@ import com.tcn.cosmoslibrary.common.lib.MathHelper;
 import com.tcn.cosmoslibrary.core.teleport.EnumSafeTeleport;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -32,7 +32,7 @@ public class ShifterCore {
 	public static void sendPlayerToBedWithMessage(Player playerIn, @Nullable EnumShiftDirection directionIn, String messageIn) {
 		if (playerIn instanceof ServerPlayer) {
 			ServerPlayer server_player = (ServerPlayer) playerIn;
-			CosmosChatUtil.sendServerPlayerMessage(server_player, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.shifter_core.target_unknown_custom").append(ComponentHelper.locComp(ComponentColour.ORANGE, true, messageIn)));
+			CosmosChatUtil.sendServerPlayerMessage(server_player, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.shifter_core.target_unknown_custom").append(ComponentHelper.style(ComponentColour.ORANGE, "bold", messageIn)));
 			
 			BlockPos pos = new BlockPos(0, 0, 0);
 			if (((ServerPlayer) playerIn).getRespawnPosition() != null) {
@@ -45,7 +45,7 @@ public class ShifterCore {
 		}
 	}
 	
-	public static void sendPlayerToDimensionSpawn(Player playerIn, ResourceKey<Level> dimensionIn, @Nullable BaseComponent componentIn) {
+	public static void sendPlayerToDimensionSpawn(Player playerIn, ResourceKey<Level> dimensionIn, @Nullable MutableComponent componentIn) {
 		if (playerIn instanceof ServerPlayer) {
 			ServerPlayer serverPlayer = (ServerPlayer) playerIn;
 			
@@ -99,7 +99,7 @@ public class ShifterCore {
 							server_player.changeDimension(server_world, shifterIn);
 							
 							if (!shifterIn.playVanillaSound()) {
-								server_player.connection.send(new ClientboundSoundPacket(direction.getSound(), SoundSource.AMBIENT, position[0], position[1], position[2], 0.4F, 1));
+								server_player.connection.send(new ClientboundSoundPacket(direction.getSound(), SoundSource.AMBIENT, position[0], position[1], position[2], 0.4F, 1, 0));
 							}
 						} else {
 							server_player.changeDimension(server_world, shifterIn);

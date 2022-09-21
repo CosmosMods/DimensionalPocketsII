@@ -1,11 +1,13 @@
 package com.tcn.dimensionalpocketsii.core.management;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.tcn.dimensionalpocketsii.DimensionalPockets;
+import com.tcn.dimensionalpocketsii.DimReference;
 import com.tcn.dimensionalpocketsii.DimReference.CONFIG_DEFAULTS;
+import com.tcn.dimensionalpocketsii.DimensionalPockets;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
@@ -37,7 +39,6 @@ public class ConfigurationManager {
 	private final BooleanValue can_use_commands;
 	private final BooleanValue keep_chunks_loaded;
 	private final BooleanValue can_destroy_walls;
-	private final BooleanValue spawn_with_tome;
 	private final BooleanValue internal_replace;
 	private final BooleanValue stop_hostile_spawns;
 	
@@ -60,7 +61,6 @@ public class ConfigurationManager {
 			can_use_commands = builder.comment("Whether or not blocked Commands can be used inside of a Pocket").define("can_use_commands", false);
 			keep_chunks_loaded = builder.comment("Whether to keep the Chunks inside the Pocket Dimension Loaded").define("keep_chunks_loaded", true);
 			can_destroy_walls = builder.comment("Whether the walls of Pockets can be destroyed in Creative Mode").define("can_destroy_walls", false);
-			spawn_with_tome = builder.comment("Whether or not Players are given a Dimensional Tome upon new spawn").define("spawn_with_tome", true);
 			internal_replace = builder.comment("Whether if reducing the Internal Height of Pocket that is larger will make it smaller").define("internal_replace", false);
 			stop_hostile_spawns = builder.comment("Whether or not Hostile Mobs should be stopped from spawning").define("stop_hostile_spawns", true);
 		}
@@ -153,14 +153,6 @@ public class ConfigurationManager {
 		this.can_destroy_walls.set(value);
 	}
 	
-
-	public boolean getSpawnWithTome() {
-		return this.spawn_with_tome.get();
-	}
-	
-	public void setSpawnWithTome(boolean value) {
-		this.spawn_with_tome.set(value);
-	}
 	
 	public boolean getInternalReplace() {
 		return this.internal_replace.get();
@@ -218,6 +210,27 @@ public class ConfigurationManager {
 	public void setBlockedStructures(List<? extends String> value) {
 		this.blocked_structures.set(value);
 	}
+	
+	public void addBlockedStructure(String value) {
+		ArrayList<String> list = DimReference.CONFIG_DEFAULTS.BLOCKED_BLOCKS;
+		list.add(value);
+		
+		this.blocked_structures.set(list);
+	}
+
+	public void removeBlockedStructure(String value) {
+		List<? extends String> list = this.blocked_structures.get();
+		
+		for (int i = 0; i < list.size(); i++) {
+			String object = list.get(i);
+			
+			if (object == value) {
+				list.remove(i);
+			}
+		}
+		
+		this.blocked_structures.set(list);
+	}
 
 	public List<? extends String> getBlockedItems() {
 		return this.blocked_items.get();
@@ -227,12 +240,54 @@ public class ConfigurationManager {
 		this.blocked_items.set(value);
 	}
 
+	public void addBlockedItem(String value) {
+		ArrayList<String> list = DimReference.CONFIG_DEFAULTS.BLOCKED_ITEMS;
+		list.add(value);
+		
+		this.blocked_items.set(list);
+	}
+
+	public void removeBlockedItem(String value) {
+		List<? extends String> list = this.blocked_items.get();
+		
+		for (int i = 0; i < list.size(); i++) {
+			String object = list.get(i);
+			
+			if (object == value) {
+				list.remove(i);
+			}
+		}
+		
+		this.blocked_items.set(list);
+	}
+
 	public List<? extends String> getBlockedCommands() {
 		return this.blocked_commands.get();
 	}
 	
 	public void setBlockedCommands(List<? extends String> value) {
 		this.blocked_commands.set(value);
+	}
+
+	public void addBlockedCommand(String value) {
+		ArrayList<String> list = DimReference.CONFIG_DEFAULTS.BLOCKED_COMMANDS;
+		list.add(value);
+		
+		this.blocked_commands.set(list);
+	}
+
+	public void removeBlockedCommand(String value) {
+		List<? extends String> list = this.blocked_commands.get();
+		
+		for (int i = 0; i < list.size(); i++) {
+			String object = list.get(i);
+			
+			if (object == value) {
+				list.remove(i);
+			}
+		}
+		
+		this.blocked_commands.set(list);
 	}
 
 }

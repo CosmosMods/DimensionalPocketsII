@@ -4,7 +4,7 @@ import com.tcn.cosmoslibrary.client.container.CosmosContainerMenuBlockEntity;
 import com.tcn.cosmoslibrary.client.container.slot.SlotArmourItem;
 import com.tcn.cosmoslibrary.client.container.slot.SlotEnergyItem;
 import com.tcn.cosmoslibrary.energy.interfaces.ICosmosEnergyItem;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,7 +27,7 @@ public class ContainerModuleCharger extends CosmosContainerMenuBlockEntity {
 	}
 
 	public ContainerModuleCharger(int indexIn, Inventory playerInventoryIn, Container contentsIn, ContainerLevelAccess accessIn, BlockPos posIn) {
-		super(ModBusManager.CHARGER_CONTAINER_TYPE, indexIn, playerInventoryIn, accessIn, posIn);
+		super(ObjectManager.container_charger, indexIn, playerInventoryIn, accessIn, posIn);
 		
 		this.addSlot(new SlotEnergyItem(contentsIn, 0, 60, 21));
 		this.addSlot(new SlotEnergyItem(contentsIn, 1, 60, 39));
@@ -78,7 +78,7 @@ public class ContainerModuleCharger extends CosmosContainerMenuBlockEntity {
 
 	@Override
 	public boolean stillValid(Player playerIn) {
-		return stillValid(this.access, playerIn, ModBusManager.BLOCK_WALL_CHARGER);
+		return stillValid(this.access, playerIn, ObjectManager.block_wall_charger);
 	}
 
 	@Override
@@ -100,10 +100,12 @@ public class ContainerModuleCharger extends CosmosContainerMenuBlockEntity {
 					} 
 				} else {
 					if (!this.moveItemStackTo(itemstack1, 7, this.slots.size() - 13, false)) {
-						return ItemStack.EMPTY;
+						if (!this.moveItemStackTo(itemstack1, this.slots.size() - 13, this.slots.size() - 4, false)) {
+							return ItemStack.EMPTY;
+						}
 					}
 				}
-			} else if (indexIn > 5 && indexIn < this.slots.size()) {
+			} else if (indexIn >= 6 && indexIn < this.slots.size()) {
 				if (itemstack.getItem() instanceof ICosmosEnergyItem) {
 					if (!this.moveItemStackTo(itemstack, 0, 6, false)) {
 						return ItemStack.EMPTY;
@@ -115,13 +117,13 @@ public class ContainerModuleCharger extends CosmosContainerMenuBlockEntity {
 						return ItemStack.EMPTY;
 					}
 				} else {
-					if (indexIn > this.slots.size() - 13 && indexIn < this.slots.size()) {
+					if (indexIn >= this.slots.size() - 13 && indexIn < this.slots.size()) {
 						if (!this.moveItemStackTo(itemstack1, 7, this.slots.size() - 13, false)) {
 							return ItemStack.EMPTY;
 						}
 					}
 					
-					if (indexIn > 6 && indexIn < this.slots.size() - 13) {
+					if (indexIn >= 6 && indexIn < this.slots.size() - 13) {
 						if (!this.moveItemStackTo(itemstack1, this.slots.size() - 13, this.slots.size(), false)) {
 							return ItemStack.EMPTY;
 						}

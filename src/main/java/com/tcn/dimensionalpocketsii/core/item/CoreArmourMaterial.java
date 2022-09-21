@@ -1,6 +1,6 @@
 package com.tcn.dimensionalpocketsii.core.item;
 
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -12,11 +12,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public enum CoreArmourMaterial implements ArmorMaterial {
 
-	DIMENSIONAL("dimensionalpocketsii:base/tex", 40, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC, 6.0F, 0.4F, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT)),
-	DIMENSIONAL_ENHANCED("dimensionalpocketsii:enhanced/tex", 45, new int[] { 7, 10, 12, 7 }, 40, SoundEvents.ARMOR_EQUIP_GENERIC, 7.0F, 0.6F, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT)),
-	DIMENSIONAL_SPECIAL("dimensionalpocketsii:special/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT)),
-	DIMENSIONAL_SPECIAL_SHIFTER("dimensionalpocketsii:shifter/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT)),
-	DIMENSIONAL_SPECIAL_VISOR("dimensionalpocketsii:visor/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT));
+    DIMENSIONAL("dimensionalpocketsii:base/tex", 40, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC, 6.0F, 0.4F, Ingredient.of(ObjectManager.dimensional_ingot)),
+	DIMENSIONAL_ENHANCED("dimensionalpocketsii:enhanced/tex", 45, new int[] { 7, 10, 12, 7 }, 40, SoundEvents.ARMOR_EQUIP_GENERIC, 7.0F, 0.6F, Ingredient.of(ObjectManager.dimensional_ingot)),
+	DIMENSIONAL_SPECIAL("dimensionalpocketsii:special/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ObjectManager.dimensional_ingot)),
+	DIMENSIONAL_SPECIAL_SHIFTER("dimensionalpocketsii:shifter/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ObjectManager.dimensional_ingot)),
+	DIMENSIONAL_SPECIAL_VISOR("dimensionalpocketsii:visor/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ObjectManager.dimensional_ingot));
 
 	private static final int[] HEALTH_PER_SLOT = new int[] { 13, 15, 16, 11 };
 	private final String name;

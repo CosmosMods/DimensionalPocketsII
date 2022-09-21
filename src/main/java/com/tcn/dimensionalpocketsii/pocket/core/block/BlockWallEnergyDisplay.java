@@ -1,7 +1,5 @@
 package com.tcn.dimensionalpocketsii.pocket.core.block;
 
-import java.util.Random;
-
 import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
 import com.tcn.cosmoslibrary.common.interfaces.IBlankCreativeTab;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
@@ -9,7 +7,7 @@ import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
 import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleConnector;
 import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
@@ -18,7 +16,6 @@ import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -46,12 +43,14 @@ public class BlockWallEnergyDisplay extends BlockWallModule implements IBlankCre
 		this.registerDefaultState(this.defaultBlockState().setValue(ENERGY, 0));
 	}
 	
+	/*
 	@Override
 	public void tick(BlockState stateIn, ServerLevel worldIn, BlockPos posIn, Random randIn) {
 		worldIn.setBlockAndUpdate(posIn, this.updateState(stateIn, posIn, worldIn));
 		worldIn.blockUpdated(posIn, this);
 		worldIn.sendBlockUpdated(posIn, stateIn, this.updateState(stateIn, posIn, worldIn), 3);
 	}
+	*/
 	
 	@Override
 	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
@@ -59,35 +58,34 @@ public class BlockWallEnergyDisplay extends BlockWallModule implements IBlankCre
 			return InteractionResult.FAIL;
 		}
 		
-		if(!worldIn.isClientSide) {
-			CosmosChunkPos chunkPos = CosmosChunkPos.scaleToChunkPos(pos);
-			Pocket pocketIn = PocketRegistryManager.getPocketFromChunkPosition(chunkPos);
-			
-			if (playerIn.isShiftKeyDown()) {
-				if(pocketIn.exists()) {
-					if (CosmosUtil.holdingWrench(playerIn)) {
-						if (pocketIn.checkIfOwner(playerIn)) {
-							worldIn.setBlockAndUpdate(pos, ModBusManager.BLOCK_WALL.defaultBlockState());
+		CosmosChunkPos chunkPos = CosmosChunkPos.scaleToChunkPos(pos);
+		Pocket pocketIn = PocketRegistryManager.getPocketFromChunkPosition(chunkPos);
+		
+		if (playerIn.isShiftKeyDown()) {
+			if(pocketIn.exists()) {
+				if (CosmosUtil.holdingWrench(playerIn)) {
+					if (pocketIn.checkIfOwner(playerIn)) {
+						if(!worldIn.isClientSide) {
+							worldIn.setBlockAndUpdate(pos, ObjectManager.block_wall.defaultBlockState());
 							
-							if (!playerIn.isCreative()) {
-								CosmosUtil.addItem(worldIn, playerIn, ModBusManager.MODULE_ENERGY_DISPLAY, 1);
-							}
-							
-							return InteractionResult.SUCCESS;
-						} else {
-							CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.status.no_access"));
-							return InteractionResult.FAIL;
+							CosmosUtil.addItem(worldIn, playerIn, ObjectManager.module_energy_display, 1);
+							pocketIn.removeUpdateable(pos);
 						}
-					} 
-					
-					else if (CosmosUtil.handEmpty(playerIn)) {
-						pocketIn.shift(playerIn, EnumShiftDirection.LEAVE, null, null, null);
+						
 						return InteractionResult.SUCCESS;
+					} else {
+						CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.status.no_access"));
+						return InteractionResult.FAIL;
 					}
+				} 
+				
+				else if (CosmosUtil.handEmpty(playerIn)) {
+					pocketIn.shift(playerIn, EnumShiftDirection.LEAVE, null, null, null);
+					return InteractionResult.SUCCESS;
 				}
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.FAIL;
 	}
 	
 	@Override
@@ -173,6 +171,6 @@ public class BlockWallEnergyDisplay extends BlockWallModule implements IBlankCre
 
 	@Override
 	public ItemStack getCloneItemStack(BlockGetter blockReader, BlockPos posIn, BlockState stateIn) {
-       return new ItemStack(ModBusManager.MODULE_ENERGY_DISPLAY);
+       return new ItemStack(ObjectManager.module_energy_display);
     }
 }

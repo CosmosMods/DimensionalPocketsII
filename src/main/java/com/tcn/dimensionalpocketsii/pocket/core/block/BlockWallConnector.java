@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.common.interfaces.IBlankCreativeTab;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleConnector;
 
 import net.minecraft.core.BlockPos;
@@ -48,7 +48,7 @@ public class BlockWallConnector extends BlockWallModule implements IBlankCreativ
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModBusManager.CONNECTOR_TILE_TYPE);
+		return createTicker(levelIn, entityTypeIn, ObjectManager.tile_entity_connector);
 	}
 
 	@Nullable
@@ -125,6 +125,6 @@ public class BlockWallConnector extends BlockWallModule implements IBlankCreativ
 
 	@Override
 	public ItemStack getCloneItemStack(BlockGetter blockReader, BlockPos posIn, BlockState stateIn) {
-       return new ItemStack(ModBusManager.MODULE_CONNECTOR);
+       return new ItemStack(ObjectManager.module_connector);
     }
 }

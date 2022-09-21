@@ -1,22 +1,5 @@
 {
-	"type": {
-		"ultrawarm": false,
-		"natural": true,
-		"piglin_safe": false,
-		"respawn_anchor_works": true,
-		"bed_works": true,
-		"has_raids": false,
-		"has_skylight": true,
-		"has_ceiling": false,
-		"coordinate_scale": 1,
-		"ambient_light": 1,
-		"fixed_time": 6000,
-		"logical_height": 256,
-		"effects": "minecraft:overworld",
-		"infiniburn": "minecraft:infiniburn_overworld",
-		"min_y": 0,
-		"height": 256
-	},
+	"type": "dimensionalpocketsii:pocket",
 	"generator": {
 		"type": "minecraft:flat",
 		"settings": {

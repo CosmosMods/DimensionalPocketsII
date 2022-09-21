@@ -4,13 +4,12 @@ import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.common.interfaces.IBlankCreativeTab;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleArmourWorkbench;
 import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleArmourWorkbench;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -33,7 +32,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class BlockWallArmourWorkbench extends BlockWallModule implements IBlankCreativeTab, EntityBlock {
 
-	private static final Component CONTAINER_NAME = new TranslatableComponent("dimensionalpocketsii.gui.armour_workbench");
+	private static final Component CONTAINER_NAME = Component.translatable("dimensionalpocketsii.gui.armour_workbench");
 	
 	public BlockWallArmourWorkbench(Block.Properties prop) {
 		super(prop);	
@@ -46,7 +45,7 @@ public class BlockWallArmourWorkbench extends BlockWallModule implements IBlankC
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModBusManager.ARMOUR_WORKBENCH_TILE_TYPE);
+		return createTicker(levelIn, entityTypeIn, ObjectManager.tile_entity_armour_workbench);
 	}
 
 	@Nullable
@@ -101,6 +100,6 @@ public class BlockWallArmourWorkbench extends BlockWallModule implements IBlankC
 	
 	@Override
 	public ItemStack getCloneItemStack(BlockGetter blockReader, BlockPos posIn, BlockState stateIn) {
-       return new ItemStack(ModBusManager.MODULE_ARMOUR_WORKBENCH);
+       return new ItemStack(ObjectManager.module_armour_workbench);
     }
 }

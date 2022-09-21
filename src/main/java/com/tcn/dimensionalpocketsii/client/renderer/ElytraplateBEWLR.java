@@ -2,31 +2,27 @@ package com.tcn.dimensionalpocketsii.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.tcn.cosmoslibrary.client.renderer.lib.CosmosRendererHelper;
 import com.tcn.dimensionalpocketsii.core.item.armour.DimensionalElytraplate;
 import com.tcn.dimensionalpocketsii.core.item.armour.module.BaseElytraModule;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HalfTransparentBlock;
-import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ForgeHooksClient;
 
+@SuppressWarnings("deprecation")
 @OnlyIn(Dist.CLIENT)
 public class ElytraplateBEWLR extends BlockEntityWithoutLevelRenderer {
 	
@@ -40,7 +36,7 @@ public class ElytraplateBEWLR extends BlockEntityWithoutLevelRenderer {
 	@OnlyIn(Dist.CLIENT)
 	public void renderByItem(ItemStack stackIn, ItemTransforms.TransformType transformIn, PoseStack poseStack, MultiBufferSource typeBuffer, int combinedLight, int combinedOverlay) {
 		Item item = stackIn.getItem();
-		ResourceLocation itemLocation = item.getRegistryName();
+		ResourceLocation itemLocation = Registry.ITEM.getKey(item);
 		Minecraft mc = Minecraft.getInstance();
 		ItemRenderer renderer = mc.getItemRenderer();
 		ModelManager manager = mc.getModelManager();
@@ -48,7 +44,7 @@ public class ElytraplateBEWLR extends BlockEntityWithoutLevelRenderer {
 		boolean flag = transformIn == ItemTransforms.TransformType.GUI;
 		
 		if (flag) {
-			if (item.equals(ModBusManager.DIMENSIONAL_ELYTRAPLATE)) {
+			if (item.equals(ObjectManager.dimensional_elytraplate)) {
 				poseStack.pushPose();
 				ResourceLocation resBase = new ResourceLocation(itemLocation.getNamespace(), "item/" + itemLocation.getPath() + "_base");
 				BakedModel itemModelBase = manager.getModel(resBase);
@@ -61,7 +57,7 @@ public class ElytraplateBEWLR extends BlockEntityWithoutLevelRenderer {
 					
 					poseStack.pushPose();
 					poseStack.translate(0.0F, 0.0F, 0.001F);
-					this.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModel, foil);
+					CosmosRendererHelper.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModel, foil);
 					poseStack.popPose();
 					
 					foil = false;
@@ -72,7 +68,7 @@ public class ElytraplateBEWLR extends BlockEntityWithoutLevelRenderer {
 					
 					poseStack.pushPose();
 					poseStack.translate(0.0F, 0.0F, 0.001F);
-					this.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModel, foil);
+					CosmosRendererHelper.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModel, foil);
 					poseStack.popPose();
 					
 					foil = false;
@@ -83,7 +79,7 @@ public class ElytraplateBEWLR extends BlockEntityWithoutLevelRenderer {
 					
 					poseStack.pushPose();
 					poseStack.translate(0.0F, 0.0F, 0.001F);
-					this.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModel, foil);
+					CosmosRendererHelper.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModel, foil);
 					poseStack.popPose();
 					
 					foil = false;
@@ -94,7 +90,7 @@ public class ElytraplateBEWLR extends BlockEntityWithoutLevelRenderer {
 					
 					poseStack.pushPose();
 					poseStack.translate(0.0F, 0.0F, 0.001F);
-					this.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModel, foil);
+					CosmosRendererHelper.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModel, foil);
 					poseStack.popPose();
 					
 					foil = false;
@@ -105,14 +101,14 @@ public class ElytraplateBEWLR extends BlockEntityWithoutLevelRenderer {
 					
 					poseStack.pushPose();
 					poseStack.translate(0.0F, 0.0F, 0.001F);
-					this.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModel, foil);
+					CosmosRendererHelper.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModel, foil);
 					poseStack.popPose();
 					
 					foil = false;
 				}
 				
 				poseStack.pushPose();
-				this.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModelBase, true);
+				CosmosRendererHelper.render(renderer, stackIn, transformIn, false, poseStack, typeBuffer, combinedLight, combinedOverlay, itemModelBase, true);
 				poseStack.popPose();
 				
 				poseStack.popPose();
@@ -123,10 +119,10 @@ public class ElytraplateBEWLR extends BlockEntityWithoutLevelRenderer {
 			
 			boolean flag1 = true;
 
-			if (model.isLayered()) {
-
-			} else {
-				RenderType rendertype = ItemBlockRenderTypes.getRenderType(stackIn, flag1);
+			//if (model.isLayered()) {
+				
+			//} else {
+				RenderType rendertype = model.getRenderTypes(stackIn, flag1).get(0);
 				VertexConsumer ivertexbuilder;
 				
 				boolean foil = true;
@@ -226,53 +222,6 @@ public class ElytraplateBEWLR extends BlockEntityWithoutLevelRenderer {
 			}
 			
 			poseStack.popPose();
-		}
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void render(ItemRenderer renderer, ItemStack stackIn, ItemTransforms.TransformType transformIn, boolean p_229111_3_, PoseStack poseStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, BakedModel modelIn, boolean renderFoil) {
-		if (!stackIn.isEmpty()) {
-			poseStackIn.pushPose();
-			boolean flag = transformIn == ItemTransforms.TransformType.GUI || transformIn == ItemTransforms.TransformType.GROUND || transformIn == ItemTransforms.TransformType.FIXED;
-			
-			modelIn = ForgeHooksClient.handleCameraTransforms(poseStackIn, modelIn, transformIn, p_229111_3_);
-			poseStackIn.translate(-0.5D, -0.5D, -0.5D);
-			
-			if ((stackIn.getItem() != Items.TRIDENT || flag)) {
-				boolean flag1;
-				if (transformIn != ItemTransforms.TransformType.GUI && !transformIn.firstPerson() && stackIn.getItem() instanceof BlockItem) {
-					Block block = ((BlockItem) stackIn.getItem()).getBlock();
-					flag1 = !(block instanceof HalfTransparentBlock) && !(block instanceof StainedGlassPaneBlock);
-				} else {
-					flag1 = true;
-				}
-				
-				if (modelIn.isLayered()) {
-					ForgeHooksClient.drawItemLayered(renderer, modelIn, stackIn, poseStackIn, bufferIn, combinedLightIn, combinedOverlayIn, flag1);
-				} else {
-					RenderType rendertype = ItemBlockRenderTypes.getRenderType(stackIn, flag1);
-					VertexConsumer ivertexbuilder;
-					
-					if (flag1) {
-						if (renderFoil) {
-							ivertexbuilder = ItemRenderer.getFoilBufferDirect(bufferIn, rendertype, true, stackIn.hasFoil());
-						} else {
-							ivertexbuilder = ItemRenderer.getFoilBufferDirect(bufferIn, rendertype, true, false);
-						}
-					} else {
-						if (renderFoil) {
-							ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, rendertype, true, stackIn.hasFoil());
-						} else {
-							ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, rendertype, true, false);
-						}
-					}
-					
-					
-					renderer.renderModelLists(modelIn, stackIn, combinedLightIn, combinedOverlayIn, poseStackIn, ivertexbuilder);
-				}
-			}
-
-			poseStackIn.popPose();
-		}
+		//}
 	}
 }

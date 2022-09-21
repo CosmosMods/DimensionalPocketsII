@@ -2,8 +2,9 @@ package com.tcn.dimensionalpocketsii.pocket.network.packet.misc;
 
 import java.util.function.Supplier;
 
-import com.tcn.dimensionalpocketsii.core.management.SoundManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.management.FocusJumpHandler;
+import com.tcn.dimensionalpocketsii.pocket.network.packet.PacketPocketNet;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
 
-public class PacketFocusTeleport {
+public class PacketFocusTeleport implements PacketPocketNet {
 	private final BlockPos from, to;
 
 	public PacketFocusTeleport(FriendlyByteBuf buf) {
@@ -70,7 +71,7 @@ public class PacketFocusTeleport {
 			double blockYOffset = toState.getBlockSupportShape(world, toPos).max(Direction.Axis.Y);
 			player.teleportTo(world, toX, toPos.getY() + blockYOffset, toZ, yaw, pitch);
 			player.setDeltaMovement(player.getDeltaMovement().multiply(new Vec3(1D, 0D, 1D)));
-			world.playSound(null, toPos, SoundManager.GENERIC.WOOSH, SoundSource.BLOCKS, 0.6F, 1F);
+			world.playSound(null, toPos, ObjectManager.sound_woosh, SoundSource.BLOCKS, 0.6F, 1F);
 		});
 
 		ctx.get().setPacketHandled(true);

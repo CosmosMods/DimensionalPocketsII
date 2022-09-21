@@ -3,7 +3,7 @@ package com.tcn.dimensionalpocketsii.core.item.armour;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.MutableComponent;
 
 public enum ElytraSettings {
 	TELEPORT_TO_BLOCK(0, "tele_to_block", "dimensionalpocketsii.elytraplate.setting.teleport", "dimensionalpocketsii.item.info.elytraplate.setting.teleport", 
@@ -52,19 +52,19 @@ public enum ElytraSettings {
 		return this.name;
 	}
 
-	public BaseComponent getColouredComp() {
-		return ComponentHelper.locComp(this.displayColour, false, this.localizedName);
+	public MutableComponent getColouredComp() {
+		return ComponentHelper.style(this.displayColour, this.localizedName);
 	}
 
-	public BaseComponent getColouredDisplayComp() {
-		return ComponentHelper.locComp(ComponentColour.GRAY, false, this.displayName);
+	public MutableComponent getColouredDisplayComp() {
+		return ComponentHelper.style(ComponentColour.GRAY, this.displayName);
 	}
 	
-	public BaseComponent getValueComp(boolean value) {
+	public MutableComponent getValueComp(boolean value) {
 		if (value) {
-			return ComponentHelper.locComp(ComponentColour.GREEN, true, this.trueValue);
+			return ComponentHelper.style(ComponentColour.GREEN, "bold", this.trueValue);
 		} else {
-			return ComponentHelper.locComp(ComponentColour.RED, true, this.falseValue);
+			return ComponentHelper.style(ComponentColour.RED, "bold", this.falseValue);
 		}
 	}
 

@@ -1,268 +1,435 @@
 package com.tcn.dimensionalpocketsii.client.screen;
 
-import java.util.Arrays;
+import java.io.File;
+import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionBoolean;
 import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionBoolean.TYPE;
+import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionInstance;
+import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionListElement;
+import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionListTextEntry;
 import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionTitle;
+import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptions;
 import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionsList;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 
-import net.minecraft.client.ProgressOption;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.TooltipAccessor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ConfigGuiHandler;
-import net.minecraftforge.client.ConfigGuiHandler.ConfigGuiFactory;
+import net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory;
 
+@SuppressWarnings("unused")
 @OnlyIn(Dist.CLIENT)
 public final class ScreenConfiguration extends Screen {
 
-	private final Screen parent;
+	private final Screen PARENT_SCREEN;
 
 	private final int TITLE_HEIGHT = 8;
 
 	private final int OPTIONS_LIST_TOP_HEIGHT = 24;
 	private final int OPTIONS_LIST_BOTTOM_OFFSET = 32;
 	private final int OPTIONS_LIST_ITEM_HEIGHT = 25;
+	private final int OPTIONS_LIST_BUTTON_HEIGHT = 20;
+	private final int OPTIONS_LIST_WIDTH = 335;
 
-	private final int BUTTON_WIDTH = 200;
-	private final int BUTTON_HEIGHT = 20;
-	private final int DONE_BUTTON_TOP_OFFSET = 26;
-
-	private CosmosOptionsList optionsRowList;
+	private final int BIG_WIDTH = 310;
+	private final int SMALL_WIDTH = 150;
 	
-	private static ConfigGuiHandler.ConfigGuiFactory INSTANCE = new ConfigGuiHandler.ConfigGuiFactory((mc, screen) -> new ScreenConfiguration(screen));
+	private final int DONE_BUTTON_TOP_OFFSET = 26;
+	
+	private CosmosOptionsList OPTIONS_ROW_LIST;
+	private String CURRENT_SCREEN = "home";
 
-	public static ConfigGuiFactory getInstance() {
+	private final ComponentColour DESC_COLOUR = ComponentColour.LIGHT_GRAY;
+	
+	private CosmosOptionListTextEntry EDIT_BOX_BLOCKS;
+	private CosmosOptionListTextEntry EDIT_BOX_ITEMS;
+	private CosmosOptionListTextEntry EDIT_BOX_COMMANDS;
+	
+	private static ConfigScreenFactory INSTANCE = new ConfigScreenFactory((mc, screen) -> new ScreenConfiguration(screen));
+
+	public static ConfigScreenFactory getInstance() {
 		return INSTANCE;
 	}
 	
-	public ScreenConfiguration(Screen parent) {
-		super(ComponentHelper.locComp(ComponentColour.POCKET_PURPLE_GUI, true, "dimensionalpocketsii.gui.config.name"));
+	public ScreenConfiguration(Screen parentScreenIn) {
+		super(ComponentHelper.style(ComponentColour.POCKET_PURPLE_GUI, "boldunderline", "dimensionalpocketsii.gui.config.name"));
 
-		this.parent = parent;
+		this.PARENT_SCREEN = parentScreenIn;
+		
+		EDIT_BOX_BLOCKS = new CosmosOptionListTextEntry(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "", ""), true, ComponentHelper.style(ComponentColour.GREEN, "bold", "+"), (button) -> {  });
+		EDIT_BOX_ITEMS = new CosmosOptionListTextEntry(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "", ""), true, ComponentHelper.style(ComponentColour.GREEN, "bold", "+"), (button) -> {  });
+		EDIT_BOX_COMMANDS = new CosmosOptionListTextEntry(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "", ""), true, ComponentHelper.style(ComponentColour.GREEN, "bold", "+"), (button) -> {  });
 	}
-
+	
 	@Override
 	protected void init() {
-		this.optionsRowList = new CosmosOptionsList(
-			this.minecraft, this.width, this.height,
-			OPTIONS_LIST_TOP_HEIGHT,
-			this.height - OPTIONS_LIST_BOTTOM_OFFSET,
-			OPTIONS_LIST_ITEM_HEIGHT);
-
-		this.optionsRowList.addBig(
-			new CosmosOptionTitle(ComponentColour.LIGHT_GRAY, true, "dimensionalpocketsii.gui.config.general_title")
-		);
+		this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
 		
-		this.optionsRowList.addBig(
-			new ProgressOption(
-				"dimensionalpocketsii.gui.config.height", 15, 255, 1.0F,
-				(options) -> (double) ConfigurationManager.getInstance().getInternalHeight(),
-				(options, newValue) -> ConfigurationManager.getInstance().setInternalHeight(newValue.intValue()),
-				(options, option) -> ComponentHelper.locComp(ComponentColour.PURPLE, false, "dimensionalpocketsii.gui.config.height_slide").append(ComponentHelper.locComp(ComponentColour.GREEN, true, " [ " + option.get(options) + " ]"))
-			)
-		);
-		
-		this.optionsRowList.addBig(
-			new ProgressOption(
-				"dimensionalpocketsii.gui.config.focus_jump_range", 4, 32, 1.0F,
-				(options) -> (double) ConfigurationManager.getInstance().getFocusJumpRange(),
-				(options, newValue) -> ConfigurationManager.getInstance().setFocusJumpRange(newValue.intValue()),
-				(options, option) -> ComponentHelper.locComp(ComponentColour.YELLOW, false, "dimensionalpocketsii.gui.config.jump_range_slide").append(ComponentHelper.locComp(ComponentColour.GREEN, true, " [ " + option.get(options) + " ]"))
-			)
-		);
-		
-		this.optionsRowList.addSmall(
-			new CosmosOptionBoolean(
-				ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.gui.config.use_structures", TYPE.YES_NO,
-				(options) ->ConfigurationManager.getInstance().getCanPlaceStructures(),
-				(options, newValue) -> ConfigurationManager.getInstance().setCanPlaceStructures(newValue)),
-			new CosmosOptionBoolean(
-				ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.gui.config.use_items", TYPE.YES_NO,
-				(options) -> ConfigurationManager.getInstance().getCanUseItems(),
-				(options, newValue) -> ConfigurationManager.getInstance().setCanUseItems(newValue)
-			)
-		);
-		
-		this.optionsRowList.addSmall(
-			new CosmosOptionBoolean(
-				ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.gui.config.use_commands", TYPE.YES_NO,
-				(options) -> ConfigurationManager.getInstance().getCanUseCommands(),
-				(options, newValue) -> ConfigurationManager.getInstance().setCanUseCommands(newValue)
-			),
-			new CosmosOptionBoolean(
-				ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.gui.config.chunks", TYPE.ON_OFF,
-				(options) -> ConfigurationManager.getInstance().getKeepChunksLoaded(), 
-				(options, newValue) -> ConfigurationManager.getInstance().setKeepChunksLoaded(newValue)
-			)
+		if (this.CURRENT_SCREEN == "home") {
+			this.initOptions();
+	
+			this.OPTIONS_ROW_LIST.addBig(
+				new CosmosOptionTitle(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "boldunderline", "dimensionalpocketsii.gui.config.general_title"))
+			);
 			
-		);
-		
-		this.optionsRowList.addSmall(
-			new CosmosOptionBoolean(
-				ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.gui.config.walls", TYPE.YES_NO,
-				(options) -> ConfigurationManager.getInstance().getCanDestroyWalls(),
-				(options, newValue) -> ConfigurationManager.getInstance().setCanDestroyWalls(newValue)
-			),
-			new CosmosOptionBoolean(
-				ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.gui.config.book", TYPE.YES_NO,
-				(options) -> ConfigurationManager.getInstance().getSpawnWithTome(),
-				(options, newValue) -> ConfigurationManager.getInstance().setSpawnWithTome(newValue)
-			)
-		);
-
-		this.optionsRowList.addSmall(
-			new CosmosOptionBoolean(
-				ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.gui.config.replace", TYPE.YES_NO,
-				(options) -> ConfigurationManager.getInstance().getInternalReplace(),
-				(options, newValue) -> ConfigurationManager.getInstance().setInternalReplace(newValue)
-			),
-			new CosmosOptionBoolean(
-				ComponentColour.POCKET_PURPLE_LIGHT, false, "dimensionalpocketsii.gui.config.hostile", TYPE.YES_NO,
-				(options) -> ConfigurationManager.getInstance().getStopHostileSpawns(),
-				(options, newValue) -> ConfigurationManager.getInstance().setStopHostileSpawns(newValue)
-			)
-		);
-		
-		this.optionsRowList.addBig(
-			new CosmosOptionTitle(ComponentColour.LIGHT_GRAY, true, "dimensionalpocketsii.gui.config.messages_title")
-		);
-		
-		this.optionsRowList.addSmall(
-			new CosmosOptionBoolean(
-				ComponentColour.CYAN, false, "dimensionalpocketsii.gui.config.message.info", TYPE.ON_OFF,
-				(options) -> ConfigurationManager.getInstance().getInfoMessage(),
-				(options, newValue) -> ConfigurationManager.getInstance().setInfoMessage(newValue)
-			),
-			new CosmosOptionBoolean(
-				ComponentColour.CYAN, false, "dimensionalpocketsii.gui.config.message.debug", TYPE.ON_OFF,
-				(options) -> ConfigurationManager.getInstance().getDebugMessage(),
-				(options, newValue) -> ConfigurationManager.getInstance().setDebugMessage(newValue)
-			)
-		);
-
-		this.optionsRowList.addBig(
-			new CosmosOptionTitle(ComponentColour.LIGHT_GRAY, true, "dimensionalpocketsii.gui.config.visual_title")
-		);
-		
-		this.optionsRowList.addBig(
-			new CosmosOptionBoolean(
-				ComponentColour.LIGHT_BLUE, false, "dimensionalpocketsii.gui.config.textures", TYPE.ON_OFF,
-				(options) -> ConfigurationManager.getInstance().getConnectedTexturesInsidePocket(),
-				(options, newValue) -> ConfigurationManager.getInstance().setConnectedTexturesInsidePocket(newValue)
-			)
-		);
-		
-		this.addWidget(this.optionsRowList);
-		
-		this.addRenderableWidget(new Button(
-			(this.width - BUTTON_WIDTH) /2, this.height - DONE_BUTTON_TOP_OFFSET, BUTTON_WIDTH, BUTTON_HEIGHT,
-			ComponentHelper.locComp(ComponentColour.GREEN, true, "dimensionalpocketsii.gui.done"), (button) -> { this.onClose(); }
-		));
-	}
+			this.OPTIONS_ROW_LIST.addBig(
+				CosmosOptionInstance.createIntSlider(ComponentHelper.style(ComponentColour.ORANGE, "dimensionalpocketsii.gui.config.height"),
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.height_info"), 
+							ComponentHelper.style(ComponentColour.RED, "dimensionalpocketsii.gui.config.height_info_two")
+					), 
+					ConfigurationManager.getInstance().getInternalHeight(), 15, 255, 15,
+					ComponentColour.WHITE, ComponentHelper.style(ComponentColour.GREEN, "Min"), ComponentHelper.style(ComponentColour.DARK_YELLOW, "Blocks"), ComponentHelper.style(ComponentColour.RED, "Max"), (intValue) -> {
+					ConfigurationManager.getInstance().setInternalHeight(intValue);
+				})
+			);
+			
+			this.OPTIONS_ROW_LIST.addBig(
+				CosmosOptionInstance.createIntSlider(ComponentHelper.style(ComponentColour.ORANGE, "dimensionalpocketsii.gui.config.jump_range"),
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.jump_range_info"), 
+							ComponentHelper.style(ComponentColour.RED, "dimensionalpocketsii.gui.config.jump_range_info_two")
+					), 
+					ConfigurationManager.getInstance().getFocusJumpRange(), 4, 32, 12,
+					ComponentColour.WHITE, ComponentHelper.style(ComponentColour.GREEN, "Min"), ComponentHelper.style(ComponentColour.DARK_YELLOW, "Blocks"), ComponentHelper.style(ComponentColour.RED, "Max"), (intValue) -> {
+					ConfigurationManager.getInstance().setFocusJumpRange(intValue);
+				})
+			);
+			
+			this.OPTIONS_ROW_LIST.addSmall(
+				new CosmosOptionBoolean(
+					ComponentColour.ORANGE, "", "dimensionalpocketsii.gui.config.use_structures", TYPE.YES_NO,
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.use_structures_info"), ComponentHelper.style(ComponentColour.LIME, "dimensionalpocketsii.gui.config.use_structures_info_two")),
+					ConfigurationManager.getInstance().getCanPlaceStructures(),
+					(newValue) -> ConfigurationManager.getInstance().setCanPlaceStructures(newValue), ":"
+				),
+				new CosmosOptionBoolean(
+					ComponentColour.ORANGE, "", "dimensionalpocketsii.gui.config.use_items", TYPE.YES_NO,
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.use_items_info"), ComponentHelper.style(ComponentColour.LIME, "dimensionalpocketsii.gui.config.use_items_info_two")),
+					ConfigurationManager.getInstance().getCanUseItems(),
+					(newValue) -> ConfigurationManager.getInstance().setCanUseItems(newValue), ":"
+				)
+			);
+			
+			this.OPTIONS_ROW_LIST.addSmall(
+				new CosmosOptionBoolean(
+					ComponentColour.ORANGE, "", "dimensionalpocketsii.gui.config.use_commands", TYPE.YES_NO,
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.use_commands_info"), ComponentHelper.style(ComponentColour.LIME, "dimensionalpocketsii.gui.config.use_commands_info_two")),
+					ConfigurationManager.getInstance().getCanUseCommands(),
+					(newValue) -> ConfigurationManager.getInstance().setCanUseCommands(newValue), ":"
+				),
+				new CosmosOptionBoolean(
+					ComponentColour.ORANGE, "", "dimensionalpocketsii.gui.config.chunks", TYPE.ON_OFF,
+					CosmosOptionInstance.getTooltipSplitComponent( ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.chunks_info")),
+					ConfigurationManager.getInstance().getKeepChunksLoaded(), 
+					(newValue) -> ConfigurationManager.getInstance().setKeepChunksLoaded(newValue), ":"
+				)
+				
+			);
 	
-	@Override
-	public void render(PoseStack matrixStack, int mouseX, int mouseY, float ticks) {
-		this.renderBackground(matrixStack);
-		
-		this.optionsRowList.render(matrixStack, mouseX, mouseY, ticks);
-		
-		drawCenteredString(matrixStack, this.font, this.title, width / 2, TITLE_HEIGHT, 0xFFFFFF);
-
-		this.renderComponentHoverEffect(matrixStack, Style.EMPTY, mouseX, mouseY);
-		super.render(matrixStack, mouseX, mouseY, ticks);
-	}
+			this.OPTIONS_ROW_LIST.addSmall(
+				new CosmosOptionBoolean(
+					ComponentColour.ORANGE, "", "dimensionalpocketsii.gui.config.replace", TYPE.YES_NO, 
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.replace_info")),
+					ConfigurationManager.getInstance().getInternalReplace(),
+					(newValue) -> ConfigurationManager.getInstance().setInternalReplace(newValue), ":"
+				),
+				new CosmosOptionBoolean(
+					ComponentColour.ORANGE, "", "dimensionalpocketsii.gui.config.hostile", TYPE.YES_NO, 
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.hostile_info")),
+					ConfigurationManager.getInstance().getStopHostileSpawns(),
+					(newValue) -> ConfigurationManager.getInstance().setStopHostileSpawns(newValue), ":"
+				)
+			);
+			
+			this.OPTIONS_ROW_LIST.addSmall(
+				new CosmosOptionBoolean(
+					ComponentColour.ORANGE, "", "dimensionalpocketsii.gui.config.walls", TYPE.YES_NO,
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.walls_info")),
+					ConfigurationManager.getInstance().getCanDestroyWalls(),
+					(newValue) -> ConfigurationManager.getInstance().setCanDestroyWalls(newValue), ":"
+				),
+				null
+			);
 	
-	@Override
-	public void renderComponentHoverEffect(PoseStack matrixStack, Style style, int mouseX, int mouseY) {
-		if (mouseY > this.OPTIONS_LIST_TOP_HEIGHT && mouseY < this.height - this.OPTIONS_LIST_BOTTOM_OFFSET) {
-			if (this.optionsRowList.children().get(0) != null) {
-				for (int i = 0; i < this.optionsRowList.children().size(); i++) {
-					if (!(i == 0) && !(i == 7) && !(i == 9)) {
-						CosmosOptionsList.Entry testRow = this.optionsRowList.children().get(i);
-						
-						if (testRow.children().size() > 1) {
-							GuiEventListener left = testRow.children().get(0);
-							GuiEventListener right = testRow.children().get(1);
-							
-							if (left.isMouseOver(mouseX, mouseY)) {
-								this.renderComponentTooltip(matrixStack, Arrays.asList(this.getTooltipForChild((double) i + 0.3D)), mouseX, mouseY + 30);
-							} else if (right.isMouseOver(mouseX, mouseY)) {
-								this.renderComponentTooltip(matrixStack, Arrays.asList(this.getTooltipForChild((double) i + 0.6D)), mouseX, mouseY + 30);
-							}
-							
-						} else {
-							if (testRow.getChildAt(mouseX, mouseY).isPresent()) {
-								GuiEventListener list = testRow.getChildAt(mouseX, mouseY).get();
-								
-								if (list.isMouseOver(mouseX, mouseY)) {
-									this.renderComponentTooltip(matrixStack, Arrays.asList(this.getTooltipForChild(i)), mouseX, mouseY + 30);
-								}
-							}
-						}
-					}
-				}
+			this.OPTIONS_ROW_LIST.addBig(
+				new CosmosOptionTitle(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "boldunderline", "dimensionalpocketsii.gui.config.messages_title"))
+			);
+			
+			this.OPTIONS_ROW_LIST.addSmall(
+				new CosmosOptionBoolean(
+					ComponentColour.CYAN, "", "dimensionalpocketsii.gui.config.message.info", TYPE.ON_OFF, 
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.message.info_DESC_COLOUR"), ComponentHelper.style(ComponentColour.RED, "bold", "dimensionalpocketsii.gui.config.message.restart")),
+					ConfigurationManager.getInstance().getInfoMessage(),
+					(newValue) -> ConfigurationManager.getInstance().setInfoMessage(newValue), ":"
+				),
+				new CosmosOptionBoolean(
+					ComponentColour.CYAN, "", "dimensionalpocketsii.gui.config.message.debug", TYPE.ON_OFF, 
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.message.debug_DESC_COLOUR"), ComponentHelper.style(ComponentColour.RED, "bold", "dimensionalpocketsii.gui.config.message.restart")),
+					ConfigurationManager.getInstance().getDebugMessage(),
+					(newValue) -> ConfigurationManager.getInstance().setDebugMessage(newValue), ":"
+				)
+			);
+	
+			this.OPTIONS_ROW_LIST.addBig(
+				new CosmosOptionTitle(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "boldunderline", "dimensionalpocketsii.gui.config.visual_title"))
+			);
+			
+			this.OPTIONS_ROW_LIST.addBig(
+				new CosmosOptionBoolean(
+					ComponentColour.MAGENTA, "", "dimensionalpocketsii.gui.config.textures", TYPE.ON_OFF, 
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.textures_info")),
+					ConfigurationManager.getInstance().getConnectedTexturesInsidePocket(),
+					(newValue) -> ConfigurationManager.getInstance().setConnectedTexturesInsidePocket(newValue), ":"
+				) 
+			);
+			
+			this.OPTIONS_ROW_LIST.addBig(
+				new CosmosOptionTitle(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "boldunderline", "dimensionalpocketsii.gui.config.blocked_title"))
+			);
+
+			this.OPTIONS_ROW_LIST.addSmall(
+				CosmosOptionInstance.createScreenSwitchOption(ComponentHelper.style(ComponentColour.LIGHT_RED, "", "dimensionalpocketsii.gui.config.blocked_structures"), (button) -> { 
+					this.switchScreen("blocks");
+					this.updateWidgets();
+				}, ""),
+				CosmosOptionInstance.createScreenSwitchOption(ComponentHelper.style(ComponentColour.LIGHT_RED, "", "dimensionalpocketsii.gui.config.blocked_items"), (button) -> { 
+					this.switchScreen("items");
+					this.updateWidgets();
+				}, "")
+			);
+
+			this.OPTIONS_ROW_LIST.addSmall(
+				CosmosOptionInstance.createScreenSwitchOption(ComponentHelper.style(ComponentColour.LIGHT_RED, "", "dimensionalpocketsii.gui.config.blocked_commands"), (button) -> { 
+					this.switchScreen("commands");
+					this.updateWidgets();
+				}, ""),
+				null
+			);
+	
+
+			this.addRenderableWidget(new Button(
+				(this.width - BIG_WIDTH) /2, this.height - DONE_BUTTON_TOP_OFFSET, SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT,
+				ComponentHelper.style(ComponentColour.RED, "bold", "dimensionalpocketsii.gui.done"), (button) -> { this.onClose(); }
+			));			
+		} 
+		
+		else if (this.CURRENT_SCREEN == "blocks") {
+			this.initOptions();
+			
+			this.OPTIONS_ROW_LIST.addBig(
+				new CosmosOptionTitle(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "boldunderline", "dimensionalpocketsii.gui.config.blocked_structures"))
+			);
+			
+			this.EDIT_BOX_BLOCKS.setOnPressFunction((button) -> { 
+				ConfigurationManager.getInstance().addBlockedStructure(this.EDIT_BOX_BLOCKS.getEditBox().getValue());
+				this.EDIT_BOX_BLOCKS.getEditBox().setValue("");
+				this.updateWidgets();
+			});
+			
+			this.OPTIONS_ROW_LIST.addBig(EDIT_BOX_BLOCKS);
+			
+			for (int i = 0; i < ConfigurationManager.getInstance().getBlockedStructures().size(); i++) {
+				String object = ConfigurationManager.getInstance().getBlockedStructures().get(i);
+				
+				this.OPTIONS_ROW_LIST.addBig(
+					new CosmosOptionListElement(ComponentHelper.style(ComponentColour.WHITE, "", object), true, ComponentHelper.style(ComponentColour.RED, "bold", "-"), (button) -> { 
+						ConfigurationManager.getInstance().removeBlockedStructure(object);
+						this.updateWidgets();
+					})
+				);
 			}
+			
+			this.addRenderableWidget(new Button(
+				(this.width) /2, this.height - DONE_BUTTON_TOP_OFFSET, SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT,
+				ComponentHelper.style(ComponentColour.GREEN, "bold", "dimensionalpocketsii.gui.done"), (button) -> { this.switchScreen("home"); }
+			));
+		} else if (this.CURRENT_SCREEN == "items") {
+			this.initOptions();
+			
+			this.OPTIONS_ROW_LIST.addBig(
+				new CosmosOptionTitle(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "boldunderline", "dimensionalpocketsii.gui.config.blocked_items"))
+			);
+
+			this.EDIT_BOX_ITEMS.setOnPressFunction((button) -> { 
+				ConfigurationManager.getInstance().addBlockedItem(this.EDIT_BOX_ITEMS.getEditBox().getValue());
+				this.EDIT_BOX_ITEMS.getEditBox().setValue("");
+				this.updateWidgets();
+			});
+			
+			this.OPTIONS_ROW_LIST.addBig(EDIT_BOX_ITEMS);
+			
+			for (int i = 0; i < ConfigurationManager.getInstance().getBlockedItems().size(); i++) {
+				String object = ConfigurationManager.getInstance().getBlockedItems().get(i);
+				
+				this.OPTIONS_ROW_LIST.addBig(
+					new CosmosOptionListElement(ComponentHelper.style(ComponentColour.WHITE, "", object), true, ComponentHelper.style(ComponentColour.RED, "bold", "-"), (button) -> { 
+						ConfigurationManager.getInstance().removeBlockedItem(object);
+						this.updateWidgets();
+					})
+				);
+			}
+			
+			this.addRenderableWidget(new Button(
+				(this.width) /2, this.height - DONE_BUTTON_TOP_OFFSET, SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT,
+				ComponentHelper.style(ComponentColour.GREEN, "bold", "dimensionalpocketsii.gui.done"), (button) -> { this.switchScreen("home"); }
+			));
+		} else if (this.CURRENT_SCREEN == "commands") {
+			this.initOptions();
+
+			this.OPTIONS_ROW_LIST.addBig(
+				new CosmosOptionTitle(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "boldunderline", "dimensionalpocketsii.gui.config.blocked_commands"))
+			);
+
+			this.EDIT_BOX_COMMANDS.setOnPressFunction((button) -> { 
+				ConfigurationManager.getInstance().addBlockedCommand(this.EDIT_BOX_COMMANDS.getEditBox().getValue());
+				this.EDIT_BOX_COMMANDS.getEditBox().setValue("");
+				this.updateWidgets();
+			});
+			
+			this.OPTIONS_ROW_LIST.addBig(EDIT_BOX_COMMANDS);
+			
+			for (int i = 0; i < ConfigurationManager.getInstance().getBlockedCommands().size(); i++) {
+				String object = ConfigurationManager.getInstance().getBlockedCommands().get(i);
+				
+				this.OPTIONS_ROW_LIST.addBig(
+					new CosmosOptionListElement(ComponentHelper.style(ComponentColour.WHITE, "", object), true, ComponentHelper.style(ComponentColour.RED, "bold", "-"), (button) -> { 
+						ConfigurationManager.getInstance().removeBlockedCommand(object);
+						this.updateWidgets();
+					})
+				);
+			}
+			
+			this.addRenderableWidget(new Button(
+				(this.width) /2, this.height - DONE_BUTTON_TOP_OFFSET, SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT,
+				ComponentHelper.style(ComponentColour.GREEN, "bold", "dimensionalpocketsii.gui.done"), (button) -> { this.switchScreen("home"); }
+			));
 		}
-		super.renderComponentHoverEffect(matrixStack, style, mouseX, mouseY);
-	}
-	
-	public BaseComponent[] getTooltipForChild(double index) {
-		ComponentColour desc = ComponentColour.LIGHT_GRAY;
 		
-		if (index == 1.0D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.height_info"), ComponentHelper.locComp(ComponentColour.LIGHT_RED, false, "dimensionalpocketsii.gui.config.height_info_two") };
-		} else if (index == 3.3D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.use_structures_info"), ComponentHelper.locComp(ComponentColour.LIME, false, "dimensionalpocketsii.gui.config.use_structures_info_two") };
-		} else if (index == 3.6D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.use_items_info"), ComponentHelper.locComp(ComponentColour.LIME, false, "dimensionalpocketsii.gui.config.use_items_info_two") };
-		} else if (index == 4.3D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.use_commands_info"), ComponentHelper.locComp(ComponentColour.LIME, false, "dimensionalpocketsii.gui.config.use_commands_info_two") };
-		} else if (index == 4.6D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.chunks_info") };
-		} else if (index == 5.3D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.walls_info") };
-		} else if (index == 5.6D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.book_info") };
-		} else if (index == 6.3D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.replace_info") };
-		} else if (index == 6.6D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.hostile_info") };
-		} else if (index == 8.3D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.message.info_desc"), ComponentHelper.locComp(ComponentColour.RED, true, "dimensionalpocketsii.gui.config.message.restart") };
-		} else if (index == 8.6D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.message.debug_desc"), ComponentHelper.locComp(ComponentColour.RED, true, "dimensionalpocketsii.gui.config.message.restart") };
-		} else if (index == 10.0D) {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.textures_info") };
-		} else {
-			return new BaseComponent[] { ComponentHelper.locComp(desc, false, "dimensionalpocketsii.gui.config.missing") };
+		this.addWidget(this.OPTIONS_ROW_LIST);
+	}
+	
+	public void initOptions() {
+		this.OPTIONS_ROW_LIST = new CosmosOptionsList( 
+			this.minecraft, this.width, this.height, OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, 
+			OPTIONS_LIST_ITEM_HEIGHT, OPTIONS_LIST_BUTTON_HEIGHT, 310, new CosmosOptions(Minecraft.getInstance(), new File("."))
+		);
+	}
+	
+	@Override
+	public void tick() {
+		if (this.CURRENT_SCREEN == "blocks") {
+			this.EDIT_BOX_BLOCKS.getEditBox().tick();
+		} else if (this.CURRENT_SCREEN == "items") {
+			this.EDIT_BOX_ITEMS.getEditBox().tick();
+		} else if (this.CURRENT_SCREEN == "commands") {
+			this.EDIT_BOX_COMMANDS.getEditBox().tick();
 		}
 	}
 	
+	@Override
+	public void render(PoseStack poseStackIn, int mouseX, int mouseY, float ticks) {
+		this.renderBackground(poseStackIn);
+		
+		this.OPTIONS_ROW_LIST.render(poseStackIn, mouseX, mouseY, ticks);
+		
+		drawCenteredString(poseStackIn, this.font, this.title, width / 2, TITLE_HEIGHT, 0xFFFFFF);
+		//drawCenteredString(poseStackIn, this.font, ComponentHelper.style(ComponentColour.GREEN, "bold", (this.CURRENT_SCREEN.substring(0, 1).toUpperCase()) + this.CURRENT_SCREEN.substring(1)), width / 2 + 150, TITLE_HEIGHT, 0xFFFFFF);
+		
+		super.render(poseStackIn, mouseX, mouseY, ticks);
+		List<FormattedCharSequence> list = tooltipAt(this.OPTIONS_ROW_LIST, mouseX, mouseY);
+		this.renderTooltip(poseStackIn, list, mouseX, mouseY);
+	}
+	
+	public void updateWidgets() {
+		double scroll = this.OPTIONS_ROW_LIST.getScrollAmount();
+		
+		this.clearWidgets();
+		
+		this.init();
+		
+		this.OPTIONS_ROW_LIST.setScrollAmount(scroll);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<FormattedCharSequence> tooltipAt(CosmosOptionsList listIn, int mouseX, int mouseY) {
+		Optional<AbstractWidget> optional = listIn.getMouseOver((double)  mouseX, (double) mouseY);
+		return (List<FormattedCharSequence>) (optional.isPresent() && optional.get() instanceof TooltipAccessor ? ((TooltipAccessor) optional.get()).getTooltip() : ImmutableList.of());
+	}
+
 	@Override
 	public boolean handleComponentClicked(@Nullable Style styleIn) {
 		return super.handleComponentClicked(styleIn);
 	}
-	
+
+	@Override
+	public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
+		return super.getChildAt(mouseX, mouseY);
+	}
+
 	@Override
 	public boolean keyPressed(int mouseX, int mouseY, int ticks) {
+		if (this.CURRENT_SCREEN == "blocks") {
+			return this.EDIT_BOX_BLOCKS.getEditBox().keyPressed(mouseX, mouseY, ticks);
+		} else if (this.CURRENT_SCREEN == "items") {
+			return this.EDIT_BOX_ITEMS.getEditBox().keyPressed(mouseX, mouseY, ticks);
+		} else if (this.CURRENT_SCREEN == "commands") {
+			return this.EDIT_BOX_COMMANDS.getEditBox().keyPressed(mouseX, mouseY, ticks);
+		}
+		
 		return super.keyPressed(mouseX, mouseY, ticks);
+	}
+	
+	@Override
+	public boolean charTyped(char charCode, int test) {
+		return super.charTyped(charCode, test);
+	}
+	
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int ticks) {
+		super.mouseClicked(mouseX, mouseY, ticks);
+		
+		if (this.CURRENT_SCREEN == "blocks") {
+			return this.EDIT_BOX_BLOCKS.getEditBox().mouseClicked(mouseX, mouseY, ticks);
+		} else if (this.CURRENT_SCREEN == "items") {
+			return this.EDIT_BOX_ITEMS.getEditBox().mouseClicked(mouseX, mouseY, ticks);
+		} else if (this.CURRENT_SCREEN == "commands") {
+			return this.EDIT_BOX_COMMANDS.getEditBox().mouseClicked(mouseX, mouseY, ticks);
+		}
+		
+		if (this.getChildAt(mouseX, mouseY).isPresent()) {
+			for (GuiEventListener listener : this.OPTIONS_ROW_LIST.children()) {
+				if (listener.isMouseOver(mouseX, mouseY)) {
+					this.updateWidgets();
+				}
+			}
+		}
+		
+		return super.mouseClicked(mouseX, mouseY, ticks);
+	}
+	public void switchScreen(String screen) {
+		this.CURRENT_SCREEN = screen;
+		this.updateWidgets();
 	}
 	
     @Override
     public void onClose() {
-    	this.minecraft.setScreen(parent);
+    	if (this.CURRENT_SCREEN == "home") {
+	    	this.minecraft.setScreen(PARENT_SCREEN);
+    	} 
     	
         ConfigurationManager.save();
     }

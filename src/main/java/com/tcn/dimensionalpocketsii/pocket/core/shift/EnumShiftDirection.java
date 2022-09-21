@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
-import com.tcn.dimensionalpocketsii.core.management.SoundManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
@@ -12,8 +12,8 @@ import net.minecraft.sounds.SoundEvents;
 
 public enum EnumShiftDirection {
 	
-	ENTER(0, "enter", "Enter", "dimensionalpocketsii.pocket.direction.enter", ComponentColour.GREEN, SoundManager.GENERIC.PORTAL),
-	LEAVE(1, "leave", "Leave", "dimensionalpocketsii.pocket.direction.leave", ComponentColour.ORANGE, SoundManager.GENERIC.PORTAL),
+	ENTER(0, "enter", "Enter", "dimensionalpocketsii.pocket.direction.enter", ComponentColour.GREEN, ObjectManager.sound_portal_in),
+	LEAVE(1, "leave", "Leave", "dimensionalpocketsii.pocket.direction.leave", ComponentColour.ORANGE, ObjectManager.sound_portal_out),
 	GENERIC(2, "generic", "Generic", "dimensionalpocketsii.pocket.direcion.generic", ComponentColour.CYAN, SoundEvents.PORTAL_TRAVEL),
 	UNKNOWN(-1, "unknown", "Unknown", "dimensionalpocketsii.pocket.direction.unknown", ComponentColour.RED, null);
 	
@@ -48,7 +48,7 @@ public enum EnumShiftDirection {
 	}
 
 	public Component getUseName() {
-		return ComponentHelper.locComp(display_colour, true, this.localized_name);
+		return ComponentHelper.style(display_colour, "bold", this.localized_name);
 	}
 
 	public String getLocalizedName() {
@@ -75,7 +75,7 @@ public enum EnumShiftDirection {
 	}
 	
 	public Component getChatComponentForDirection() {
-		return ComponentHelper.locComp(ComponentColour.CYAN, false, "dimensionalpocketsii.pocket.direction.pre").append(getUseName()).append(ComponentHelper.locComp(ComponentColour.CYAN, false, "dimensionalpocketsii.pocket.direction.suff"));
+		return ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.pocket.direction.pre").append(getUseName()).append(ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.pocket.direction.suff"));
 	}
 
 	public SoundEvent getSound() {

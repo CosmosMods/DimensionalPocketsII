@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.common.interfaces.IBlankCreativeTab;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleFurnace;
 import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleFurnace;
 
@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -42,7 +41,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockWallFurnace extends BlockWallModule implements IBlankCreativeTab, EntityBlock {
-	private static final Component CONTAINER_NAME = new TranslatableComponent("dimensionalpocketsii.gui.furnace");
+	private static final Component CONTAINER_NAME = Component.translatable("dimensionalpocketsii.gui.furnace");
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 	
 	public BlockWallFurnace(Block.Properties prop) {
@@ -58,7 +57,7 @@ public class BlockWallFurnace extends BlockWallModule implements IBlankCreativeT
 
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level levelIn, BlockState stateIn, BlockEntityType<T> entityTypeIn) {
-		return createTicker(levelIn, entityTypeIn, ModBusManager.FURNACE_TILE_TYPE);
+		return createTicker(levelIn, entityTypeIn, ObjectManager.tile_entity_furnace);
 	}
 
 	@Nullable
@@ -144,13 +143,8 @@ public class BlockWallFurnace extends BlockWallModule implements IBlankCreativeT
 		return Blocks.AIR.defaultBlockState();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public ItemStack getCloneItemStack(BlockGetter blockReader, BlockPos posIn, BlockState stateIn) {
-        if (ConfigurationManager.getInstance().getCanDestroyWalls()) {
-        	return this.asBlock().getCloneItemStack(blockReader, posIn, stateIn);
-        }
-        
-        return ItemStack.EMPTY;
+		return new ItemStack(ObjectManager.module_furnace);
     }
 }

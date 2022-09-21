@@ -6,7 +6,7 @@ import com.tcn.cosmoslibrary.client.container.slot.SlotColourItem;
 import com.tcn.cosmoslibrary.client.container.slot.SlotColourableArmourItem;
 import com.tcn.cosmoslibrary.client.container.slot.SlotRestrictedAccess;
 import com.tcn.dimensionalpocketsii.core.item.armour.module.IModuleItem;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,14 +30,14 @@ public class ContainerModuleArmourWorkbench extends CosmosContainerMenuBlockEnti
 	}
 
 	public ContainerModuleArmourWorkbench(int indexIn, Inventory playerInventoryIn, Container contentsIn, ContainerLevelAccess accessIn, BlockPos posIn) {
-		super(ModBusManager.ARMOUR_WORKBENCH_CONTAINER_TYPE, indexIn, playerInventoryIn, accessIn, posIn);
+		super(ObjectManager.container_armour_workbench, indexIn, playerInventoryIn, accessIn, posIn);
 		
 		//Armour Slot
 		this.addSlot(new SlotColourableArmourItem(contentsIn, 0, 116, 32, 1));
 		
 		//Colour Slots
-		this.addSlot(new SlotColourItem(contentsIn, 1, 93, 21, ModBusManager.DIMENSIONAL_SHARD, 1));
-		this.addSlot(new SlotColourItem(contentsIn, 2, 93, 42, ModBusManager.DIMENSIONAL_SHARD, 1));
+		this.addSlot(new SlotColourItem(contentsIn, 1, 93, 21, ObjectManager.dimensional_shard, 1));
+		this.addSlot(new SlotColourItem(contentsIn, 2, 93, 42, ObjectManager.dimensional_shard, 1));
 
 		//Preview Slot
 		this.addSlot(new SlotRestrictedAccess(contentsIn, 3, 139, 21, false, false));
@@ -93,7 +93,7 @@ public class ContainerModuleArmourWorkbench extends CosmosContainerMenuBlockEnti
 
 	@Override
 	public boolean stillValid(Player playerIn) {
-		return stillValid(this.access, playerIn, ModBusManager.BLOCK_WALL_ARMOUR_WORKBENCH);
+		return stillValid(this.access, playerIn, ObjectManager.block_wall_armour_workbench);
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class ContainerModuleArmourWorkbench extends CosmosContainerMenuBlockEnti
 					}
 				
 					slot.set(ItemStack.EMPTY);
-				} else if (DyeColor.getColor(itemstack) != null || itemstack.getItem().equals(ModBusManager.DIMENSIONAL_SHARD)) {
+				} else if (DyeColor.getColor(itemstack) != null || itemstack.getItem().equals(ObjectManager.dimensional_shard)) {
 					if (!this.moveItemStackTo(itemstack, 0, 3, false)) {
 						return ItemStack.EMPTY;
 					}
@@ -152,13 +152,13 @@ public class ContainerModuleArmourWorkbench extends CosmosContainerMenuBlockEnti
 						return ItemStack.EMPTY;
 					}
 				} else {
-					if (indexIn > this.slots.size() - 13 && indexIn < this.slots.size()) {
+					if (indexIn >= this.slots.size() - 13 && indexIn < this.slots.size()) {
 						if (!this.moveItemStackTo(itemstack1, 11, this.slots.size() - 13, false)) {
 							return ItemStack.EMPTY;
 						}
 					}
 					
-					if (indexIn > 8 && indexIn < this.slots.size() - 13) {
+					if (indexIn >= 8 && indexIn < this.slots.size() - 13) {
 						if (!this.moveItemStackTo(itemstack1, this.slots.size() - 13, this.slots.size(), false)) {
 							return ItemStack.EMPTY;
 						}

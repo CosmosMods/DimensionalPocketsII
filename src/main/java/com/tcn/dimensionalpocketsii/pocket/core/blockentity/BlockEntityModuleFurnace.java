@@ -7,13 +7,14 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
 import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
+import com.tcn.cosmoslibrary.common.enums.EnumUILock;
 import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
 import com.tcn.cosmoslibrary.common.interfaces.block.IBlockInteract;
 import com.tcn.cosmoslibrary.common.interfaces.blockentity.IBlockEntityUIMode;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.cosmoslibrary.common.util.CosmosUtil;
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
 import com.tcn.dimensionalpocketsii.pocket.core.block.BlockWallFurnace;
 import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
@@ -77,6 +78,7 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 
 	private EnumUIMode uiMode = EnumUIMode.DARK;
 	private EnumUIHelp uiHelp = EnumUIHelp.HIDDEN;
+	private EnumUILock uiLock = EnumUILock.PRIVATE;
 
 	public final ContainerData dataAccess = new ContainerData() {
 		@Override
@@ -125,7 +127,7 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 	private Pocket pocket;
 	
 	public BlockEntityModuleFurnace(BlockPos posIn, BlockState stateIn) {
-		super(ModBusManager.FURNACE_TILE_TYPE, posIn, stateIn);
+		super(ObjectManager.tile_entity_furnace, posIn, stateIn);
 		
 		this.recipeType = RecipeType.SMELTING;
 	}
@@ -167,6 +169,7 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 
 		compound.putInt("ui_mode", this.uiMode.getIndex());
 		compound.putInt("ui_help", this.uiHelp.getIndex());
+		compound.putInt("ui_lock", this.uiLock.getIndex());
 	}
 
 	public void saveToItemStack(ItemStack stackIn) {
@@ -182,6 +185,7 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 
 		compound.putInt("ui_mode", this.uiMode.getIndex());
 		compound.putInt("ui_help", this.uiHelp.getIndex());
+		compound.putInt("ui_lock", this.uiLock.getIndex());
 	}
 	
 	@Override
@@ -206,6 +210,7 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 
 		this.uiMode = EnumUIMode.getStateFromIndex(compound.getInt("ui_mode"));
 		this.uiHelp = EnumUIHelp.getStateFromIndex(compound.getInt("ui_help"));
+		this.uiLock = EnumUILock.getStateFromIndex(compound.getInt("ui_lock"));
 	}
 
 	public void loadFromItemStack(ItemStack stackIn) {
@@ -226,6 +231,7 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 
 			this.uiMode = EnumUIMode.getStateFromIndex(compound.getInt("ui_mode"));
 			this.uiHelp = EnumUIHelp.getStateFromIndex(compound.getInt("ui_help"));
+			this.uiLock = EnumUILock.getStateFromIndex(compound.getInt("ui_lock"));
 		}
 	}
 	
@@ -287,9 +293,16 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 				return InteractionResult.SUCCESS;
 			} else {
 				if (playerIn instanceof ServerPlayer) {
-					NetworkHooks.openGui((ServerPlayer)playerIn, state.getMenuProvider(worldIn, pos), (packetBuffer)->{ packetBuffer.writeBlockPos(pos); });
-					return InteractionResult.SUCCESS;
+					if (this.canPlayerAccess(playerIn)) {
+						NetworkHooks.openScreen((ServerPlayer)playerIn, state.getMenuProvider(worldIn, pos), (packetBuffer)->{ packetBuffer.writeBlockPos(pos); });
+						return InteractionResult.SUCCESS;
+					} else {
+						CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.status.no_access"));
+						return InteractionResult.FAIL;
+					}
 				}
+				
+				return InteractionResult.SUCCESS;
 			}
 		} else {
 			if(!worldIn.isClientSide) {
@@ -299,10 +312,10 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 				if(pocketIn.exists()) {
 					if (CosmosUtil.holdingWrench(playerIn)) {
 						if (pocketIn.checkIfOwner(playerIn)) {
-							ItemStack stack = new ItemStack(ModBusManager.MODULE_FURNACE);
+							ItemStack stack = new ItemStack(ObjectManager.module_furnace);
 							this.saveToItemStack(stack);
 							
-							worldIn.setBlockAndUpdate(pos, ModBusManager.BLOCK_WALL.defaultBlockState());
+							worldIn.setBlockAndUpdate(pos, ObjectManager.block_wall.defaultBlockState());
 							worldIn.removeBlockEntity(pos);
 							
 							CosmosUtil.addStack(worldIn, playerIn, stack);
@@ -351,13 +364,13 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 					if (entityIn.isLit()) {
 						flag1 = true;
 						
-						if (itemstack.hasContainerItem())
-							entityIn.inventoryItems.set(1, itemstack.getContainerItem());
+						if (itemstack.hasCraftingRemainingItem())
+							entityIn.inventoryItems.set(1, itemstack.getCraftingRemainingItem());
 						else if (!itemstack.isEmpty()) {
 							Item item = itemstack.getItem();
 							itemstack.shrink(1);
 							if (itemstack.isEmpty()) {
-								entityIn.inventoryItems.set(1, itemstack.getContainerItem());
+								entityIn.inventoryItems.set(1, itemstack.getCraftingRemainingItem());
 							}
 						}
 					}
@@ -417,6 +430,7 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 			ItemStack itemstack = this.inventoryItems.get(0);
 			ItemStack itemstack1 = recipeIn.getResultItem();
 			ItemStack itemstack2 = this.inventoryItems.get(2);
+			
 			if (itemstack2.isEmpty()) {
 				this.inventoryItems.set(2, itemstack1.copy());
 			} else if (itemstack2.getItem() == itemstack1.getItem()) {
@@ -656,5 +670,44 @@ public class BlockEntityModuleFurnace extends BlockEntity implements IBlockInter
 	@Override
 	public void cycleUIHelp() {
 		this.uiHelp = EnumUIHelp.getNextStateFromState(this.uiHelp);
+	}
+
+	@Override
+	public EnumUILock getUILock() {
+		return this.uiLock;
+	}
+
+	@Override
+	public void setUILock(EnumUILock modeIn) {
+		this.uiLock = modeIn;
+	}
+
+	@Override
+	public void cycleUILock() {
+		this.uiLock = EnumUILock.getNextStateFromState(this.uiLock);
+	}
+
+	@Override
+	public void setOwner(Player playerIn) { }
+
+	@Override
+	public boolean canPlayerAccess(Player playerIn) {
+		if (this.getUILock().equals(EnumUILock.PUBLIC)) {
+			return true;
+		} else {
+			if (this.getPocket().checkIfOwner(playerIn)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	@Override
+	public boolean checkIfOwner(Player playerIn) {
+		if (this.getPocket().checkIfOwner(playerIn)) {
+			return true;
+		}
+		return false;
 	}
 }

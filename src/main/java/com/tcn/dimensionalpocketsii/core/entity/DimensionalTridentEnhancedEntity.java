@@ -2,7 +2,7 @@ package com.tcn.dimensionalpocketsii.core.entity;
 
 import javax.annotation.Nullable;
 
-import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
+import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -33,7 +33,7 @@ public class DimensionalTridentEnhancedEntity extends AbstractArrow {
 	private static final EntityDataAccessor<Byte> ID_LOYALTY = SynchedEntityData.defineId(DimensionalTridentEnhancedEntity.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Boolean> ID_FOIL = SynchedEntityData.defineId(DimensionalTridentEnhancedEntity.class, EntityDataSerializers.BOOLEAN);
 	
-	private ItemStack tridentItem = new ItemStack(ModBusManager.DIMENSIONAL_TRIDENT_ENHANCED);
+	private ItemStack tridentItem = new ItemStack(ObjectManager.dimensional_trident_enhanced);
 	private boolean dealtDamage;
 	public int clientSideReturnTridentTickCount;
 
@@ -42,7 +42,7 @@ public class DimensionalTridentEnhancedEntity extends AbstractArrow {
 	}
 
 	public DimensionalTridentEnhancedEntity(Level worldIn, LivingEntity livingEntityIn, ItemStack stackIn) {
-		super(ModBusManager.TRIDENT_TYPE_ENHANCED, livingEntityIn, worldIn);
+		super(ObjectManager.dimensional_trident_enhanced_type, livingEntityIn, worldIn);
 		this.tridentItem = stackIn.copy();
 		this.entityData.set(ID_LOYALTY, (byte) EnchantmentHelper.getLoyalty(stackIn));
 		this.entityData.set(ID_FOIL, stackIn.hasFoil());
@@ -50,7 +50,7 @@ public class DimensionalTridentEnhancedEntity extends AbstractArrow {
 
 	@OnlyIn(Dist.CLIENT)
 	public DimensionalTridentEnhancedEntity(Level worldIn, double x, double y, double z) {
-		super(ModBusManager.TRIDENT_TYPE_ENHANCED, x, y, z, worldIn);
+		super(ObjectManager.dimensional_trident_enhanced_type, x, y, z, worldIn);
 	}
 
 	@Override
