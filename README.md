@@ -1,3 +1,5 @@
+<iframe src="https://discord.com/widget?id=729402437051351040&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+
 # DimensionalPocketsII
 Due to having a similiar idea to NPException's Dimensional Pockets, I have created DimensionalPocketsII with some features carried over, but with my own twist. Currently using MinecraftForge 1.19.2.
 
