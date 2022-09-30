@@ -1,4 +1,4 @@
-[![Discord](https://img.shields.io/discord/729402437051351040?color=blueviolet&label=DISCORD&style=for-the-badge)](https://discord.gg/8ydCtzm)
+![Open Issues](https://img.shields.io/github/issues-raw/TheCosmicNebula/DimensionalPocketsII?style=for-the-badge) ![Closed Issues](https://img.shields.io/github/issues-closed/TheCosmicNebula/DimensionalPocketsII?color=green&style=for-the-badge) [![Discord](https://img.shields.io/discord/729402437051351040?color=blueviolet&label=DISCORD&style=for-the-badge)](https://discord.gg/8ydCtzm)
 
 # DimensionalPocketsII
 Due to having a similiar idea to NPException's Dimensional Pockets, I have created DimensionalPocketsII with some features carried over, but with my own twist. Currently using MinecraftForge 1.19.2.
