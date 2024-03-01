@@ -3,7 +3,7 @@ package com.tcn.dimensionalpocketsii.pocket.core.block;
 import com.tcn.cosmoslibrary.common.interfaces.IBlankCreativeTab;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleUpgradeStation;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleUpgradeStation;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;

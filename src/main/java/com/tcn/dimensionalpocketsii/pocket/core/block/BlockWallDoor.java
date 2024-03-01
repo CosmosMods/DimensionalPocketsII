@@ -10,7 +10,7 @@ import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
 import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
@@ -28,12 +28,13 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class BlockWallDoor extends CosmosBlockDoor implements IBlankCreativeTab {
 
-	public BlockWallDoor(Properties propertiesIn) {
-		super(propertiesIn);
+	public BlockWallDoor(Properties propertiesIn, BlockSetType typeIn) {
+		super(propertiesIn, typeIn);
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class BlockWallDoor extends CosmosBlockDoor implements IBlankCreativeTab 
 		
 		if (playerIn.isShiftKeyDown()) {
 			if (PocketUtil.isDimensionEqual(levelIn, DimensionManager.POCKET_WORLD)) {
-				Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(CosmosChunkPos.scaleToChunkPos(posIn));
+				Pocket pocket = StorageManager.getPocketFromChunkPosition(levelIn, CosmosChunkPos.scaleToChunkPos(posIn));
 				
 				if (pocket.exists()) {
 					if (CosmosUtil.handEmpty(playerIn)) {

@@ -95,7 +95,7 @@ public class DimensionalEnergyCellEnhanced extends CosmosEnergyItem {
 										if (energyItem.canReceiveEnergy(testStack)) {
 											int lowest = Math.min(energyItem.getMaxReceive(testStack), this.getMaxExtract(stackIn));
 											
-											energyItem.receiveEnergy(testStack, this.extractEnergy(stackIn, lowest, false), false);
+											this.extractEnergy(stackIn, energyItem.receiveEnergy(testStack, lowest, false), false);
 										}
 									}
 								}

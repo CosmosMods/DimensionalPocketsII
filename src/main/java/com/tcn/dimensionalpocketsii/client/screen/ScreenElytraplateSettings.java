@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import com.ibm.icu.text.DecimalFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
 import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem.IS_HOVERING;
 import com.tcn.cosmoslibrary.client.ui.screen.widget.CosmosButtonUIMode;
@@ -22,6 +21,7 @@ import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraSetting
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateUpdateUIMode;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -76,34 +76,33 @@ public class ScreenElytraplateSettings extends AbstractContainerScreen<Container
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		this.renderBackground(poseStack);
-		super.render(poseStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground(graphics);
+		super.render(graphics, mouseX, mouseY, partialTicks);
 
 		this.addButtons();
-		this.renderComponentHoverEffect(poseStack, Style.EMPTY, mouseX, mouseY);
-		this.renderTooltip(poseStack, mouseX, mouseY);
+		this.renderComponentHoverEffect(graphics, Style.EMPTY, mouseX, mouseY);
+		this.renderTooltip(graphics, mouseX, mouseY);
 	}
 	
 	@Override
-	protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
 		DimensionalElytraplate item = (DimensionalElytraplate) this.stack.getItem();
 		
-		CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, this.getUIMode(), RESOURCE.ELYTRAPLATE_SETTINGS);
-		CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, this.getUIMode(), RESOURCE.ELYTRAPLATE_SETTINGS_OVERLAY);
+		CosmosUISystem.renderStaticElementWithUIMode(this, graphics, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, this.getUIMode(), RESOURCE.ELYTRAPLATE_SETTINGS);
+		CosmosUISystem.renderStaticElementWithUIMode(this, graphics, getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, this.getUIMode(), RESOURCE.ELYTRAPLATE_SETTINGS_OVERLAY);
 		
-		CosmosUISystem.renderEnergyDisplay(this, poseStack, ComponentColour.RED, item.getEnergy(this.stack) / 1000, item.getMaxEnergyStored(this.stack) / 1000, 116, this.getScreenCoords(), 38, 43, 116, 7, true);
+		CosmosUISystem.renderEnergyDisplay(this, graphics, ComponentColour.RED, item.getEnergy(this.stack) / 1000, item.getMaxEnergyStored(this.stack) / 1000, 116, this.getScreenCoords(), 38, 43, 116, 7, true);
 	}
 
 	@Override
-	protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-		this.font.draw(poseStack, this.title, (float) this.titleLabelX, (float) this.titleLabelY, this.getUIMode().equals(EnumUIMode.DARK) ? CosmosUISystem.DEFAULT_COLOUR_FONT_LIST : ComponentColour.BLACK.dec());
+	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+		graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, this.getUIMode().equals(EnumUIMode.DARK) ? CosmosUISystem.DEFAULT_COLOUR_FONT_LIST : ComponentColour.BLACK.dec());
 		
-		this.font.draw(poseStack, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, this.getUIMode().equals(EnumUIMode.DARK) ? CosmosUISystem.DEFAULT_COLOUR_FONT_LIST : ComponentColour.BLACK.dec());
+		graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, this.getUIMode().equals(EnumUIMode.DARK) ? CosmosUISystem.DEFAULT_COLOUR_FONT_LIST : ComponentColour.BLACK.dec());
 	}
 	
-	@Override
-	public void renderComponentHoverEffect(PoseStack poseStack, Style style, int mouseX, int mouseY) {
+	public void renderComponentHoverEffect(GuiGraphics graphics, Style style, int mouseX, int mouseY) {
 		DimensionalElytraplate item = (DimensionalElytraplate) this.stack.getItem();
 		
 		if (this.uiModeButton.isMouseOver(mouseX, mouseY)) {
@@ -112,7 +111,7 @@ public class ScreenElytraplateSettings extends AbstractContainerScreen<Container
 				ComponentHelper.style(ComponentColour.GRAY, "cosmoslibrary.gui.ui_mode.value").append(this.getUIMode().getColouredComp())
 			};
 			
-			this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+			graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 		} else if (this.elytraFlyButton.isMouseOver(mouseX, mouseY)) {
 			ElytraSettings setting = ElytraSettings.ELYTRA_FLY;
 			boolean value = DimensionalElytraplate.getElytraSetting(stack, setting)[1];
@@ -123,7 +122,7 @@ public class ScreenElytraplateSettings extends AbstractContainerScreen<Container
 				ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.gui.elytraplate.settings.fly_value").append(compV)
 			};
 				
-			this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+			graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 		} else if (this.teleToBlockButton.isMouseOver(mouseX, mouseY)) {
 			ElytraSettings setting = ElytraSettings.TELEPORT_TO_BLOCK;
 			boolean value = DimensionalElytraplate.getElytraSetting(stack, setting)[1];
@@ -134,7 +133,7 @@ public class ScreenElytraplateSettings extends AbstractContainerScreen<Container
 				ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.gui.elytraplate.settings.tele_value").append(compV)
 			};
 				
-			this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+			graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 		} else if (this.visorButton.isMouseOver(mouseX, mouseY)) {
 			ElytraSettings setting = ElytraSettings.VISOR;
 			boolean value = DimensionalElytraplate.getElytraSetting(stack, setting)[1];
@@ -142,11 +141,11 @@ public class ScreenElytraplateSettings extends AbstractContainerScreen<Container
 			
 			Component[] comp = new Component[] { 
 				ComponentHelper.style(ComponentColour.WHITE, "dimensionalpocketsii.gui.elytraplate.settings.visor_info"), 
-				ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.gui.elytraplate.settings.visor_value").append(compV),
-				ComponentHelper.style(ComponentColour.RED, "bold", "dimensionalpocktesii.gui.elytraplate.settings.visor_warn")
+				ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.gui.elytraplate.settings.visor_value").append(compV)//,
+				//ComponentHelper.style(ComponentColour.RED, "bold", "dimensionalpocktesii.gui.elytraplate.settings.visor_warn")
 			};
 				
-			this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+			graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 		} else if (this.solarButton.isMouseOver(mouseX, mouseY)) {
 			ElytraSettings setting = ElytraSettings.SOLAR;
 			boolean value = DimensionalElytraplate.getElytraSetting(stack, setting)[1];
@@ -157,7 +156,7 @@ public class ScreenElytraplateSettings extends AbstractContainerScreen<Container
 				ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.gui.elytraplate.settings.solar_value").append(compV)
 			};
 				
-			this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+			graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 		} else if (this.chargerButton.isMouseOver(mouseX, mouseY)) {
 			ElytraSettings setting = ElytraSettings.CHARGER;
 			boolean value = DimensionalElytraplate.getElytraSetting(stack, setting)[1];
@@ -168,7 +167,7 @@ public class ScreenElytraplateSettings extends AbstractContainerScreen<Container
 				ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.gui.elytraplate.settings.charger_value").append(compV)
 			};
 				
-			this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+			graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 		}
 
 		else if (IS_HOVERING.isHovering(mouseX, mouseY, this.getScreenCoords()[0] + 38, this.getScreenCoords()[0] + 153, this.getScreenCoords()[1] + 43, this.getScreenCoords()[1] + 49)) {
@@ -178,7 +177,7 @@ public class ScreenElytraplateSettings extends AbstractContainerScreen<Container
 			
 			Component[] comp = new Component[] { ComponentHelper.style(ComponentColour.WHITE, "dimensionalpocketsii.gui.energy_bar.pre"), ComponentHelper.style2(ComponentColour.RED, amount_string + " / " + capacity_string, "dimensionalpocketsii.gui.energy_bar.suff") };
 			
-			this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+			graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 		}
 	}
 
@@ -187,12 +186,12 @@ public class ScreenElytraplateSettings extends AbstractContainerScreen<Container
 		
 		this.uiModeButton = this.addRenderableWidget(new CosmosButtonUIMode(this.getUIMode(), this.getScreenCoords()[0] + 159, this.getScreenCoords()[1] + 5, true, true, ComponentHelper.empty(), (button) -> { this.changeUIMode(); } ));
 		
-		this.elytraFlyButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 36, this.getScreenCoords()[1] + 19, 20, true, true, DimensionalElytraplate.getElytraSetting(this.stack, ElytraSettings.ELYTRA_FLY)[1] ? 16 : 17, ComponentHelper.empty(), (button) -> { this.pushButton(button); }));
-		this.teleToBlockButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 61, this.getScreenCoords()[1] + 19, 20, DimensionalElytraplate.hasModuleInstalled(this.stack, BaseElytraModule.SHIFTER), true, DimensionalElytraplate.getElytraSetting(this.stack, ElytraSettings.TELEPORT_TO_BLOCK)[1] ? 18 : 19, ComponentHelper.empty(), (button) -> { this.pushButton(button); }));
-		this.visorButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 86, this.getScreenCoords()[1] + 19, 20, DimensionalElytraplate.hasModuleInstalled(this.stack, BaseElytraModule.VISOR), true, DimensionalElytraplate.getElytraSetting(this.stack, ElytraSettings.VISOR)[1] ? 20 : 21, ComponentHelper.empty(), (button) -> { this.pushButton(button); }));
+		this.elytraFlyButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 36, this.getScreenCoords()[1] + 19, 20, true, true, DimensionalElytraplate.getElytraSetting(this.stack, ElytraSettings.ELYTRA_FLY)[1] ? 16 : 17, ComponentHelper.empty(), (button) -> { this.pushButton(button); }, (button) -> { return button.get(); }));
+		this.teleToBlockButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 61, this.getScreenCoords()[1] + 19, 20, DimensionalElytraplate.hasModuleInstalled(this.stack, BaseElytraModule.SHIFTER), true, DimensionalElytraplate.getElytraSetting(this.stack, ElytraSettings.TELEPORT_TO_BLOCK)[1] ? 18 : 19, ComponentHelper.empty(), (button) -> { this.pushButton(button); }, (button) -> { return button.get(); }));
+		this.visorButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 86, this.getScreenCoords()[1] + 19, 20, DimensionalElytraplate.hasModuleInstalled(this.stack, BaseElytraModule.VISOR), true, DimensionalElytraplate.getElytraSetting(this.stack, ElytraSettings.VISOR)[1] ? 20 : 21, ComponentHelper.empty(), (button) -> { this.pushButton(button); }, (button) -> { return button.get(); }));
 		
-		this.solarButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 111, this.getScreenCoords()[1] + 19, 20, DimensionalElytraplate.hasModuleInstalled(this.stack, BaseElytraModule.SOLAR), true, DimensionalElytraplate.getElytraSetting(this.stack, ElytraSettings.SOLAR)[1] ? 22 : 23, ComponentHelper.empty(), (button) -> { this.pushButton(button); }));
-		this.chargerButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 136, this.getScreenCoords()[1] + 19, 20, DimensionalElytraplate.hasModuleInstalled(this.stack, BaseElytraModule.BATTERY), true, DimensionalElytraplate.getElytraSetting(this.stack, ElytraSettings.CHARGER)[1] ? 24 : 25, ComponentHelper.empty(), (button) -> { this.pushButton(button); }));
+		this.solarButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 111, this.getScreenCoords()[1] + 19, 20, DimensionalElytraplate.hasModuleInstalled(this.stack, BaseElytraModule.SOLAR), true, DimensionalElytraplate.getElytraSetting(this.stack, ElytraSettings.SOLAR)[1] ? 22 : 23, ComponentHelper.empty(), (button) -> { this.pushButton(button); }, (button) -> { return button.get(); }));
+		this.chargerButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 136, this.getScreenCoords()[1] + 19, 20, DimensionalElytraplate.hasModuleInstalled(this.stack, BaseElytraModule.BATTERY), true, DimensionalElytraplate.getElytraSetting(this.stack, ElytraSettings.CHARGER)[1] ? 24 : 25, ComponentHelper.empty(), (button) -> { this.pushButton(button); }, (button) -> { return button.get(); }));
 	}
 	
 	private void pushButton(Button button) {

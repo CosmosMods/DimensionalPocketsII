@@ -2,7 +2,6 @@ package com.tcn.dimensionalpocketsii.pocket.client.screen;
 
 import java.util.Arrays;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
 import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
 import com.tcn.cosmoslibrary.common.enums.EnumGeneralEnableState;
@@ -11,10 +10,11 @@ import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.dimensionalpocketsii.DimReference.GUI.RESOURCE;
 import com.tcn.dimensionalpocketsii.client.screen.button.DimensionalButton;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerFocus;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityFocus;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityFocus;
 import com.tcn.dimensionalpocketsii.pocket.core.management.PocketNetworkManager;
 import com.tcn.dimensionalpocketsii.pocket.network.packet.misc.PacketFocus;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -48,24 +48,24 @@ public class ScreenFocus extends CosmosScreenUIModeBE<ContainerFocus> {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		super.render(poseStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(graphics, mouseX, mouseY, partialTicks);
 	}
 	
 	@Override
-	protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-		super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+	protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+		super.renderBg(graphics, partialTicks, mouseX, mouseY);
 		BlockEntity entity = this.getBlockEntity();
 		
 		if (entity instanceof BlockEntityFocus) {
 			BlockEntityFocus blockEntity = (BlockEntityFocus) entity;
 			
-			CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, blockEntity, RESOURCE.FOCUS_SLOTS);
+			CosmosUISystem.renderStaticElementWithUIMode(this, graphics, getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, blockEntity, RESOURCE.FOCUS_SLOTS);
 		}
 	}
 	
 	@Override
-	public void renderComponentHoverEffect(PoseStack poseStack, Style style, int mouseX, int mouseY) {
+	public void renderComponentHoverEffect(GuiGraphics graphics, Style style, int mouseX, int mouseY) {
 		BlockEntity entity = this.getBlockEntity();
 		
 		if (entity instanceof BlockEntityFocus) {
@@ -79,7 +79,7 @@ public class ScreenFocus extends CosmosScreenUIModeBE<ContainerFocus> {
 					ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.gui.focus.jump_value").append(state.getColouredComp())
 				};
 					
-				this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+				graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 			} else if (this.shiftEnabledButton.isMouseOver(mouseX, mouseY)) {
 				EnumGeneralEnableState state = blockEntity.getShift();
 				
@@ -88,7 +88,7 @@ public class ScreenFocus extends CosmosScreenUIModeBE<ContainerFocus> {
 					ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.gui.focus.shift_value").append(state.getColouredComp())
 				};
 					
-				this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+				graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 			}
 		}
 	}
@@ -101,29 +101,32 @@ public class ScreenFocus extends CosmosScreenUIModeBE<ContainerFocus> {
 		if (entity instanceof BlockEntityFocus) {
 			BlockEntityFocus blockEntity = (BlockEntityFocus) entity;
 			
-			this.jumpEnabledButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 93, this.getScreenCoords()[1] + 19, 20, true, true, blockEntity.getJumpEnabled() ? 26 : 27, ComponentHelper.empty(), (button) -> { this.pushButton(button); }));
-			this.shiftEnabledButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 59, this.getScreenCoords()[1] + 19, 20, true, true, blockEntity.getShiftEnabled() ? 28 : 29, ComponentHelper.empty(), (button) -> { this.pushButton(button); }));
+			this.jumpEnabledButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 93, this.getScreenCoords()[1] + 19, 20, true, true, blockEntity.getJumpEnabled() ? 26 : 27, ComponentHelper.empty(), (button) -> { this.clickButton(button, true); }, (button) -> { return button.get(); }));
+			this.shiftEnabledButton = this.addRenderableWidget(new DimensionalButton(this.getScreenCoords()[0] + 59, this.getScreenCoords()[1] + 19, 20, true, true, blockEntity.getShiftEnabled() ? 28 : 29, ComponentHelper.empty(), (button) -> { this.clickButton(button, true); }, (button) -> { return button.get(); }));
 		}
 	}
 	
 	@Override
-	protected void pushButton(Button button) {
-		super.pushButton(button);
-		BlockEntity entity = this.getBlockEntity();
+	protected void clickButton(Button button, boolean isLeftClick) {
+		super.clickButton(button, isLeftClick);
 		
-		if (entity instanceof BlockEntityFocus) {
-			BlockEntityFocus blockEntity = (BlockEntityFocus) entity;
+		if (isLeftClick) {
+			BlockEntity entity = this.getBlockEntity();
 			
-			if (button.equals(this.jumpEnabledButton)) {
-				EnumGeneralEnableState state = blockEntity.getJump();
+			if (entity instanceof BlockEntityFocus) {
+				BlockEntityFocus blockEntity = (BlockEntityFocus) entity;
 				
-				PocketNetworkManager.sendToServer(new PacketFocus(this.menu.getBlockPos(), !state.getValue(), true));
-				blockEntity.setJumpEnabled(!state.getValue());
-			} else if (button.equals(this.shiftEnabledButton)) {
-				EnumGeneralEnableState state = blockEntity.getShift();
-				
-				PocketNetworkManager.sendToServer(new PacketFocus(this.menu.getBlockPos(), !state.getValue(), false));
-				blockEntity.setJumpEnabled(!state.getValue());
+				if (button.equals(this.jumpEnabledButton)) {
+					EnumGeneralEnableState state = blockEntity.getJump();
+					
+					PocketNetworkManager.sendToServer(new PacketFocus(this.menu.getBlockPos(), !state.getValue(), true));
+					blockEntity.setJumpEnabled(!state.getValue());
+				} else if (button.equals(this.shiftEnabledButton)) {
+					EnumGeneralEnableState state = blockEntity.getShift();
+					
+					PocketNetworkManager.sendToServer(new PacketFocus(this.menu.getBlockPos(), !state.getValue(), false));
+					blockEntity.setJumpEnabled(!state.getValue());
+				}
 			}
 		}
 	}

@@ -14,10 +14,10 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/pocket/mid/normal",
-        "outside": "dimensionalpocketsii:blocks/pocket/mid/normal",
-        "inside": "dimensionalpocketsii:blocks/pocket/mid/normal_inside",
-        "ring": "dimensionalpocketsii:blocks/pocket/mid/ring_disabled"
+        "particle": "dimensionalpocketsii:block/pocket/mid/normal",
+        "outside": "dimensionalpocketsii:block/pocket/mid/normal",
+        "inside": "dimensionalpocketsii:block/pocket/mid/normal_inside",
+        "ring": "dimensionalpocketsii:block/pocket/mid/ring_disabled"
     },
     "elements": [
         {

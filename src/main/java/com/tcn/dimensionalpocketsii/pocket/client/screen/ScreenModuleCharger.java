@@ -3,7 +3,6 @@ package com.tcn.dimensionalpocketsii.pocket.client.screen;
 import java.util.Arrays;
 
 import com.ibm.icu.text.DecimalFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
 import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem.IS_HOVERING;
 import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
@@ -15,10 +14,11 @@ import com.tcn.dimensionalpocketsii.DimReference.GUI;
 import com.tcn.dimensionalpocketsii.DimReference.GUI.RESOURCE;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleCharger;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleCharger;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleCharger;
 import com.tcn.dimensionalpocketsii.pocket.core.management.PocketNetworkManager;
 import com.tcn.dimensionalpocketsii.pocket.network.packet.misc.PacketChargerEnergyState;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -58,13 +58,13 @@ public class ScreenModuleCharger extends CosmosScreenUIModeBE<ContainerModuleCha
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		super.render(poseStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(graphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-		super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+	protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+		super.renderBg(graphics, partialTicks, mouseX, mouseY);
 
 		BlockEntity entity = this.getBlockEntity();
 		
@@ -84,16 +84,16 @@ public class ScreenModuleCharger extends CosmosScreenUIModeBE<ContainerModuleCha
 					rgb = ComponentColour.rgbFloatArray(decimal);
 				}
 				
-				CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, new float[] { rgb[0], rgb[1], rgb[2], 1.0F }, blockEntity, GUI.RESOURCE.CHARGER_BASE);
-				CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, blockEntity, GUI.RESOURCE.CHARGER_OVERLAY);
+				CosmosUISystem.renderStaticElementWithUIMode(this, graphics, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, new float[] { rgb[0], rgb[1], rgb[2], 1.0F }, blockEntity, GUI.RESOURCE.CHARGER_BASE);
+				CosmosUISystem.renderStaticElementWithUIMode(this, graphics, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, blockEntity, GUI.RESOURCE.CHARGER_OVERLAY);
 
-				CosmosUISystem.renderEnergyDisplay(this, poseStack, ComponentColour.RED, pocket, this.getScreenCoords(), 84, 23, 16, 48, false);
+				CosmosUISystem.renderEnergyDisplay(this, graphics, ComponentColour.RED, pocket, this.getScreenCoords(), 84, 23, 16, 48, false);
 			}
 		}
 	}
 
 	@Override
-	public void renderStandardHoverEffect(PoseStack poseStack, Style style, int mouseX, int mouseY) {
+	public void renderStandardHoverEffect(GuiGraphics graphics, Style style, int mouseX, int mouseY) {
 		BlockEntity entity = this.getBlockEntity();
 		
 		if (entity instanceof BlockEntityModuleCharger) {
@@ -111,7 +111,7 @@ public class ScreenModuleCharger extends CosmosScreenUIModeBE<ContainerModuleCha
 							ComponentHelper.style2(ComponentColour.RED, energyString[0] + " / " + energyString[1], "dimensionalpocketsii.gui.energy_bar.suff")
 						};
 						
-						this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+						graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 					}
 				}
 				
@@ -121,12 +121,12 @@ public class ScreenModuleCharger extends CosmosScreenUIModeBE<ContainerModuleCha
 						ComponentHelper.style(ComponentColour.GRAY, "dimensionalpocketsii.gui.charger.mode_value").append(blockEntity.getEnergyState().getColouredComp())
 					};
 					
-					this.renderComponentTooltip(poseStack, Arrays.asList(comp), mouseX, mouseY);
+					graphics.renderComponentTooltip(this.font, Arrays.asList(comp), mouseX, mouseY);
 				} 
 			}
 		}
 		
-		super.renderStandardHoverEffect(poseStack, style, mouseX, mouseY);
+		super.renderStandardHoverEffect(graphics, style, mouseX, mouseY);
 	}
 	
 	@Override
@@ -137,21 +137,23 @@ public class ScreenModuleCharger extends CosmosScreenUIModeBE<ContainerModuleCha
 		if (entity instanceof BlockEntityModuleCharger) {
 			BlockEntityModuleCharger blockEntity = (BlockEntityModuleCharger) entity;
 			
-			this.energyStateButton = this.addRenderableWidget(new CosmosButtonWithType(TYPE.ENERGY, this.getScreenCoords()[0] + MBI[0], this.getScreenCoords()[1] + MBI[1], 18, true, true, blockEntity.getEnergyState().getIndex() + 16, ComponentHelper.empty(), (button) -> { this.pushButton(this.energyStateButton); }));
+			this.energyStateButton = this.addRenderableWidget(new CosmosButtonWithType(TYPE.ENERGY, this.getScreenCoords()[0] + MBI[0], this.getScreenCoords()[1] + MBI[1], 18, true, true, blockEntity.getEnergyState().getIndex() + 16, ComponentHelper.empty(), (button, isLeftClick) -> { this.clickButton(this.energyStateButton, isLeftClick); }));
 		}
 	}
 
 	@Override
-	public void pushButton(Button button) {
-		super.pushButton(button);
-		BlockEntity entity = this.getBlockEntity();
-		
-		if (entity instanceof BlockEntityModuleCharger) {
-			BlockEntityModuleCharger blockEntity = (BlockEntityModuleCharger) entity;
+	public void clickButton(Button button, boolean isLeftClick) {
+		super.clickButton(button, isLeftClick);
+		if (isLeftClick) {
+			BlockEntity entity = this.getBlockEntity();
 			
-			if (button.equals(this.energyStateButton)) {
-				PocketNetworkManager.sendToServer(new PacketChargerEnergyState(this.menu.getBlockPos()));
-				blockEntity.cycleEnergyState();
+			if (entity instanceof BlockEntityModuleCharger) {
+				BlockEntityModuleCharger blockEntity = (BlockEntityModuleCharger) entity;
+				
+				if (button.equals(this.energyStateButton)) {
+					PocketNetworkManager.sendToServer(new PacketChargerEnergyState(this.menu.getBlockPos()));
+					blockEntity.cycleEnergyState();
+				}
 			}
 		}
 	}

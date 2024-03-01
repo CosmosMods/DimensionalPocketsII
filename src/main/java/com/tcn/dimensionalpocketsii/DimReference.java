@@ -30,11 +30,12 @@ public class DimReference {
 		public static final ComponentColour ENERGYBARCOLOUR = ComponentColour.RED;
 	}
 	
-	public static class CONFIG_DEFAULTS {
-		public static ArrayList<String> BLOCKED_BLOCKS = new ArrayList<String>() { 
+	public static class BlockedObjects {
+		public static ArrayList<String> BLOCKS = new ArrayList<String>() { 
 			private static final long serialVersionUID = 5L;
 			
 			{
+				add("minecraft:bedrock");
 				add("lucky:lucky_block");
 				add("chancecubes:chance_cube");
 				add("chancecubes:chance_icosahedron");
@@ -45,7 +46,7 @@ public class DimReference {
 			};
 		};
 		
-		public static ArrayList<String> BLOCKED_ITEMS = new ArrayList<String>() {
+		public static ArrayList<String> ITEMS = new ArrayList<String>() {
 			private static final long serialVersionUID = 5L;
 			
 			{
@@ -63,7 +64,7 @@ public class DimReference {
 			};
 		};
 		
-		public static ArrayList<String> BLOCKED_COMMANDS = new ArrayList<String>() {
+		public static ArrayList<String> COMMANDS = new ArrayList<String>() {
 			private static final long serialVersionUID = 5L;
 			
 			{
@@ -71,13 +72,40 @@ public class DimReference {
 				add("tp");
 				add("kill");
 				add("setblock");
+				add("clone");
+				add("fill");
+				add("place");
+				add("setworldspawn");
+				add("spawnpoint");
+				add("spectate");
+				add("spreadplayers");
+				add("worldborder");
+				add("/");
 				//add("");
 			};
 		};
 	}
 	
+	public static class INTERFACE {
+		public static class FOLDER {
+			public static final String REGISTRY = "dimpockets";
+			public static final String REGISTRY_BACKUP = REGISTRY + "/backups";
+			public static final String DATA = REGISTRY + "/data";
+		}
+		
+		public static class FILE {
+			public static final String REGISTRY = "pocketRegistry";
+			public static final String REGISTRY_BACKUP = "registry-backup";
+
+			public static final String GENERATION_PARAMETERS = "pocketGenParameters";
+			
+			public static final String LOADED_BLOCKS = "loaded_blocks";
+			public static final String LOADED_ROOMS  = "loaded_rooms";
+		}
+	}
+	
 	public static class MESSAGES {
-		@Deprecated
+		@Deprecated(forRemoval = true, since = "1.19.2")
 		public static final MutableComponent WELCOME = ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.welcome_one")
 			.append(ComponentHelper.style(ComponentColour.PURPLE, "dimensionalpocketsii.welcome_two"))
 			.append(ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.welcome_three"))
@@ -92,8 +120,8 @@ public class DimReference {
 		public static final String RESOURCE = PRE + "textures/";
 		public static final String GUI = RESOURCE + "gui/";
 
-		public static final String BLOCKS = PRE + "blocks/";
-		public static final String ITEMS = RESOURCE + "items/";
+		public static final String BLOCKS = PRE + "block/";
+		public static final String ITEMS = RESOURCE + "item/";
 		
 		public static final String MODELS = RESOURCE + "models/";
 		
@@ -165,7 +193,11 @@ public class DimReference {
 			public static final ResourceLocation[] UPGRADE_STATION_OVERLAY = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/overlay.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/overlay_dark.png") };
 			public static final ResourceLocation[] UPGRADE_STATION_BASE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/base.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/base_dark.png") };
 			public static final ResourceLocation UPGRADE_STATION_JEI = new ResourceLocation(DimReference.RESOURCE.GUI + "upgrade_station/jei.png");
-			
+
+			public static final ResourceLocation[] ANVIL = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "anvil/background.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "anvil/background_dark.png") };
+			public static final ResourceLocation[] ANVIL_OVERLAY = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "anvil/overlay.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "anvil/overlay_dark.png") };
+			public static final ResourceLocation[] ANVIL_BASE = new ResourceLocation[] { new ResourceLocation(DimReference.RESOURCE.GUI + "anvil/base.png"), new ResourceLocation(DimReference.RESOURCE.GUI + "anvil/base_dark.png") };
+
 			public static final ResourceLocation[] ELYTRAPLATE_SETTINGS = new ResourceLocation[] { new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/elytraplate/settings/background.png"), new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/elytraplate/settings/background_dark.png") };
 			public static final ResourceLocation[] ELYTRAPLATE_SETTINGS_OVERLAY = new ResourceLocation[] { new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/elytraplate/settings/overlay.png"), new ResourceLocation(DimensionalPockets.MOD_ID, "textures/gui/elytraplate/settings/overlay_dark.png") };
 			

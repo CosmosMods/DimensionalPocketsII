@@ -13,5 +13,6 @@ public class PocketCommands {
 		PocketTransferModeratorCommand.register(dispatcherIn);
 		DimShiftCommand.register(dispatcherIn);
 		SetSpawnCommand.register(dispatcherIn);
+		CreateBackupCommand.register(dispatcherIn);
 	}
 }

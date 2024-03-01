@@ -8,11 +8,12 @@ import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,17 +31,17 @@ public class DimensionalTridentBEWLR extends BlockEntityWithoutLevelRenderer {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void renderByItem(ItemStack stackIn, ItemTransforms.TransformType transformIn, PoseStack poseStack, MultiBufferSource typeBuffer, int combinedLight, int combinedOverlay) {
+	public void renderByItem(ItemStack stackIn, ItemDisplayContext transformIn, PoseStack poseStack, MultiBufferSource typeBuffer, int combinedLight, int combinedOverlay) {
 		Item item = stackIn.getItem();
 		BakedModel model = null;
 		Minecraft mc = Minecraft.getInstance();
 		ItemRenderer renderer = mc.getItemRenderer();
 
 		if (item == ObjectManager.dimensional_trident) {
-			boolean flag = transformIn == ItemTransforms.TransformType.GUI || transformIn == ItemTransforms.TransformType.GROUND || transformIn == ItemTransforms.TransformType.FIXED;
+			boolean flag = transformIn == ItemDisplayContext.GUI || transformIn == ItemDisplayContext.GROUND || transformIn == ItemDisplayContext.FIXED;
 			
 			if (flag) {
-				model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation("dimensionalpocketsii:dimensional_trident#inventory"));
+				model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation(new ResourceLocation("dimensionalpocketsii", "dimensional_trident"), "inventory"));
 
 				poseStack.pushPose();
 				renderer.render(stackIn, transformIn, true, poseStack, typeBuffer, combinedLight, combinedOverlay, model);
@@ -53,10 +54,10 @@ public class DimensionalTridentBEWLR extends BlockEntityWithoutLevelRenderer {
 				poseStack.popPose();
 			}
 		} else if (item == ObjectManager.dimensional_trident_enhanced) {
-			boolean flag = transformIn == ItemTransforms.TransformType.GUI || transformIn == ItemTransforms.TransformType.GROUND || transformIn == ItemTransforms.TransformType.FIXED;
+			boolean flag = transformIn == ItemDisplayContext.GUI || transformIn == ItemDisplayContext.GROUND || transformIn == ItemDisplayContext.FIXED;
 			
 			if (flag) {
-				model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation("dimensionalpocketsii:dimensional_trident_enhanced#inventory"));
+				model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation(new ResourceLocation("dimensionalpocketsii", "dimensional_trident_enhanced"), "inventory"));
 
 				poseStack.pushPose();
 				renderer.render(stackIn, transformIn, true, poseStack, typeBuffer, combinedLight, combinedOverlay, model);

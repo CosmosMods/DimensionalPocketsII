@@ -23,7 +23,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 @Mod(DimensionalPockets.MOD_ID)
 public final class DimensionalPockets {
 
-	//This must NEVER EVER CHANGE!
+	//This must NEVER EVER EVER CHANGE!
 	public static final String MOD_ID = "dimensionalpocketsii";
 		
 	public static CosmosConsoleManager CONSOLE = new CosmosConsoleManager(DimensionalPockets.MOD_ID, true, true);
@@ -59,10 +59,11 @@ public final class DimensionalPockets {
 		
 		CONSOLE.startup("DimensionalPocketsII Common Setup complete.");
 	}
-
+	
 	public void onFMLClientSetup(final FMLClientSetupEvent event) {
+		//IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		final ModLoadingContext context = ModLoadingContext.get();
-		
+				
 		ModBusManager.registerClient(context);
 		ModBusManager.onFMLClientSetup(event);
 		

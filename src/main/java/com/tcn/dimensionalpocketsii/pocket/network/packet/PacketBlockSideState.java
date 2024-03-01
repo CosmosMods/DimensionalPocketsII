@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
@@ -35,7 +35,7 @@ public class PacketBlockSideState implements PacketPocketNet {
 		NetworkEvent.Context ctx = context.get();
 		
 		ctx.enqueueWork(() -> {
-			Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(packet.pos);
+			Pocket pocket = StorageManager.getPocketFromChunkPosition(null, packet.pos);
 			
 			if (pocket.exists()) {
 				pocket.cycleSide(Direction.from3DDataValue(packet.index), true);
@@ -45,7 +45,7 @@ public class PacketBlockSideState implements PacketPocketNet {
 				DimensionalPockets.CONSOLE.debug("[Packet Delivery Success] <pocketsidestate> Pocket Side State cycled for Pocket: { " + pocket.getDominantChunkPos() + " }");
 			}
 			
-			PocketRegistryManager.saveData();
+			StorageManager.saveRegistry();
 		});
 		
 		ctx.setPacketHandled(true);

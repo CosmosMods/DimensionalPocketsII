@@ -3,48 +3,73 @@
 	
 	"dimensionalpocketsii.advancements.root.title": "Dimensional Pockets!",
 	"dimensionalpocketsii.advancements.root.desc": "Welcome to Dimensional Pockets.",	
+	
 	"dimensionalpocketsii.advancements.material.title": "Dimensional Materials!",
 	"dimensionalpocketsii.advancements.material.desc": "Mine some Dimensional Ore.",	
+	
 	"dimensionalpocketsii.advancements.pockets.title": "Pockets!",
 	"dimensionalpocketsii.advancements.pockets.desc": "Craft a Dimensional Pocket.",	
+	
+	"dimensionalpocketsii.advancements.pocket_enhanced.title": "Enhancements!",
+	"dimensionalpocketsii.advancements.pocket_enhanced.desc": "Craft an Enhanced Dimensional Pocket.",	
+	
 	"dimensionalpocketsii.advancements.nether_star.title": "Splitting the Stars!",
 	"dimensionalpocketsii.advancements.nether_star.desc": "Split a nether star into shards.",	
+	
 	"dimensionalpocketsii.advancements.ingot.title": "Gearing Up!",
 	"dimensionalpocketsii.advancements.ingot.desc": "Obtain some Dimensional Ingots.",	
+	
 	"dimensionalpocketsii.advancements.ingot_enhanced.title": "Enhancing Metal!",
 	"dimensionalpocketsii.advancements.ingot_enhanced.desc": "Obtain an Enhanced Dimensional Ingot.",	
+	
 	"dimensionalpocketsii.advancements.armour.title": "Amour Up!",
 	"dimensionalpocketsii.advancements.armour.desc": "Obtain a full set of Dimensional Armour.",	
+	
 	"dimensionalpocketsii.advancements.armour_enhanced.title": "Dimensional Enhancement!",
 	"dimensionalpocketsii.advancements.armour_enhanced.desc": "Obtain a full set of Enhanced Dimensional Armour.",
+	
 	"dimensionalpocketsii.advancements.elytraplate.title": "The wings of an Angel!",
 	"dimensionalpocketsii.advancements.elytraplate.desc": "Obtain a Dimensional Elytraplate.",
+	
 	"dimensionalpocketsii.advancements.connector.title": "Connecting Dimensions!",
 	"dimensionalpocketsii.advancements.connector.desc": "Create a Connector inside of a Pocket.",
+	
 	"dimensionalpocketsii.advancements.core.title": "Interdimensional Travel!",
 	"dimensionalpocketsii.advancements.core.desc": "Obtain a Dimensional Core.",
+	
 	"dimensionalpocketsii.advancements.dimension.title": "Cross Dimensional Teleportation!",
 	"dimensionalpocketsii.advancements.dimension.desc": "Enter a Dimensional Pocket.",
+	
 	"dimensionalpocketsii.advancements.pickaxe.title": "Earthcruncher!",
 	"dimensionalpocketsii.advancements.pickaxe.desc": "Obtain a Dimensional Pickaxe.",
+	
 	"dimensionalpocketsii.advancements.sword.title": "Unstoppable!",
 	"dimensionalpocketsii.advancements.sword.desc": "Obtain a Dimensional Sword.",
+	
 	"dimensionalpocketsii.advancements.device.title": "Dimensional Devices!",
 	"dimensionalpocketsii.advancements.device.desc": "Make a Dimensional Device Base.",
+	
 	"dimensionalpocketsii.advancements.use_wrench.title": "Technician!",
 	"dimensionalpocketsii.advancements.use_wrench.desc": "Modify a Pocket with a wrench.",
+	
 	"dimensionalpocketsii.advancements.wrench.title": "You're a tool Harry!",
 	"dimensionalpocketsii.advancements.wrench.desc": "Obtain a Dimensional Wrench.",
+	
 	"dimensionalpocketsii.advancements.cell.title": "Energy Storage!",
 	"dimensionalpocketsii.advancements.cell.desc": "Obtain a Dimensional Energy Cell.",
+	
 	"dimensionalpocketsii.advancements.cell_enhanced.title": "Increased Energy Density!",
 	"dimensionalpocketsii.advancements.cell_enhanced.desc": "Obtain an Enhanced Dimensional Energy Cell.",
+	
 	"dimensionalpocketsii.advancements.shifter.title": "Portable Travel!",
 	"dimensionalpocketsii.advancements.shifter.desc": "Obtain a Dimensional Shifter.",
+	
 	"dimensionalpocketsii.advancements.use_shifter.title": "The Power of The Universe!",
 	"dimensionalpocketsii.advancements.use_shifter.desc": "Use a Dimensional Shifter.",
+	
 	"dimensionalpocketsii.advancements.shifter_enhanced.title": "Mega Power!",
 	"dimensionalpocketsii.advancements.shifter_enhanced.desc": "Upgrade a Dimensional Shifter.",
+	
 	"dimensionalpocketsii.advancements.ejector.title": "Emergency!",
 	"dimensionalpocketsii.advancements.ejector.desc": "Obtain a Dimensional Ejector.",
 	
@@ -163,22 +188,30 @@
 	"item.dimensionalpocketsii.module_armour_workbench": "Armour Workbench Module",
 	"item.dimensionalpocketsii.module_upgrade_station": "Upgrade Station Module",
 	"item.dimensionalpocketsii.module_generator": "Pocket Generator Module",
+	"item.dimensionalpocketsii.module_anvil": "Pocket Anvil Module",
 	
 	"item.dimensionalpocketsii.module_focus": "Pocket Focus Module",
 	
 	"item.dimensionalpocketsii.module_creative_energy": "Creative Energy Module",
 	"item.dimensionalpocketsii.module_creative_fluid": "Creative Fluid Module",
 	
+	"item.dimensionalpocketsii.dimensional_upgrade_template": "Dimensional Smithing Template",
+	
 	"block.dimensionalpocketsii.block_dimensional_ore": "Dimensional Ore",
 	"block.dimensionalpocketsii.block_deepslate_dimensional_ore": "Deepslate Dimensional Ore",
 	"block.dimensionalpocketsii.block_dimensional_ore_nether": "Nether Dimensional Ore",
 	"block.dimensionalpocketsii.block_dimensional_ore_end": "End Dimensional Ore",
 	"block.dimensionalpocketsii.block_dimensional": "Block of Dimensional Material",
+	"block.dimensionalpocketsii.block_dimensional_slab": "Dimensional Material Slab",
+	"block.dimensionalpocketsii.block_dimensional_stair": "Dimensional Material Stairs",
 	"block.dimensionalpocketsii.block_dimensional_metal": "Block of Dimensional Metal",
+	"block.dimensionalpocketsii.block_dimensional_metal_enhanced": "Block of Enhanced Dimensional Metal",
 	"block.dimensionalpocketsii.block_dimensional_gem": "Block of Dimensional Gem",
 	
 	"block.dimensionalpocketsii.block_pocket": "Dimensional Pocket",
+	"block.dimensionalpocketsii.block_pocket_enhanced": "Enhanced Dimensional Pocket",
 	"block.dimensionalpocketsii.block_dimensional_core": "Dimensional Core",
+	"block.dimensionalpocketsii.block_dimensional_core_enhanced": "Enhanced Dimensional Core",
 	
 	"block.dimensionalpocketsii.block_dimensional_focus": "Dimensional Focus",
 	
@@ -197,12 +230,15 @@
 	"block.dimensionalpocketsii.block_wall_fluid_display": "Fluid Display Module",
 	"block.dimensionalpocketsii.block_wall_armour_workbench": "Armour Workbench Module",
 	"block.dimensionalpocketsii.block_wall_upgrade_station": "Upgrade Station Module",
+	"block.dimensionalpocketsii.block_wall_anvil": "Anvil Module",
 	
 	"block.dimensionalpocketsii.block_wall_creative_energy": "Creative Energy Module",
 	"block.dimensionalpocketsii.block_wall_creative_fluid": "Creative Fluid Module",
 		
 	"dimensionalpocketsii.modid": "Dimensional Pockets II",
 	"dimensionalpocketsii.version": "[5.1.3.0]",
+	
+	"dimensionalpocketsii.system_message.backup": "[DimPockets] Backup Created",
 	
 	"dimensionalpocketsii.command.dimshift.usage": "/dimshift <destination dimension>(As a word, eg: overworld)",
 	"dimensionalpocketsii.command.dimshift.error.exists": "Dimension specified does not exist.",
@@ -249,6 +285,7 @@
 	"dimensionalpocketsii.welcome_four": " Current Version: ",
 	
 	"dimensionalpocketsii.gui.pocket.header": "Dimensional Pocket",
+	"dimensionalpocketsii.gui.pocket_enhanced.header": "Enhanced Dimensional Pocket",
 	"dimensionalpocketsii.gui.connector.header": "Connector Module",
 	"dimensionalpocketsii.gui.header.allowed_players": "Allowed Players:",
 	"dimensionalpocketsii.gui.header.owner": "Pocket Owner:",
@@ -308,6 +345,8 @@
 	"dimensionalpocketsii.gui.generator.mode_info": "Change Generation Mode.",
 	"dimensionalpocketsii.gui.generator.mode_value": "Generation Mode: ",
 	
+	"dimensionalpocketsii.gui.anvil": "Anvil Module",
+	
 	"dimensionalpocketsii.gui.focus": "Dimensional Focus",
 	"dimensionalpocketsii.gui.focus.jump_info": "Change Jump Mode.",
 	"dimensionalpocketsii.gui.focus.jump_value": "Jump Mode is currently: ",
@@ -352,6 +391,11 @@
 	"dimensionalpocketsii.gui.config.height_slide": "Internal Pocket Height:",
 	"dimensionalpocketsii.gui.config.height_info": "Allows you to change the the internal height of Pockets",
 	"dimensionalpocketsii.gui.config.height_info_two": "Limited to the range of between 15 and 255",
+	
+	"dimensionalpocketsii.gui.config.height_enhanced": "Internal Enhanced Pocket Height",
+	"dimensionalpocketsii.gui.config.height_enhanced_slide": "Internal Enhanced Pocket Height:",
+	"dimensionalpocketsii.gui.config.height_enhanced_info": "Allows you to change the the internal height of Enhanced Pockets",
+	"dimensionalpocketsii.gui.config.height_enhanced_info_two": "Limited to the range of between 31 and 255",
 	
 	"dimensionalpocketsii.gui.config.jump_range": "Focus Jump Range",
 	"dimensionalpocketsii.gui.config.jump_range_slide": "Focus Jump Range:",
@@ -400,8 +444,19 @@
 	"dimensionalpocketsii.gui.config.blocked_items": "Banned Items",
 	"dimensionalpocketsii.gui.config.blocked_items_info": "List of Items that are blocked when inside a Pocket",
 	
+	"dimensionalpocketsii.gui.config.op_level": "OP Level for Commands",
+	"dimensionalpocketsii.gui.config.op_level_slide": "OP Level:",
+	"dimensionalpocketsii.gui.config.op_level_info": "Allows you to change the required OP level to bypass Blocked Commands",
+	"dimensionalpocketsii.gui.config.op_level_info_two": "Limited to the range of between 0 and 4",
+	
 	"dimensionalpocketsii.gui.config.blocked_commands": "Banned Commands",
 	"dimensionalpocketsii.gui.config.blocked_commands_info": "List of Commands that are blocked when inside a Pocket",
+	
+	"dimensionalpocketsii.gui.config.backups": "Create Backups",
+	"dimensionalpocketsii.gui.config.backups_info": "Whether or not the mod will create backups of Pocket information",
+	
+	"dimensionalpocketsii.gui.config.add": "Add Element",
+	"dimensionalpocketsii.gui.config.remove": "Remove Element",
 	
 	"dimensionalpocketsii.gui.config.message.restart": "A restart is required for this option to take effect",
 	
@@ -592,6 +647,69 @@
 	"dimensionalpocketsii.gui.help.slot.boots": "Boots Slot",
 	"dimensionalpocketsii.gui.help.slot.boots_one": "to your Boots.",
 	
+	"dimensionalpocketsii.gui.help.pocket.surrounding": "Pocket Surrounding Blocks",
+	"dimensionalpocketsii.gui.help.pocket.surrounding_one": "These slots show any blocks that are",
+	"dimensionalpocketsii.gui.help.pocket.surrounding_two": "surrounding your Pocket Block.",
+	
+	"dimensionalpocketsii.gui.help.pocket.surrounding_config": "Pocket Side State Configuration",
+	"dimensionalpocketsii.gui.help.pocket.surrounding_config_one": "These buttons allow you to change",
+	"dimensionalpocketsii.gui.help.pocket.surrounding_config_two": "the side state of that Side.",
+	
+	"dimensionalpocketsii.gui.help.pocket.allowed_players": "Allowed Player Entry",
+	"dimensionalpocketsii.gui.help.pocket.allowed_players_one": "Text field that allows you to add",
+	"dimensionalpocketsii.gui.help.pocket.allowed_players_two": "players to the Allowed Players List.",
+	
+	"dimensionalpocketsii.gui.help.pocket.text_clear": "Text Clear Button",
+	"dimensionalpocketsii.gui.help.pocket.text_clear_one": "Clears the Text Field.",
+	
+	"dimensionalpocketsii.gui.help.pocket.add_player": "Add Allowed Player Button",
+	"dimensionalpocketsii.gui.help.pocket.add_player_one": "Adds the current Player Name",
+	"dimensionalpocketsii.gui.help.pocket.add_player_two": "from the Text Field.",
+	
+	"dimensionalpocketsii.gui.help.pocket.remove_player": "Removed Allowed Player Button",
+	"dimensionalpocketsii.gui.help.pocket.remove_player_one": "Removes the current selected",
+	"dimensionalpocketsii.gui.help.pocket.remove_player_two": "Player from the Player List.",
+	
+	"dimensionalpocketsii.gui.help.pocket.allowed_players_list": "Allowed Player List",
+	"dimensionalpocketsii.gui.help.pocket.allowed_players_list_one": "List of currently Allowed Players.",
+	
+	"dimensionalpocketsii.gui.help.pocket.scroll_bar": "Scroll Bar",
+	"dimensionalpocketsii.gui.help.pocket.scroll_bar_one": "Allows you to Scroll",
+	"dimensionalpocketsii.gui.help.pocket.scroll_bar_two": "the Allowed Players.",
+	
+	"dimensionalpocketsii.gui.help.pocket.lock": "Lock Button",
+	"dimensionalpocketsii.gui.help.pocket.lock_one": "Allows you to Lock &",
+	"dimensionalpocketsii.gui.help.pocket.lock_two": "Unlock your Pocket.",
+	
+	"dimensionalpocketsii.gui.help.pocket.allow": "Allowed Players Button",
+	"dimensionalpocketsii.gui.help.pocket.allow_one": "Allows you to Enable &",
+	"dimensionalpocketsii.gui.help.pocket.allow_two": "Disable Allowed Players.",
+	
+	"dimensionalpocketsii.gui.help.pocket.trap": "Trap Players Button",
+	"dimensionalpocketsii.gui.help.pocket.trap_one": "Allows you to Enable &",
+	"dimensionalpocketsii.gui.help.pocket.trap_two": "Disable Trapping Players.",
+	
+	"dimensionalpocketsii.gui.help.pocket.mobs": "Mob Spawning Button",
+	"dimensionalpocketsii.gui.help.pocket.mobs_one": "Allows you to Enable &",
+	"dimensionalpocketsii.gui.help.pocket.mobs_two": "Mob Spawning.",
+	
+	"dimensionalpocketsii.gui.help.pocket.guide": "Side Guide Button",
+	"dimensionalpocketsii.gui.help.pocket.guide_one": "Toggles the Side Guide.",
+	
+	"dimensionalpocketsii.gui.help.pocket.items": "Pocket Items Storage",
+	"dimensionalpocketsii.gui.help.pocket.items_one": "Items stored inside",
+	"dimensionalpocketsii.gui.help.pocket.items_two": "your Pocket.",
+	
+	"dimensionalpocketsii.gui.help.pocket.buffer_items": "Buffer Items",
+	"dimensionalpocketsii.gui.help.pocket.buffer_items_one": "Items stored inside your",
+	"dimensionalpocketsii.gui.help.pocket.buffer_items_two": "Pockets Item buffer.",
+	
+	"dimensionalpocketsii.gui.help.pocket.mode": "Connector Mode Button",
+	"dimensionalpocketsii.gui.help.pocket.mode_one": "Toggles Connector Mode.",
+	
+	"dimensionalpocketsii.gui.help.pocket.state": "Connector State Button",
+	"dimensionalpocketsii.gui.help.pocket.state_one": "Toggles Connector State.",
+	
 	
 	"dimensionalpocketsii.pocket.status": "Pocket: ",
 	"dimensionalpocketsii.pocket.action.locked": "[Locked]",
@@ -723,7 +841,7 @@
 	"dimensionalpocketsii.item.message.elytraplate.no_ender_chest": "You have not installed a Ender Chest Module!",
 	
 	"dimensionalpocketsii.item.info.elytraplate_key": " key. ",
-	"dimensionalpocketsii.item.info.elytraplate_usage": "Unlimted Elytra Flight which uses 3,000 FE/t.",
+	"dimensionalpocketsii.item.info.elytraplate_usage": "Unlimted Elytra Flight which uses 6,000 FE/t.",
 	"dimensionalpocketsii.item.info.elytraplate_limitation": "Will not fly when empty of FE.",
 	"dimensionalpocketsii.item.info.elytraplate_limitation_combat": "Will damage you when empty of FE if you are attacked by a Mob or Player.",
 	
@@ -780,7 +898,7 @@
 	"dimensionalpocketsii.info.ejector_shift_limitation": "Single use. Item is destroyed upon use.",
 	
 	"dimensionalpocketsii.info.shifter_player_pos": "Saved Player Position: ",
-	"dimensionalpocketsii.info.shifter_source_dimension": "Pocket Source Dimension: ",
+	"dimensionalpocketsii.info.shifter_source_dimension": "Saved Player Dimension: ",
 	
 	"dimensionalpocketsii.info.shifter.charges": "Current remaining charges: ",
 	"dimensionalpocketsii.info.shifter.pocket": "Currently linked to Pocket: ",
@@ -809,7 +927,8 @@
 	"dimensionalpocketsii.info.module.focus_shift_one": "To create: shift-right click this on any floor block inside your Pocket.",
 	"dimensionalpocketsii.info.module.focus_shift_two": "To remove: shift-right click on the focus with a Wrench.",
 	
-	"dimensionalpocketsii.info.block.pocket": "Creates a pocket dimension!",
+	"dimensionalpocketsii.info.block.pocket": "Creates a 13x13 Pocket!",
+	"dimensionalpocketsii.info.block.pocket_enhanced": "Creates a bigger, 31x31 Pocket!",
 	"dimensionalpocketsii.info.block.pocket_shift_one": "Once placed shift-right click to enter the pocket.",
 	"dimensionalpocketsii.info.block.pocket_shift_two": "To exit the pocket, simply shift-right click on any wall.",
 	"dimensionalpocketsii.info.block.pocket_shift_three": "To change colours, simply right-click your Pocket Block, or Connector with your choice of dye.",
@@ -853,6 +972,10 @@
 	"dimensionalpocketsii.info.module.upgrade_station": "Use this to upgrade your Dimensional Equipment!",
 	"dimensionalpocketsii.info.module.upgrade_station_shift_one": "To create: shift-right click this on any wall block inside your Pocket.",
 	"dimensionalpocketsii.info.module.upgrade_station_shift_two": "To remove: shift-right click on the Upgrade Station with a Wrench.",
+	
+	"dimensionalpocketsii.info.module.anvil": "An Anvil built into the wall of your Pocket.",
+	"dimensionalpocketsii.info.module.anvil_shift_one": "To create: shift-right click this on any wall block inside your Pocket.",
+	"dimensionalpocketsii.info.module.anvil_shift_two": "To remove: shift-right click on the Anvil with a Wrench.",
 	
 	"dimensionalpocketsii.info.module.creative_energy": "Provides your Pocket with unlimited Forge Energy (FE)!",
 	"dimensionalpocketsii.info.module.creative_energy_shift_one": "To create: shift-right click this on any wall block inside your Pocket.",
@@ -966,7 +1089,7 @@
 	"dimensionalpocketsii.tome_five_heading_four": "[D]: Ejectors",
 	"dimensionalpocketsii.tome_five_body_four": "Ejectors are a last<br>ditch effort if you are stuck<br>in a Pocket.<br>They instantly shift you<br>to the Overworld<br>allowing you to escape<br>a trap or enemy.<br> <br>They are single use only<br>and they will be destroyed<br>when used.<br>They stack to a max of 4.<br>They are excellent<br>for emergencies!",
 	
-	"dimensionalpocketsii.tome_seven_heading": "[5]: Armour",
+	"dimensionalpocketsii.tome_seven_heading": "[5]: Armour & Weapons",
 	"dimensionalpocketsii.tome_foot_seven": "Armour: ",
 	
 	"dimensionalpocketsii.tome_seven_heading_one": "[A]: Standard & Enhanced",
@@ -975,7 +1098,8 @@
 	
 	
 	
-	"dimensionalpocketsii.tome_eight_heading": "[5a]: Weapons",
+	"dimensionalpocketsii.tome_eight_heading": "[C]: Weapons",
+	"dimensionalpocketsii.tome_eight_body": "Dimensional Pockets II<br>includes many weapons for<br>your enjoyment.",
 	"dimensionalpocketsii.tome_foot_eight": "Weapons: ",
 	
 	

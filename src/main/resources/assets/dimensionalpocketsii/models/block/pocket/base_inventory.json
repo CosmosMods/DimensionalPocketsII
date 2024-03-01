@@ -14,14 +14,14 @@
         }
     },
     "textures": {
-        "frame_outside": "dimensionalpocketsii:blocks/pocket/frame/unlocked",
-        "frame_inside": "dimensionalpocketsii:blocks/pocket/frame/normal_inside",
-        "mid_outside": "dimensionalpocketsii:blocks/pocket/mid/normal_inv",
-        "mid_inside": "dimensionalpocketsii:blocks/pocket/mid/normal_inside",
-        "core_outside": "dimensionalpocketsii:blocks/pocket/core/normal",
-        "core_inside": "dimensionalpocketsii:blocks/pocket/core/inside",
-        "core": "dimensionalpocketsii:blocks/pocket/core/core",
-        "particle": "dimensionalpocketsii:blocks/pocket/core/normal"
+        "frame_outside": "dimensionalpocketsii:block/pocket/frame/unlocked",
+        "frame_inside": "dimensionalpocketsii:block/pocket/frame/normal_inside",
+        "mid_outside": "dimensionalpocketsii:block/pocket/mid/normal_inv",
+        "mid_inside": "dimensionalpocketsii:block/pocket/mid/normal_inside",
+        "core_outside": "dimensionalpocketsii:block/pocket/core/normal",
+        "core_inside": "dimensionalpocketsii:block/pocket/core/inside",
+        "core": "dimensionalpocketsii:block/pocket/core/core",
+        "particle": "dimensionalpocketsii:block/pocket/core/normal"
     },
     "elements": [
         {

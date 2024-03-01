@@ -1,7 +1,7 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "dimensionalpocketsii:items/armour/colour/leggings_base",
-        "layer1": "dimensionalpocketsii:items/armour/colour/leggings_enhanced_overlay"
+        "layer0": "dimensionalpocketsii:item/armour/colour/leggings_base",
+        "layer1": "dimensionalpocketsii:item/armour/colour/leggings_enhanced_overlay"
     }
 }

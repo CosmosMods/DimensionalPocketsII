@@ -2,12 +2,12 @@
     "__comment": "Model for when three adjacent sides connected sides in a T shape.",
 	"parent": "cosmoslibrary:block/tinted_cube",
     "textures": {
-		"particle": "dimensionalpocketsii:blocks/wall/edge_connected/normal",
-        "down": "dimensionalpocketsii:blocks/wall/edge_connected/lr",
-		"up": "dimensionalpocketsii:blocks/wall/edge_connected/udlr",
-		"north": "dimensionalpocketsii:blocks/wall/edge_connected/ulr",
-		"south": "dimensionalpocketsii:blocks/wall/edge_connected/ulr",
-		"west": "dimensionalpocketsii:blocks/wall/edge_connected/udlr",
-		"east": "dimensionalpocketsii:blocks/wall/edge_connected/udlr"
+		"particle": "dimensionalpocketsii:block/wall/edge_connected/normal",
+        "down": "dimensionalpocketsii:block/wall/edge_connected/lr",
+		"up": "dimensionalpocketsii:block/wall/edge_connected/udlr",
+		"north": "dimensionalpocketsii:block/wall/edge_connected/ulr",
+		"south": "dimensionalpocketsii:block/wall/edge_connected/ulr",
+		"west": "dimensionalpocketsii:block/wall/edge_connected/udlr",
+		"east": "dimensionalpocketsii:block/wall/edge_connected/udlr"
     }
 }

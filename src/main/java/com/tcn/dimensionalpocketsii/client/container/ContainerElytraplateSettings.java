@@ -31,7 +31,7 @@ public class ContainerElytraplateSettings extends AbstractContainerMenu {
 		
 		this.stack = stackIn;
 		this.player = playerInventoryIn.player;
-		this.world = playerInventoryIn.player.level;
+		this.world = playerInventoryIn.player.level();
 
 		//Player Inventory
 		for (int k = 0; k < 3; ++k) {

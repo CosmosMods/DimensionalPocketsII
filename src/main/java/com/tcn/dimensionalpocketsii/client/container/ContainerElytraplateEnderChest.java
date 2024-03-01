@@ -35,7 +35,7 @@ public class ContainerElytraplateEnderChest extends AbstractContainerMenu {
 		
 		this.stack = stackIn;
 		this.player = playerInventoryIn.player;
-		this.world = playerInventoryIn.player.level;
+		this.world = playerInventoryIn.player.level();
 		
 		checkContainerSize(containerIn, 3 * 9);
 		this.container = containerIn;

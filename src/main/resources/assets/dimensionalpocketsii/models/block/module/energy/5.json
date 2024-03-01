@@ -13,11 +13,11 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/wall/wall",
-        "outside": "dimensionalpocketsii:blocks/wall/module/outside",
-        "inside": "dimensionalpocketsii:blocks/wall/module/inside",
-        "overlay": "dimensionalpocketsii:blocks/wall/module/display/overlay_5",
-        "wall": "dimensionalpocketsii:blocks/wall/wall"
+        "particle": "dimensionalpocketsii:block/wall/wall",
+        "outside": "dimensionalpocketsii:block/wall/module/outside",
+        "inside": "dimensionalpocketsii:block/wall/module/inside",
+        "overlay": "dimensionalpocketsii:block/wall/module/display/overlay_5",
+        "wall": "dimensionalpocketsii:block/wall/wall"
     },
     "elements": [
         {

@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -34,7 +34,7 @@ public class PacketLockToAllowedPlayers implements PacketPocketNet {
 		NetworkEvent.Context ctx = context.get();
 		
 		ctx.enqueueWork(() -> {
-			Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(packet.pos);
+			Pocket pocket = StorageManager.getPocketFromChunkPosition(null, packet.pos);
 						
 			if (pocket.exists()) {
 				pocket.setAllowedPlayerState(packet.lock);
@@ -43,7 +43,7 @@ public class PacketLockToAllowedPlayers implements PacketPocketNet {
 				DimensionalPockets.CONSOLE.debug("[Packet Delivery Success] <locktoallowedplayers> Lock to Allowed Players setting set to: { " + packet.lock +  " } for Pocket: { " + pocket.getDominantChunkPos() + " }");
 			}
 				
-			PocketRegistryManager.saveData();
+			StorageManager.saveRegistry();
 		});
 		
 		ctx.setPacketHandled(true);

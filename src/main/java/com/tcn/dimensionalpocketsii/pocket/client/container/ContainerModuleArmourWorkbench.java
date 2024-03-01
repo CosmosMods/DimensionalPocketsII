@@ -33,23 +33,23 @@ public class ContainerModuleArmourWorkbench extends CosmosContainerMenuBlockEnti
 		super(ObjectManager.container_armour_workbench, indexIn, playerInventoryIn, accessIn, posIn);
 		
 		//Armour Slot
-		this.addSlot(new SlotColourableArmourItem(contentsIn, 0, 116, 32, 1));
+		this.addSlot(new SlotColourableArmourItem(contentsIn, 0, 150, 32, 1));
 		
 		//Colour Slots
-		this.addSlot(new SlotColourItem(contentsIn, 1, 93, 21, ObjectManager.dimensional_shard, 1));
-		this.addSlot(new SlotColourItem(contentsIn, 2, 93, 42, ObjectManager.dimensional_shard, 1));
+		this.addSlot(new SlotColourItem(contentsIn, 1, 127, 21, ObjectManager.dimensional_shard, 1));
+		this.addSlot(new SlotColourItem(contentsIn, 2, 127, 42, ObjectManager.dimensional_shard, 1));
 
 		//Preview Slot
-		this.addSlot(new SlotRestrictedAccess(contentsIn, 3, 139, 21, false, false));
-		this.addSlot(new SlotRestrictedAccess(contentsIn, 4, 139, 42, false, false));
+		this.addSlot(new SlotRestrictedAccess(contentsIn, 3, 173, 21, false, false));
+		this.addSlot(new SlotRestrictedAccess(contentsIn, 4, 173, 42, false, false));
 
 		//Module Slots
-		this.addSlot(new SlotModuleItem(contentsIn, 5,  29, 21));
-		this.addSlot(new SlotModuleItem(contentsIn, 6,  50, 21));
-		this.addSlot(new SlotModuleItem(contentsIn, 7,  71, 21));
-		this.addSlot(new SlotModuleItem(contentsIn, 8,  29, 42));
-		this.addSlot(new SlotModuleItem(contentsIn, 9,  50, 42));
-		this.addSlot(new SlotModuleItem(contentsIn, 10, 71, 42));
+		this.addSlot(new SlotModuleItem(contentsIn, 5,  63, 21));
+		this.addSlot(new SlotModuleItem(contentsIn, 6,  84, 21));
+		this.addSlot(new SlotModuleItem(contentsIn, 7,  105, 21));
+		this.addSlot(new SlotModuleItem(contentsIn, 8,  63, 42));
+		this.addSlot(new SlotModuleItem(contentsIn, 9,  84, 42));
+		this.addSlot(new SlotModuleItem(contentsIn, 10, 105, 42));
 
 		//Player Inventory
 		for (int k = 0; k < 3; ++k) {
@@ -64,11 +64,10 @@ public class ContainerModuleArmourWorkbench extends CosmosContainerMenuBlockEnti
 		}
 
 		//Armour Slots
-		this.addSlot(new SlotArmourItem(playerInventoryIn, 39, 21, 63, this.player, 0));
-		this.addSlot(new SlotArmourItem(playerInventoryIn, 38, 42, 63, this.player, 1));
-		this.addSlot(new SlotArmourItem(playerInventoryIn, 37, 63, 63, this.player, 2));
-		this.addSlot(new SlotArmourItem(playerInventoryIn, 36, 84, 63, this.player, 3));
-		
+		this.addSlot(new SlotArmourItem(playerInventoryIn, 39, 55, 63, this.player, 0));
+		this.addSlot(new SlotArmourItem(playerInventoryIn, 38, 76, 63, this.player, 1));
+		this.addSlot(new SlotArmourItem(playerInventoryIn, 37, 97, 63, this.player, 2));
+		this.addSlot(new SlotArmourItem(playerInventoryIn, 36, 118, 63, this.player, 3));
 	}
 
 	public void addSlotListener(ContainerListener listenerIn) {

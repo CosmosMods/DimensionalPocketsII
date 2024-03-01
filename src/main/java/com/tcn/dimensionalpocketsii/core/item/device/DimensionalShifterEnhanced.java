@@ -12,8 +12,8 @@ import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.cosmoslibrary.energy.item.CosmosEnergyItem;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityPocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.AbstractBlockEntityPocket;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.Shifter;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.ShifterCore;
@@ -21,7 +21,7 @@ import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -141,17 +141,17 @@ public class DimensionalShifterEnhanced extends CosmosEnergyItem {
 		BlockEntity entity = world.getBlockEntity(pos);
 		
 		if (entity != null) {
-			if (entity instanceof BlockEntityPocket) {
-				Pocket pocket = ((BlockEntityPocket) entity).getPocket();
+			if (entity instanceof AbstractBlockEntityPocket) {
+				Pocket pocket = ((AbstractBlockEntityPocket) entity).getPocket();
 
 				//playerIn.swing(context.getHand());
 				if (this.addOrUpdateShifterInformation(stack, pocket, world, playerIn)) {
 					return InteractionResult.SUCCESS;
 				}
 			}
-			
 		}
-		return InteractionResult.FAIL;
+		
+		return InteractionResult.PASS;
 	}
 
 	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
@@ -175,7 +175,7 @@ public class DimensionalShifterEnhanced extends CosmosEnergyItem {
 
 								int[] chunk = new int[] { chunkPos.getInt("x"), chunkPos.getInt("z") };
 								CosmosChunkPos savedChunkPos = new CosmosChunkPos(chunk[0], chunk[1]);
-								Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(savedChunkPos);
+								Pocket pocket = StorageManager.getPocketFromChunkPosition(worldIn, savedChunkPos);
 								
 								int player_x = playerData.getInt("x");
 								int player_y = playerData.getInt("y");
@@ -187,7 +187,7 @@ public class DimensionalShifterEnhanced extends CosmosEnergyItem {
 								
 								String namespace = dimensionData.getString("namespace");
 								String path = dimensionData.getString("path");
-								ResourceKey<Level> saved_dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(namespace, path));
+								ResourceKey<Level> saved_dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(namespace, path));
 								
 								if (this.hasEnergy(stack)) {
 									if (pocket.exists()) {

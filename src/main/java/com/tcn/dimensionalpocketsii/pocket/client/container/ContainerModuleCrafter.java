@@ -20,6 +20,7 @@ import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -29,7 +30,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ContainerModuleCrafter extends CosmosContainerRecipeBookBlockEntity<CraftingContainer> {
-	private final CraftingContainer craftSlots = new CraftingContainer(this, 3, 3);
+	private final CraftingContainer craftSlots = new TransientCraftingContainer(this, 3, 3);
 	private final ResultContainer resultSlots = new ResultContainer();
 	
 	public ContainerModuleCrafter(int indexIn, Inventory playerInventoryIn, FriendlyByteBuf extraData) {
@@ -68,7 +69,7 @@ public class ContainerModuleCrafter extends CosmosContainerRecipeBookBlockEntity
 			if (optional.isPresent()) {
 				CraftingRecipe icraftingrecipe = optional.get();
 				if (resultIn.setRecipeUsed(worldIn, serverplayerentity, icraftingrecipe)) {
-					itemstack = icraftingrecipe.assemble(inventoryIn);
+					itemstack = icraftingrecipe.assemble(inventoryIn, null);
 				}
 			}
 
@@ -95,7 +96,7 @@ public class ContainerModuleCrafter extends CosmosContainerRecipeBookBlockEntity
 
 	@Override
 	public boolean recipeMatches(Recipe<? super CraftingContainer> recipeIn) {
-		return recipeIn.matches(this.craftSlots, this.player.level);
+		return recipeIn.matches(this.craftSlots, this.player.level());
 	}
 
 	@Override

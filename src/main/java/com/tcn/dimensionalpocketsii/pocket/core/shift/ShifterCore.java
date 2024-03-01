@@ -77,7 +77,7 @@ public class ShifterCore {
 	public static void shiftPlayerToDimension(Player playerIn, Shifter shifterIn) {
 		if (playerIn instanceof ServerPlayer) {
 			ServerPlayer server_player = (ServerPlayer) playerIn;
-			Level player_world = playerIn.level;
+			Level player_world = playerIn.level();
 			
 			ResourceKey<Level> dimension_key = shifterIn.getDimensionKey();
 			EnumShiftDirection direction = shifterIn.getDirection();

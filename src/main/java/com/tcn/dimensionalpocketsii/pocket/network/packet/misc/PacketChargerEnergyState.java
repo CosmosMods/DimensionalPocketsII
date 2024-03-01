@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleCharger;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleCharger;
 import com.tcn.dimensionalpocketsii.pocket.network.packet.PacketPocketNet;
 
 import net.minecraft.core.BlockPos;

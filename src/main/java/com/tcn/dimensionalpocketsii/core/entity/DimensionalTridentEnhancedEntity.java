@@ -28,6 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+@SuppressWarnings("resource")
 public class DimensionalTridentEnhancedEntity extends AbstractArrow {
 	
 	private static final EntityDataAccessor<Byte> ID_LOYALTY = SynchedEntityData.defineId(DimensionalTridentEnhancedEntity.class, EntityDataSerializers.BYTE);
@@ -59,7 +60,7 @@ public class DimensionalTridentEnhancedEntity extends AbstractArrow {
 		this.entityData.define(ID_LOYALTY, (byte) 0);
 		this.entityData.define(ID_FOIL, false);
 	}
-
+	
 	@Override
 	public void tick() {
 		if (this.inGroundTime > 4) {
@@ -70,7 +71,7 @@ public class DimensionalTridentEnhancedEntity extends AbstractArrow {
 		if ((this.dealtDamage || this.isNoPhysics()) && entity != null) {
 			int i = this.entityData.get(ID_LOYALTY);
 			if (i > 0 && !this.isAcceptibleReturnOwner()) {
-				if (!this.level.isClientSide && this.pickup == AbstractArrow.Pickup.ALLOWED) {
+				if (!this.level().isClientSide && this.pickup == AbstractArrow.Pickup.ALLOWED) {
 					this.spawnAtLocation(this.getPickupItem(), 0.1F);
 				}
 
@@ -79,7 +80,7 @@ public class DimensionalTridentEnhancedEntity extends AbstractArrow {
 				this.setNoPhysics(true);
 				Vec3 vector3d = new Vec3(entity.getX() - this.getX(), entity.getEyeY() - this.getY(), entity.getZ() - this.getZ());
 				this.setPosRaw(this.getX(), this.getY() + vector3d.y * 0.015D * (double) i, this.getZ());
-				if (this.level.isClientSide) {
+				if (this.level().isClientSide) {
 					this.yOld = this.getY();
 				}
 
@@ -131,7 +132,7 @@ public class DimensionalTridentEnhancedEntity extends AbstractArrow {
 		}
 
 		Entity entity1 = this.getOwner();
-		DamageSource damagesource = DamageSource.trident(this, (Entity) (entity1 == null ? this : entity1));
+		DamageSource damagesource = this.damageSources().trident(this, (Entity) (entity1 == null ? this : entity1));
 		
 		this.dealtDamage = true;
 		SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
@@ -154,14 +155,14 @@ public class DimensionalTridentEnhancedEntity extends AbstractArrow {
 
 		this.setDeltaMovement(this.getDeltaMovement().multiply(-0.01D, -0.1D, -0.01D));
 		float f1 = 1.0F;
-		if (this.level instanceof ServerLevel && this.level.isThundering()
+		if (this.level() instanceof ServerLevel && this.level().isThundering()
 				&& EnchantmentHelper.hasChanneling(this.tridentItem)) {
 			BlockPos blockpos = entity.blockPosition();
-			if (this.level.canSeeSky(blockpos)) {
-				LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.level);
+			if (this.level().canSeeSky(blockpos)) {
+				LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.level());
 				lightningboltentity.moveTo(Vec3.atBottomCenterOf(blockpos));
 				lightningboltentity.setCause(entity1 instanceof ServerPlayer ? (ServerPlayer) entity1 : null);
-				this.level.addFreshEntity(lightningboltentity);
+				this.level().addFreshEntity(lightningboltentity);
 				soundevent = SoundEvents.TRIDENT_THUNDER;
 				f1 = 5.0F;
 			}

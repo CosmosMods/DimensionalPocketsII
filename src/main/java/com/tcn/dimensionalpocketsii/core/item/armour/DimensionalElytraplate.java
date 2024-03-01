@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
+import com.tcn.cosmoslibrary.common.enums.EnumUIHelp;
 import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
@@ -21,7 +22,7 @@ import com.tcn.dimensionalpocketsii.core.item.device.DimensionalEnergyCell;
 import com.tcn.dimensionalpocketsii.core.item.device.DimensionalEnergyCellEnhanced;
 import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityPocket;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.AbstractBlockEntityPocket;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -32,7 +33,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -48,8 +48,8 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 public class DimensionalElytraplate extends CosmosEnergyArmourItemElytra {
 
-	public DimensionalElytraplate(ArmorMaterial materialIn, EquipmentSlot slot, Item.Properties builderIn, boolean damageableIn, CosmosEnergyItem.Properties energyProperties) {
-		super(materialIn, slot, builderIn, damageableIn, energyProperties);
+	public DimensionalElytraplate(ArmorMaterial materialIn, Type typeIn, Item.Properties builderIn, boolean damageableIn, CosmosEnergyItem.Properties energyProperties) {
+		super(materialIn, typeIn, builderIn, damageableIn, energyProperties);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class DimensionalElytraplate extends CosmosEnergyArmourItemElytra {
 												if (energyItem.canReceiveEnergy(testStack)) {
 													int lowest = Math.min(energyItem.getMaxReceive(testStack), this.getMaxExtract(stackIn));
 													
-													energyItem.receiveEnergy(testStack, this.extractEnergy(stackIn, lowest, false), false);
+													this.extractEnergy(stackIn, energyItem.receiveEnergy(testStack, lowest, false), false);
 												}
 											}
 										}
@@ -194,7 +194,7 @@ public class DimensionalElytraplate extends CosmosEnergyArmourItemElytra {
 					if (this.getEnergy(stackIn) < this.getMaxEnergyStored(stackIn)) {
 						if (hasModuleInstalled(stackIn, BaseElytraModule.SOLAR)) {
 							if (getElytraSetting(stackIn, ElytraSettings.SOLAR)[1]) {
-								if (levelIn.canSeeSky(new BlockPos(entityIn.getEyePosition()))) {
+								if (levelIn.canSeeSky(new BlockPos(entityIn.blockPosition()))) {
 									if (levelIn.isDay()) {
 										//MATH BITCH :)
 										float energy = ((Mth.clamp(Mth.sin((float) (((levelIn.dayTime() / 1000.0F) * 0.525F) + 4.6F)), 0.0F, 1.0F)) + 1.1F) * 200;
@@ -269,8 +269,8 @@ public class DimensionalElytraplate extends CosmosEnergyArmourItemElytra {
 		BlockEntity entity = world.getBlockEntity(pos);
 		
 		if (entity != null) {
-			if (entity instanceof BlockEntityPocket) {
-				Pocket pocket = ((BlockEntityPocket) entity).getPocket();
+			if (entity instanceof AbstractBlockEntityPocket) {
+				Pocket pocket = ((AbstractBlockEntityPocket) entity).getPocket();
 				
 				if (this.addOrUpdateShifterInformation(stack, pocket, world, playerIn)) {
 					return InteractionResult.SUCCESS;
@@ -485,6 +485,22 @@ public class DimensionalElytraplate extends CosmosEnergyArmourItemElytra {
 		}
 		
 		return EnumUIMode.DARK;
+	}
+
+	public static EnumUIHelp getUIHelp(ItemStack stackIn) {
+		if (stackIn.hasTag()) {
+			CompoundTag compound = stackIn.getTag();
+			
+			return EnumUIHelp.getStateFromIndex(compound.getInt("help"));
+		}
+		
+		return EnumUIHelp.HIDDEN;
+	}
+
+	public static void setUIHelp(ItemStack stackIn, EnumUIHelp mode) {
+		CompoundTag compound = stackIn.getOrCreateTag();
+
+		compound.putInt("help", mode.getIndex());
 	}
 	
 }

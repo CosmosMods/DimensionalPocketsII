@@ -5,9 +5,11 @@ import javax.annotation.Nullable;
 import com.tcn.cosmoslibrary.common.interfaces.IBlankCreativeTab;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleFluidDisplay;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleFluidDisplay;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -46,14 +48,12 @@ public class BlockWallFluidDisplay extends BlockWallModule implements IBlankCrea
 		return createTickerHelper(entityTypeIn, entityIn, BlockEntityModuleFluidDisplay::tick);
 	}
 	
-	/*
 	@Override
-	public void tick(BlockState stateIn, ServerLevel worldIn, BlockPos posIn, Random randIn) {
+	public void animateTick(BlockState stateIn, Level worldIn, BlockPos posIn, RandomSource randIn) {
 		worldIn.setBlockAndUpdate(posIn, stateIn);
 		worldIn.blockUpdated(posIn, this);
 		worldIn.sendBlockUpdated(posIn, stateIn, stateIn.updateShape(Direction.UP, stateIn, worldIn, posIn, posIn.offset(Direction.UP.getNormal())), 3);
 	}
-	*/
 	
 	@Override
 	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {

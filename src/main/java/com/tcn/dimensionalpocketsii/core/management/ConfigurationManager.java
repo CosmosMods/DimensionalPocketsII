@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.tcn.dimensionalpocketsii.DimReference;
-import com.tcn.dimensionalpocketsii.DimReference.CONFIG_DEFAULTS;
+import com.tcn.dimensionalpocketsii.DimReference.BlockedObjects;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -33,6 +33,7 @@ public class ConfigurationManager {
 	}
 
 	private final IntValue internal_height;
+	private final IntValue internal_height_enhanced;
 	private final IntValue focus_jump_range;
 	private final BooleanValue can_place_structures;
 	private final BooleanValue can_use_items;
@@ -41,20 +42,24 @@ public class ConfigurationManager {
 	private final BooleanValue can_destroy_walls;
 	private final BooleanValue internal_replace;
 	private final BooleanValue stop_hostile_spawns;
+	private final BooleanValue create_backups;
 	
 	private final BooleanValue info_message;
 	private final BooleanValue debug_message;
 	
 	private final BooleanValue connected_textures_inside_pocket;
-
+	
 	private final ConfigValue<List<? extends String>> blocked_structures;
 	private final ConfigValue<List<? extends String>> blocked_items;
+	
+	private final IntValue op_level;
 	private final ConfigValue<List<? extends String>> blocked_commands;
 	
 	ConfigurationManager(final ForgeConfigSpec.Builder builder) {
 		builder.push("general");
 		{
 			internal_height = builder.comment("Allows you to change the the internal height of Pockets").defineInRange("internal_height", 15, 15, 255);
+			internal_height_enhanced = builder.comment("Allows you to change the the internal height of Pockets").defineInRange("internal_height_enhanced", 31, 31, 255);
 			focus_jump_range = builder.comment("Allows you to change the the range of Dimensional Focus Jump Distance.").defineInRange("focus_jump_range", 12, 4, 32);
 			can_place_structures = builder.comment("Whether or not blocked Structures can be used inside of a Pocket").define("can_place_structures", false);
 			can_use_items = builder.comment("Whether or not blocked Items can be used inside of a Pocket").define("can_use_items", false);
@@ -63,6 +68,7 @@ public class ConfigurationManager {
 			can_destroy_walls = builder.comment("Whether the walls of Pockets can be destroyed in Creative Mode").define("can_destroy_walls", false);
 			internal_replace = builder.comment("Whether if reducing the Internal Height of Pocket that is larger will make it smaller").define("internal_replace", false);
 			stop_hostile_spawns = builder.comment("Whether or not Hostile Mobs should be stopped from spawning").define("stop_hostile_spawns", true);
+			create_backups = builder.comment("Whether or not the Mod will create backups on world load").define("create_backups", true);
 		}
 		builder.pop();
 		
@@ -81,9 +87,11 @@ public class ConfigurationManager {
 		
 		builder.push("blocked");
 		{
-			this.blocked_structures = builder.comment("List of Structures that are blocked when inside a Pocket").defineList("blocked_structures", CONFIG_DEFAULTS.BLOCKED_BLOCKS, obj -> true);
-			this.blocked_items = builder.comment("List of Items that are blocked when inside a Pocket").defineList("blocked_items", CONFIG_DEFAULTS.BLOCKED_ITEMS, obj -> true);
-			this.blocked_commands = builder.comment("List of Commands that are blocked when inside a Pocket").defineList("blocked_commands", CONFIG_DEFAULTS.BLOCKED_COMMANDS, obj -> true);
+			this.blocked_structures = builder.comment("List of Structures that are blocked when inside a Pocket").defineList("blocked_structures", BlockedObjects.BLOCKS, obj -> true);
+			this.blocked_items = builder.comment("List of Items that are blocked when inside a Pocket").defineList("blocked_items", BlockedObjects.ITEMS, obj -> true);
+			
+			this.op_level = builder.comment("The required OP level when on servers to bypass the below blocked commands").defineInRange("op_level", 4, 0, 4);
+			this.blocked_commands = builder.comment("List of Commands that are blocked when inside a Pocket").defineList("blocked_commands", BlockedObjects.COMMANDS, obj -> true);
 		}
 		builder.pop();
 		
@@ -99,6 +107,14 @@ public class ConfigurationManager {
 	
 	public void setInternalHeight(int value) {
 		this.internal_height.set(value);
+	}
+
+	public int getInternalHeightEnhanced() {
+		return this.internal_height_enhanced.get();
+	}
+	
+	public void setInternalHeightEnhanced(int value) {
+		this.internal_height_enhanced.set(value);
 	}
 
 	public int getFocusJumpRange() {
@@ -169,6 +185,14 @@ public class ConfigurationManager {
 	public void setStopHostileSpawns(boolean value) {
 		this.stop_hostile_spawns.set(value);
 	}
+
+	public boolean getCreateBackups() {
+		return this.create_backups.get();
+	}
+	
+	public void setCreateBackups(boolean value) {
+		this.create_backups.set(value);
+	}
 	
 	
 	/** -Messages- */
@@ -212,7 +236,7 @@ public class ConfigurationManager {
 	}
 	
 	public void addBlockedStructure(String value) {
-		ArrayList<String> list = DimReference.CONFIG_DEFAULTS.BLOCKED_BLOCKS;
+		ArrayList<String> list = DimReference.BlockedObjects.BLOCKS;
 		list.add(value);
 		
 		this.blocked_structures.set(list);
@@ -241,7 +265,7 @@ public class ConfigurationManager {
 	}
 
 	public void addBlockedItem(String value) {
-		ArrayList<String> list = DimReference.CONFIG_DEFAULTS.BLOCKED_ITEMS;
+		ArrayList<String> list = DimReference.BlockedObjects.ITEMS;
 		list.add(value);
 		
 		this.blocked_items.set(list);
@@ -261,6 +285,16 @@ public class ConfigurationManager {
 		this.blocked_items.set(list);
 	}
 
+	
+
+	public int getOPLevel() {
+		return this.op_level.get();
+	}
+	
+	public void setOPLevel(int value) {
+		this.op_level.set(value);
+	}
+	
 	public List<? extends String> getBlockedCommands() {
 		return this.blocked_commands.get();
 	}
@@ -270,7 +304,7 @@ public class ConfigurationManager {
 	}
 
 	public void addBlockedCommand(String value) {
-		ArrayList<String> list = DimReference.CONFIG_DEFAULTS.BLOCKED_COMMANDS;
+		ArrayList<String> list = DimReference.BlockedObjects.COMMANDS;
 		list.add(value);
 		
 		this.blocked_commands.set(list);

@@ -9,13 +9,14 @@ import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleConnector;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleConnector;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
 import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -42,16 +43,14 @@ public class BlockWallEnergyDisplay extends BlockWallModule implements IBlankCre
 		
 		this.registerDefaultState(this.defaultBlockState().setValue(ENERGY, 0));
 	}
-	
-	/*
+
 	@Override
-	public void tick(BlockState stateIn, ServerLevel worldIn, BlockPos posIn, Random randIn) {
+	public void animateTick(BlockState stateIn, Level worldIn, BlockPos posIn, RandomSource randIn) {
 		worldIn.setBlockAndUpdate(posIn, this.updateState(stateIn, posIn, worldIn));
 		worldIn.blockUpdated(posIn, this);
 		worldIn.sendBlockUpdated(posIn, stateIn, this.updateState(stateIn, posIn, worldIn), 3);
 	}
-	*/
-	
+
 	@Override
 	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
 		if (CosmosUtil.getStackItem(playerIn) instanceof BlockItem) {
@@ -59,7 +58,7 @@ public class BlockWallEnergyDisplay extends BlockWallModule implements IBlankCre
 		}
 		
 		CosmosChunkPos chunkPos = CosmosChunkPos.scaleToChunkPos(pos);
-		Pocket pocketIn = PocketRegistryManager.getPocketFromChunkPosition(chunkPos);
+		Pocket pocketIn = StorageManager.getPocketFromChunkPosition(worldIn, chunkPos);
 		
 		if (playerIn.isShiftKeyDown()) {
 			if(pocketIn.exists()) {

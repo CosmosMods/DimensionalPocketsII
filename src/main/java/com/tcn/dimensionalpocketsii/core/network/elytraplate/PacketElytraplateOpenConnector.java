@@ -9,7 +9,7 @@ import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.dimensionalpocketsii.client.container.MenuProviderElytraplateConnector;
 import com.tcn.dimensionalpocketsii.core.item.armour.DimensionalElytraplate;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -59,7 +59,7 @@ public class PacketElytraplateOpenConnector {
 						int z = chunkPos.getInt("z");
 						CosmosChunkPos chunk = new CosmosChunkPos(x, z);
 						
-						Pocket pocket_ = PocketRegistryManager.getPocketFromChunkPosition(chunk);
+						Pocket pocket_ = StorageManager.getPocketFromChunkPosition(null, chunk);
 						
 						CompoundTag compoundA = new CompoundTag();
 						pocket_.writeToNBT(compoundA);

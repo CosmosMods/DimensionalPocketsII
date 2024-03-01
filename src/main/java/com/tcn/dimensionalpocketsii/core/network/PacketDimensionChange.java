@@ -8,7 +8,7 @@ import com.tcn.dimensionalpocketsii.pocket.core.shift.Shifter;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.ShifterCore;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +33,7 @@ public class PacketDimensionChange  {
 		playerUUID = buf.readUUID();
 		
 		ResourceLocation location = buf.readResourceLocation();
-		dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, location);
+		dimension = ResourceKey.create(Registries.DIMENSION, location);
 		
 		block_pos = buf.readBlockPos();
 		

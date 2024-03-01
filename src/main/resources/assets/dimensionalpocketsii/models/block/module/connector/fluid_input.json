@@ -13,12 +13,12 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/wall/wall",
-        "center": "dimensionalpocketsii:blocks/wall/module/connector/mode_fluid",
-        "ring": "dimensionalpocketsii:blocks/wall/module/connector/ring_input",
-        "ring_inside": "dimensionalpocketsii:blocks/wall/module/connector/ring_input_inside",
-        "overlay": "dimensionalpocketsii:blocks/wall/module/connector/mode_base",
-        "wall": "dimensionalpocketsii:blocks/wall/wall"
+        "particle": "dimensionalpocketsii:block/wall/wall",
+        "center": "dimensionalpocketsii:block/wall/module/connector/mode_fluid",
+        "ring": "dimensionalpocketsii:block/wall/module/connector/ring_input",
+        "ring_inside": "dimensionalpocketsii:block/wall/module/connector/ring_input_inside",
+        "overlay": "dimensionalpocketsii:block/wall/module/connector/mode_base",
+        "wall": "dimensionalpocketsii:block/wall/wall"
     },
     "elements": [
     	{

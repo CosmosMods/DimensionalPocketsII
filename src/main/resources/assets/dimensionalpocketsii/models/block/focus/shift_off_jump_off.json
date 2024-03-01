@@ -13,10 +13,10 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/focus/base",
-        "overlay": "dimensionalpocketsii:blocks/focus/overlay",
-        "shift": "dimensionalpocketsii:blocks/focus/shift_off",
-        "jump": "dimensionalpocketsii:blocks/focus/jump_off"
+        "particle": "dimensionalpocketsii:block/focus/base",
+        "overlay": "dimensionalpocketsii:block/focus/overlay",
+        "shift": "dimensionalpocketsii:block/focus/shift_off",
+        "jump": "dimensionalpocketsii:block/focus/jump_off"
     },
     "elements": [
         {

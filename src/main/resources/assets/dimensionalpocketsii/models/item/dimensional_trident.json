@@ -1,7 +1,7 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "dimensionalpocketsii:items/tool/trident"
+		"layer0": "dimensionalpocketsii:item/tool/trident"
 	},
 	"overrides": [
 		{

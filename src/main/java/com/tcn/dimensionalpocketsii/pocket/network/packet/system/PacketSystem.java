@@ -2,12 +2,13 @@ package com.tcn.dimensionalpocketsii.pocket.network.packet.system;
 
 import java.util.function.Supplier;
 
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
+import com.tcn.dimensionalpocketsii.pocket.network.packet.PacketPocketNet;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-public class PacketSystem  {
+public class PacketSystem implements PacketPocketNet {
 	
 	private boolean save;
 	
@@ -28,9 +29,9 @@ public class PacketSystem  {
 		
 		ctx.enqueueWork(() -> {
 			if (packet.save) {
-				PocketRegistryManager.saveData();
+				StorageManager.saveRegistry();
 			} else {
-				PocketRegistryManager.loadData();
+				StorageManager.loadRegistry();
 			}
 		});
 		

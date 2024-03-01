@@ -1,6 +1,5 @@
 {
 	"type": "minecraft:crafting_shaped",
-	
 	"pattern": [
 		"DID",
 		"IOI",
@@ -14,7 +13,7 @@
             "item": "dimensionalpocketsii:dimensional_ingot"
         },
 		"O": {
-            "item": "dimensionalpocketsii:block_dimensional_core"	
+            "item": "dimensionalpocketsii:block_dimensional_core"
 		}
 	},
 	"result": {

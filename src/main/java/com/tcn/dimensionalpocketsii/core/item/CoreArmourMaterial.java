@@ -1,10 +1,10 @@
 package com.tcn.dimensionalpocketsii.core.item;
 
-import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
+import com.tcn.dimensionalpocketsii.core.management.ModBusManager;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,11 +12,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public enum CoreArmourMaterial implements ArmorMaterial {
 
-    DIMENSIONAL("dimensionalpocketsii:base/tex", 40, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC, 6.0F, 0.4F, Ingredient.of(ObjectManager.dimensional_ingot)),
-	DIMENSIONAL_ENHANCED("dimensionalpocketsii:enhanced/tex", 45, new int[] { 7, 10, 12, 7 }, 40, SoundEvents.ARMOR_EQUIP_GENERIC, 7.0F, 0.6F, Ingredient.of(ObjectManager.dimensional_ingot)),
-	DIMENSIONAL_SPECIAL("dimensionalpocketsii:special/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ObjectManager.dimensional_ingot)),
-	DIMENSIONAL_SPECIAL_SHIFTER("dimensionalpocketsii:shifter/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ObjectManager.dimensional_ingot)),
-	DIMENSIONAL_SPECIAL_VISOR("dimensionalpocketsii:visor/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ObjectManager.dimensional_ingot));
+    DIMENSIONAL("dimensionalpocketsii:base/tex", 40, new int[] { 5, 8, 10, 5 }, 30, SoundEvents.ARMOR_EQUIP_GENERIC, 6.0F, 0.4F, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT.get())),
+	DIMENSIONAL_ENHANCED("dimensionalpocketsii:enhanced/tex", 45, new int[] { 7, 10, 12, 7 }, 40, SoundEvents.ARMOR_EQUIP_GENERIC, 7.0F, 0.6F, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT.get())),
+	DIMENSIONAL_SPECIAL("dimensionalpocketsii:special/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT.get())),
+	DIMENSIONAL_SPECIAL_SHIFTER("dimensionalpocketsii:shifter/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT.get())),
+	DIMENSIONAL_SPECIAL_VISOR("dimensionalpocketsii:visor/tex", 50, new int[] { 8, 11, 13, 8 }, 50, SoundEvents.ARMOR_EQUIP_GENERIC, 7.5F, 0.7F, Ingredient.of(ModBusManager.DIMENSIONAL_INGOT.get()));
 
 	private static final int[] HEALTH_PER_SLOT = new int[] { 13, 15, 16, 11 };
 	private final String name;
@@ -40,13 +40,13 @@ public enum CoreArmourMaterial implements ArmorMaterial {
 	}
 
 	@Override
-	public int getDurabilityForSlot(EquipmentSlot slotIn) {
-		return HEALTH_PER_SLOT[slotIn.getIndex()] * this.durabilityMultiplier;
+	public int getDurabilityForType(ArmorItem.Type slotIn) {
+		return HEALTH_PER_SLOT[slotIn.getSlot().getIndex()] * this.durabilityMultiplier;
 	}
 
 	@Override
-	public int getDefenseForSlot(EquipmentSlot slotIn) {
-		return this.slotProtections[slotIn.getIndex()];
+	public int getDefenseForType(ArmorItem.Type slotIn) {
+		return this.slotProtections[slotIn.getSlot().getIndex()];
 	}
 
 	@Override

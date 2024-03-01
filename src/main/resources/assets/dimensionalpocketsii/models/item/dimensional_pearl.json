@@ -1,6 +1,6 @@
 {
     "parent": "item/handheld",
     "textures": {
-        "layer0": "dimensionalpocketsii:items/material/dimensional_pearl"
+        "layer0": "dimensionalpocketsii:item/material/dimensional_pearl"
     }
 }

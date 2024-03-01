@@ -13,6 +13,6 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/conduit/conduit_inventory"
+        "particle": "dimensionalpocketsii:block/conduit/conduit_inventory"
     }
 }

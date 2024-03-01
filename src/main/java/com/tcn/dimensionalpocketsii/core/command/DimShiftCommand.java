@@ -35,26 +35,30 @@ public class DimShiftCommand {
 	
 	private static int shiftToDimension(CommandSourceStack commandSourceIn, ServerPlayer serverPlayer, ServerLevel serverWorldIn, @Nullable Vec3 locationIn) {
 		if (locationIn != null) {
-				BlockPos pos = new BlockPos(locationIn);
+				BlockPos pos = new BlockPos((int) locationIn.x, (int) locationIn.y, (int) locationIn.z);
 				ResourceKey<Level> dimension = serverWorldIn.dimension();
 				
 				Shifter shifterIn = Shifter.createTeleporter(dimension, EnumShiftDirection.GENERIC, pos, serverPlayer.getRotationVector().y, serverPlayer.getRotationVector().x, true, false, false);
 				ShifterCore.shiftPlayerToDimension(serverPlayer, shifterIn);
 				
-				commandSourceIn.sendSuccess(ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.direction.generic.pre")
-						.append(ComponentHelper.style(ComponentColour.ORANGE, "@" + serverPlayer.getDisplayName().getString()))
-						.append(ComponentHelper.comp("dimensionalpocketsii.direction.generic.mid"))
-						.append(ComponentHelper.style(ComponentColour.GREEN, dimension.location().toString())), true);
+				commandSourceIn.sendSuccess(() ->
+					ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.direction.generic.pre")
+					.append(ComponentHelper.style(ComponentColour.ORANGE, "@" + serverPlayer.getDisplayName().getString()))
+					.append(ComponentHelper.comp("dimensionalpocketsii.direction.generic.mid"))
+					.append(ComponentHelper.style(ComponentColour.GREEN, dimension.location().toString()))
+				, true);
 		} else {
 			ResourceKey<Level> dimension = serverWorldIn.dimension();
 				
 				Shifter shifterIn = Shifter.createTeleporter(dimension, EnumShiftDirection.GENERIC, serverWorldIn.getSharedSpawnPos(), serverPlayer.getRotationVector().y, serverPlayer.getRotationVector().x, true, false, false);
 				ShifterCore.shiftPlayerToDimension(serverPlayer, shifterIn);
 				
-				commandSourceIn.sendSuccess(ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.direction.generic.pre")
-						.append(ComponentHelper.style(ComponentColour.ORANGE, "@" + serverPlayer.getDisplayName().getString()))
-						.append(ComponentHelper.comp("dimensionalpocketsii.direction.generic.mid"))
-						.append(ComponentHelper.style(ComponentColour.GREEN, dimension.location().toString())), true);
+				commandSourceIn.sendSuccess(() ->
+					ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.direction.generic.pre")
+					.append(ComponentHelper.style(ComponentColour.ORANGE, "@" + serverPlayer.getDisplayName().getString()))
+					.append(ComponentHelper.comp("dimensionalpocketsii.direction.generic.mid"))
+					.append(ComponentHelper.style(ComponentColour.GREEN, dimension.location().toString()))
+				, true);
 		}
 		
 		return 1;

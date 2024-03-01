@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -22,7 +23,7 @@ public class UseShifterTrigger extends SimpleCriterionTrigger<UseShifterTrigger.
 	}
 	
 	@Override
-	public UseShifterTrigger.TriggerInstance createInstance(JsonObject jsonObjIn, EntityPredicate.Composite entityPredicateIn, DeserializationContext contextIn) {
+	public UseShifterTrigger.TriggerInstance createInstance(JsonObject jsonObjIn, ContextAwarePredicate entityPredicateIn, DeserializationContext contextIn) {
 		ItemPredicate itempredicate = ItemPredicate.fromJson(jsonObjIn.get("item"));
 		return new UseShifterTrigger.TriggerInstance(entityPredicateIn, itempredicate);
 	}
@@ -36,13 +37,13 @@ public class UseShifterTrigger extends SimpleCriterionTrigger<UseShifterTrigger.
 	public static class TriggerInstance extends AbstractCriterionTriggerInstance {
 		private final ItemPredicate item;
 
-		public TriggerInstance(EntityPredicate.Composite entityPredicateIn, ItemPredicate itemPredicateIn) {
+		public TriggerInstance(ContextAwarePredicate entityPredicateIn, ItemPredicate itemPredicateIn) {
 			super(UseShifterTrigger.ID, entityPredicateIn);
 			this.item = itemPredicateIn;
 		}
 
 		public static UseShifterTrigger.TriggerInstance lookingAt(EntityPredicate.Builder entityPredicateIn, ItemPredicate.Builder itemPredicateIn) {
-			return new UseShifterTrigger.TriggerInstance(EntityPredicate.Composite.wrap(entityPredicateIn.build()), itemPredicateIn.build());
+			return new UseShifterTrigger.TriggerInstance(EntityPredicate.wrap(entityPredicateIn.build()), itemPredicateIn.build());
 		}
 
 		public boolean matches(ItemStack stackIn) {
@@ -55,4 +56,5 @@ public class UseShifterTrigger extends SimpleCriterionTrigger<UseShifterTrigger.
 			return jsonobject;
 		}
 	}
+
 }

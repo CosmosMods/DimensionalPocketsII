@@ -13,9 +13,9 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/focus/base",
-        "base": "dimensionalpocketsii:blocks/focus/base",
-        "overlay": "dimensionalpocketsii:blocks/focus/overlay"
+        "particle": "dimensionalpocketsii:block/focus/base",
+        "base": "dimensionalpocketsii:block/focus/base",
+        "overlay": "dimensionalpocketsii:block/focus/overlay"
     },
     "elements": [
         {

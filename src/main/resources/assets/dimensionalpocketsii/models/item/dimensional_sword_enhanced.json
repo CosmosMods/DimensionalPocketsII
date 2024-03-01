@@ -1,6 +1,6 @@
 {
     "parent": "item/handheld",
     "textures": {
-        "layer0": "dimensionalpocketsii:items/tool/sword_enhanced"
+        "layer0": "dimensionalpocketsii:item/tool/sword_enhanced"
     }
 }

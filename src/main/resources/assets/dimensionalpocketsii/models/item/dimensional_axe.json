@@ -1,6 +1,6 @@
 {
     "parent": "item/handheld",
     "textures": {
-        "layer0": "dimensionalpocketsii:items/tool/axe"
+        "layer0": "dimensionalpocketsii:item/tool/axe"
     }
 }

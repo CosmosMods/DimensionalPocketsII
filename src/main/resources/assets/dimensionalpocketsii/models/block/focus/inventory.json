@@ -13,13 +13,13 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/wall/wall",
-        "outside": "dimensionalpocketsii:blocks/wall/module/outside",
-        "inside": "dimensionalpocketsii:blocks/wall/module/inside",
-        "wall": "dimensionalpocketsii:blocks/wall/wall",
-        "overlay": "dimensionalpocketsii:blocks/focus/overlay",
-        "shift": "dimensionalpocketsii:blocks/focus/shift_on",
-        "jump": "dimensionalpocketsii:blocks/focus/jump_on"
+        "particle": "dimensionalpocketsii:block/wall/wall",
+        "outside": "dimensionalpocketsii:block/wall/module/outside",
+        "inside": "dimensionalpocketsii:block/wall/module/inside",
+        "wall": "dimensionalpocketsii:block/wall/wall",
+        "overlay": "dimensionalpocketsii:block/focus/overlay",
+        "shift": "dimensionalpocketsii:block/focus/shift_on",
+        "jump": "dimensionalpocketsii:block/focus/jump_on"
     },
     "elements": [
         {

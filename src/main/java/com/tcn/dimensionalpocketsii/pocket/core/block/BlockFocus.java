@@ -2,7 +2,7 @@ package com.tcn.dimensionalpocketsii.pocket.core.block;
 
 import com.tcn.cosmoslibrary.common.block.CosmosBlock;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityFocus;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityFocus;
 import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
 import net.minecraft.core.BlockPos;

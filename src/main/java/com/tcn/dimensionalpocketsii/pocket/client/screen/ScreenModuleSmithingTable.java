@@ -1,15 +1,16 @@
 package com.tcn.dimensionalpocketsii.pocket.client.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
 import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
+import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.dimensionalpocketsii.DimReference.GUI.RESOURCE;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleSmithingTable;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleSmithingTable;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleSmithingTable;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -54,13 +55,13 @@ public class ScreenModuleSmithingTable extends CosmosScreenUIModeBE<ContainerMod
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		super.render(poseStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(graphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-		super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+	protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+		super.renderBg(graphics, partialTicks, mouseX, mouseY);
 		BlockEntity entity = this.getBlockEntity();
 		
 		if (entity instanceof BlockEntityModuleSmithingTable) {
@@ -79,13 +80,13 @@ public class ScreenModuleSmithingTable extends CosmosScreenUIModeBE<ContainerMod
 					rgb = ComponentColour.rgbFloatArray(decimal);
 				}
 				
-				CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, new float[] { rgb[0], rgb[1], rgb[2], 1.0F }, blockEntity, RESOURCE.SMITHING_TABLE_BASE);
+				CosmosUISystem.renderStaticElementWithUIMode(this, graphics, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, new float[] { rgb[0], rgb[1], rgb[2], 1.0F }, blockEntity, RESOURCE.SMITHING_TABLE_BASE);
 			}
 			
-			CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, blockEntity, RESOURCE.SMITHING_TABLE_OVERLAY);
+			CosmosUISystem.renderStaticElementWithUIMode(this, graphics, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, blockEntity, RESOURCE.SMITHING_TABLE_OVERLAY);
 
 			if ((this.menu.getSlot(0).hasItem() || this.menu.getSlot(1).hasItem()) && !this.menu.getSlot(2).hasItem()) {
-				this.blit(poseStack, this.getScreenCoords()[0] + 102, this.getScreenCoords()[1] + 49, this.imageWidth, 0, 28, 21);
+				graphics.blit(blockEntity.getUIMode().equals(EnumUIMode.DARK) ? RESOURCE.SMITHING_TABLE_OVERLAY[1] : RESOURCE.SMITHING_TABLE_OVERLAY[0], this.getScreenCoords()[0] + 97, this.getScreenCoords()[1] + 49, this.imageWidth, 0, 28, 21);
 			}
 		}
 	}
@@ -130,4 +131,5 @@ public class ScreenModuleSmithingTable extends CosmosScreenUIModeBE<ContainerMod
 
 	@Override
 	public void dataChanged(AbstractContainerMenu p_150524_, int p_150525_, int p_150526_) { }
+	
 }

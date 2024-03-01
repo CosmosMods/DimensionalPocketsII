@@ -1,16 +1,10 @@
 package com.tcn.dimensionalpocketsii.core.management;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.common.chat.CosmosChatUtil;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.cosmoslibrary.energy.item.CosmosEnergyArmourItemColourable;
-import com.tcn.dimensionalpocketsii.DimReference;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
-import com.tcn.dimensionalpocketsii.client.screen.ScreenElytraplateVisor;
 import com.tcn.dimensionalpocketsii.core.item.armour.DimensionalElytraplate;
 import com.tcn.dimensionalpocketsii.core.item.armour.ElytraSettings;
 import com.tcn.dimensionalpocketsii.core.item.armour.module.BaseElytraModule;
@@ -21,48 +15,27 @@ import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraUseEner
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateOpenConnector;
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateOpenEnderChest;
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateOpenSettings;
-import com.tcn.dimensionalpocketsii.pocket.core.chunkloading.ChunkTrackerBlock;
-import com.tcn.dimensionalpocketsii.pocket.core.chunkloading.ChunkTrackerRoom;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.ChunkLoadingManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
 import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.data.worldgen.features.FeatureUtils;
-import net.minecraft.data.worldgen.features.OreFeatures;
-import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.placement.CountPlacement;
-import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent.Key;
@@ -74,7 +47,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@SuppressWarnings({ "unused" })
 @Mod.EventBusSubscriber(modid = DimensionalPockets.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
 public class ForgeEventManager {
 
@@ -104,7 +76,7 @@ public class ForgeEventManager {
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void onRenderGameOverlayEvent(RenderGuiOverlayEvent.Post event) {
-		ScreenElytraplateVisor screenSettings = new ScreenElytraplateVisor();
+		/*ScreenElytraplateVisor screenSettings = new ScreenElytraplateVisor();
 		
 		Minecraft mc = Minecraft.getInstance();
 		PoseStack type = event.getPoseStack();
@@ -114,10 +86,10 @@ public class ForgeEventManager {
 		if (playerInventory.getArmor(2).getItem().equals(ObjectManager.dimensional_elytraplate)) {
 			if (screenSettings != null) {
 				type.pushPose();
-				screenSettings.renderOverlay(event.getPoseStack());
+				//screenSettings.renderOverlay(event.getPoseStack());
 				type.popPose();
 			}
-		}
+		}*/
 	}
 	
 	@SubscribeEvent
@@ -127,7 +99,7 @@ public class ForgeEventManager {
 		LocalPlayer playerIn = mc.player;
 		
 		if (playerIn != null) {
-			Level world = playerIn.level;
+			Level world = playerIn.level();
 			if (ModBusManager.SUIT_SCREEN.isDown()) {
 				if (playerIn.getInventory().getArmor(2).getItem() != null) {
 					ItemStack armourStack = playerIn.getInventory().getArmor(2);
@@ -223,7 +195,7 @@ public class ForgeEventManager {
 											String path = dim.getString("path");
 											ResourceLocation loc = new ResourceLocation(namespace, path);
 											
-											ResourceKey<Level> source_dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, loc);
+											ResourceKey<Level> source_dimension = ResourceKey.create(Registries.DIMENSION, loc);
 											
 											BlockPos teleport_pos = new BlockPos(player_x, player_y, player_z);
 											
@@ -284,34 +256,33 @@ public class ForgeEventManager {
 	
 	@SubscribeEvent
 	public static void onServerSaveEvent(final LevelEvent.Save event) {
-		LevelAccessor world = event.getLevel();
-		DimensionType type = world.dimensionType();
+		LevelAccessor level = event.getLevel();
+		DimensionType type = level.dimensionType();
 		
-		if (!type.ultraWarm() && type.natural() && !type.piglinSafe() && !type.respawnAnchorWorks() && 
-				type.bedWorks() && type.hasRaids() && type.hasSkyLight() && !type.hasCeiling() &&
-					type.coordinateScale() == 1 && type.logicalHeight() == 384 && type.minY() == -64 && 
-					type.effectsLocation() == BuiltinDimensionTypes.OVERWORLD_EFFECTS) {
-			PocketRegistryManager.saveData();
+		if (!level.isClientSide()) {
+			if (!type.ultraWarm() && type.natural() && !type.piglinSafe() && !type.respawnAnchorWorks() && type.bedWorks() && type.hasRaids() && type.hasSkyLight() && !type.hasCeiling() && 
+					type.coordinateScale() == 1 && type.logicalHeight() == 384 && type.minY() == -64 && type.effectsLocation() == BuiltinDimensionTypes.OVERWORLD_EFFECTS) {
+				
+				StorageManager.saveRegistry();
+				ChunkLoadingManager.saveToStorage();
+			}
 		}
 	}
 
 	@SubscribeEvent
 	public static void onServerUnloadEvent(final LevelEvent.Unload event) {
-		ChunkTrackerBlock.BLOCKS.clear();
-		ChunkTrackerRoom.ROOMS.clear();
-		//clearMap();
+		LevelAccessor level = event.getLevel();
+		
+		if (!level.isClientSide()) {
+			StorageManager.saveRegistry();
+			ChunkLoadingManager.saveToStorage();
+		}
 	}
 	
 	@SubscribeEvent
 	public static void onPlayerLoggedOutEvent(final PlayerEvent.PlayerLoggedOutEvent event) { }
 	
 	@SubscribeEvent
-	public static void onPlayerLoggedInEvent(final PlayerEvent.PlayerLoggedInEvent event) {
-		
-	}
+	public static void onPlayerLoggedInEvent(final PlayerEvent.PlayerLoggedInEvent event) { }
 	
-	@OnlyIn(Dist.CLIENT)
-	public static void clearMap() {
-		PocketRegistryManager.clearPocketMap();
-	}
 }

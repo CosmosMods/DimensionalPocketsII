@@ -6,10 +6,10 @@ import java.util.function.Supplier;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +28,7 @@ public class PacketElytraShift  {
 		playerUUID = buf.readUUID();
 		
 		ResourceLocation location = buf.readResourceLocation();
-		dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, location);
+		dimension = ResourceKey.create(Registries.DIMENSION, location);
 		
 		chunk_pos = CosmosChunkPos.convertTo(buf.readBlockPos());
 	}
@@ -51,7 +51,7 @@ public class PacketElytraShift  {
 		ctx.enqueueWork(() -> {
 			ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(packet.playerUUID);
 			
-			Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(packet.chunk_pos);
+			Pocket pocket = StorageManager.getPocketFromChunkPosition(null, packet.chunk_pos);
 			
 			if (pocket.exists()) {
 				if (packet.dimension.equals(DimensionManager.POCKET_WORLD)) {

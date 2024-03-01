@@ -14,9 +14,9 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/pocket/frame/unlocked",
-        "outside": "dimensionalpocketsii:blocks/pocket/frame/unlocked",
-        "inside": "dimensionalpocketsii:blocks/pocket/frame/normal_inside"
+        "particle": "dimensionalpocketsii:block/pocket/frame/unlocked",
+        "outside": "dimensionalpocketsii:block/pocket/frame/unlocked",
+        "inside": "dimensionalpocketsii:block/pocket/frame/normal_inside"
     },
     "elements": [
         {

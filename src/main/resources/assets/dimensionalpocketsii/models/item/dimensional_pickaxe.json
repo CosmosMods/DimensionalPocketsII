@@ -1,6 +1,6 @@
 {
     "parent": "item/handheld",
     "textures": {
-        "layer0": "dimensionalpocketsii:items/tool/pickaxe"
+        "layer0": "dimensionalpocketsii:item/tool/pickaxe"
     }
 }

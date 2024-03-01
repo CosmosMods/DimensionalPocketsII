@@ -8,7 +8,7 @@ import com.tcn.cosmoslibrary.common.interfaces.IBlankCreativeTab;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleFurnace;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleFurnace;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleFurnace;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

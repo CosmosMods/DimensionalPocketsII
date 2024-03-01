@@ -6,7 +6,7 @@ import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -30,17 +30,43 @@ public class SetSpawnCommand {
 		if (entity instanceof ServerPlayer) {
 			ServerPlayer serverPlayer = (ServerPlayer) entity;
 			
-			if (serverPlayer.level.dimension().equals(DimensionManager.POCKET_WORLD)) {
-				BlockPos pos = serverPlayer.blockPosition();
-				CosmosChunkPos chunkPos = CosmosChunkPos.scaleToChunkPos(pos);
-				Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(chunkPos);
-				BlockPos spawnPos = new BlockPos(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
+			if (serverPlayer.level().dimension().equals(DimensionManager.POCKET_WORLD)) {
+				BlockPos spawnPos = BlockPos.ZERO;
+				
+				BlockPos playerPos = serverPlayer.blockPosition();
+				CosmosChunkPos chunkPos = CosmosChunkPos.scaleToChunkPos(playerPos);
+				
+				Pocket pocket = StorageManager.getPocketFromChunkPosition(null, chunkPos);
+				CosmosChunkPos domChunkPos = pocket.getDominantChunkPos();
+				
+				if (pocket.getChunkInfo().isSingleChunk()) {
+					spawnPos = new BlockPos(playerPos.getX() & 15, playerPos.getY(), playerPos.getZ() & 15);
+				} else {
+					if (chunkPos.equals(domChunkPos)) {
+						spawnPos = new BlockPos(playerPos.getX() & 15, playerPos.getY(), playerPos.getZ() & 15);
+					} else {
+						int chunkX = chunkPos.getX() - domChunkPos.getX();
+						int chunkZ = chunkPos.getZ() - domChunkPos.getZ();
+						
+						int chunkOffsetX = chunkX * 16;
+						int chunkOffsetZ = chunkZ * 16;
+						
+						int posXlocated = (playerPos.getX() & 15) + chunkOffsetX;
+						int posZlocated = (playerPos.getZ() & 15) + chunkOffsetZ;
+						
+						spawnPos = new BlockPos(posXlocated, playerPos.getY(), posZlocated);
+					}
+				}
 				
 				if (pocket.exists()) {
 					if (pocket.checkIfOwner(serverPlayer)) {
 						pocket.setSpawnInPocket(spawnPos, serverPlayer.getRotationVector().y, serverPlayer.getRotationVector().x);
 						
-						commandSourceIn.sendSuccess(ComponentHelper.style3(ComponentColour.GREEN, "", "dimensionalpocketsii.command.setspawn.success.pre", pos.getX() + ", " + pos.getY() + ", " + pos.getZ(), "dimensionalpocketsii.command.setspawn.success.suff"), true);
+						final BlockPos finalPozzy = new BlockPos(spawnPos);
+						
+						commandSourceIn.sendSuccess(
+							() -> ComponentHelper.style3(ComponentColour.GREEN, "", "dimensionalpocketsii.command.setspawn.success.pre", finalPozzy.getX() + ", " + finalPozzy.getY() + ", " + finalPozzy.getZ(), "dimensionalpocketsii.command.setspawn.success.suff")
+							, true);
 					} else {
 						commandSourceIn.sendFailure(ComponentHelper.comp("dimensionalpocketsii.pocket.status.action.not_owner"));
 					}

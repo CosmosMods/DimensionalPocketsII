@@ -44,20 +44,20 @@ public class CategoryUpgradeStation implements IRecipeCategory<UpgradeStationRec
 	
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder recipeLayout, UpgradeStationRecipe recipe, IFocusGroup ingredients) {
-		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 28, 28).addIngredients(recipe.focus);
+		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 28, 28).addIngredients(recipe.focusIngredient);
 		
-		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 7, 7).addIngredients(recipe.topRow[0]);
-		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 28, 7).addIngredients(recipe.topRow[1]);
-		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 49, 7).addIngredients(recipe.topRow[2]);
+		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 7, 7).addIngredients(recipe.topIngredients[0]);
+		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 28, 7).addIngredients(recipe.topIngredients[1]);
+		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 49, 7).addIngredients(recipe.topIngredients[2]);
 
-		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 7, 28).addIngredients(recipe.middleRow[0]);
-		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 49, 28).addIngredients(recipe.middleRow[1]);
+		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 7, 28).addIngredients(recipe.middleIngredients[0]);
+		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 49, 28).addIngredients(recipe.middleIngredients[1]);
 
-		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 7, 49).addIngredients(recipe.bottomRow[0]);
-		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 28, 49).addIngredients(recipe.bottomRow[1]);
-		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 49, 49).addIngredients(recipe.bottomRow[2]);
+		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 7, 49).addIngredients(recipe.bottomIngredients[0]);
+		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 28, 49).addIngredients(recipe.bottomIngredients[1]);
+		recipeLayout.addSlot(RecipeIngredientRole.INPUT, 49, 49).addIngredients(recipe.bottomIngredients[2]);
 
-		recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 91, 28).addItemStack(recipe.result);
+		recipeLayout.addSlot(RecipeIngredientRole.OUTPUT, 91, 28).addItemStack(recipe.resultIngredient);
 	}
 
 	@Override

@@ -13,10 +13,10 @@
         }
     },
     "textures": {
-        "outside": "dimensionalpocketsii:blocks/pocket/core/normal",
-        "inside": "dimensionalpocketsii:blocks/pocket/core/inside",
-        "core": "dimensionalpocketsii:blocks/pocket/core/core",
-        "particle": "dimensionalpocketsii:blocks/pocket/core/normal"
+        "outside": "dimensionalpocketsii:block/pocket/core/normal",
+        "inside": "dimensionalpocketsii:block/pocket/core/inside",
+        "core": "dimensionalpocketsii:block/pocket/core/core",
+        "particle": "dimensionalpocketsii:block/pocket/core/normal"
     },
     "elements": [
         {

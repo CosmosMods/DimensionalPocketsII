@@ -10,6 +10,7 @@ import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraUseEner
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateOpenConnector;
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateOpenEnderChest;
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateOpenSettings;
+import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateUpdateUIHelp;
 import com.tcn.dimensionalpocketsii.core.network.elytraplate.PacketElytraplateUpdateUIMode;
 
 import net.minecraft.resources.ResourceLocation;
@@ -35,10 +36,11 @@ public class NetworkManager {
 		
 		INSTANCE.registerMessage(5, PacketElytraSettingsChange.class, PacketElytraSettingsChange::encode, PacketElytraSettingsChange::new, PacketElytraSettingsChange::handle);
 		INSTANCE.registerMessage(6, PacketElytraplateUpdateUIMode.class, PacketElytraplateUpdateUIMode::encode, PacketElytraplateUpdateUIMode::new, PacketElytraplateUpdateUIMode::handle);
+		INSTANCE.registerMessage(7, PacketElytraplateUpdateUIHelp.class, PacketElytraplateUpdateUIHelp::encode, PacketElytraplateUpdateUIHelp::new, PacketElytraplateUpdateUIHelp::handle);
 		
-		INSTANCE.registerMessage(7, PacketElytraplateOpenConnector.class, PacketElytraplateOpenConnector::encode, PacketElytraplateOpenConnector::new, PacketElytraplateOpenConnector::handle);
-		INSTANCE.registerMessage(8, PacketElytraplateOpenSettings.class, PacketElytraplateOpenSettings::encode, PacketElytraplateOpenSettings::new, PacketElytraplateOpenSettings::handle);
-		INSTANCE.registerMessage(9, PacketElytraplateOpenEnderChest.class, PacketElytraplateOpenEnderChest::encode, PacketElytraplateOpenEnderChest::new, PacketElytraplateOpenEnderChest::handle);
+		INSTANCE.registerMessage(8, PacketElytraplateOpenConnector.class, PacketElytraplateOpenConnector::encode, PacketElytraplateOpenConnector::new, PacketElytraplateOpenConnector::handle);
+		INSTANCE.registerMessage(9, PacketElytraplateOpenSettings.class, PacketElytraplateOpenSettings::encode, PacketElytraplateOpenSettings::new, PacketElytraplateOpenSettings::handle);
+		INSTANCE.registerMessage(10, PacketElytraplateOpenEnderChest.class, PacketElytraplateOpenEnderChest::encode, PacketElytraplateOpenEnderChest::new, PacketElytraplateOpenEnderChest::handle);
 
 		DimensionalPockets.CONSOLE.startup("Dimensional Network Setup complete.");
 	}

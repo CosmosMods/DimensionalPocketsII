@@ -1,6 +1,7 @@
 package com.tcn.dimensionalpocketsii.pocket.client.container;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -14,20 +15,24 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.ItemCombinerMenuSlotDefinition;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipe;
 
 public class ContainerModuleSmithingTable extends CosmosContainerMenuBlockEntity {
-	public static final int INPUT_SLOT = 0;
-	public static final int ADDITIONAL_SLOT = 1;
-	public static final int RESULT_SLOT = 2;
+	public static final int TEMPLATE_SLOT = 0;
+	public static final int BASE_SLOT = 1;
+	public static final int ADDITIONAL_SLOT = 2;
+	public static final int RESULT_SLOT = 3;
 
+	private final List<Integer> inputSlotIndexes;
 	protected final ResultContainer resultSlots = new ResultContainer();
+	private final int resultSlotIndex = 3;
 	
-	protected final Container inputSlots = new SimpleContainer(2) {
+	protected final Container inputSlots = new SimpleContainer(3) {
 		
 		@Override
 		public void setChanged() {
@@ -37,8 +42,8 @@ public class ContainerModuleSmithingTable extends CosmosContainerMenuBlockEntity
 	};
 	
 	@Nullable
-	private UpgradeRecipe selectedRecipe;
-	private final List<UpgradeRecipe> recipes;
+	private SmithingRecipe selectedRecipe;
+	private final List<SmithingRecipe> recipes;
 
 	public ContainerModuleSmithingTable(int indexIn, Inventory playerInventoryIn, FriendlyByteBuf extraData) {
 		this(indexIn, playerInventoryIn, ContainerLevelAccess.NULL, extraData.readBlockPos());
@@ -46,11 +51,15 @@ public class ContainerModuleSmithingTable extends CosmosContainerMenuBlockEntity
 
 	public ContainerModuleSmithingTable(int indexIn, Inventory playerInventoryIn, ContainerLevelAccess accessIn, BlockPos posIn) {
 		super(ObjectManager.container_smithing_table, indexIn, playerInventoryIn, accessIn, posIn);
-		this.recipes = this.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.SMITHING);
+		ItemCombinerMenuSlotDefinition itemcombinermenuslotdefinition = this.createInputSlotDefinitions();
+	    this.inputSlotIndexes = itemcombinermenuslotdefinition.getInputSlotIndexes();
 		
+		this.recipes = this.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.SMITHING);
 		this.addSlot(new Slot(inputSlots, 0, 30, 51));
-		this.addSlot(new Slot(inputSlots, 1, 79, 51));
-		this.addSlot(new Slot(resultSlots, 2, 138, 51) {
+		this.addSlot(new Slot(inputSlots, 1, 48, 51));
+		this.addSlot(new Slot(inputSlots, 2, 66, 51));
+		
+		this.addSlot(new Slot(resultSlots, 3, 138, 51) {
 			@Override
 			public boolean mayPlace(ItemStack stackIn) {
 				return false;
@@ -79,8 +88,20 @@ public class ContainerModuleSmithingTable extends CosmosContainerMenuBlockEntity
 
 	}
 
-	protected boolean mayPickup(Player playerIn, boolean bool) {
-		return this.selectedRecipe != null && this.selectedRecipe.matches(this.inputSlots, this.getLevel());
+	protected ItemCombinerMenuSlotDefinition createInputSlotDefinitions() {
+		return ItemCombinerMenuSlotDefinition.create().withSlot(0, 8, 48, (stack) -> {
+			return this.recipes.stream().anyMatch((recipe) -> {
+				return recipe.isTemplateIngredient(stack);
+			});
+		}).withSlot(1, 26, 48, (stack) -> {
+			return this.recipes.stream().anyMatch((recipe) -> {
+				return recipe.isBaseIngredient(stack);
+			});
+		}).withSlot(2, 44, 48, (stack) -> {
+			return this.recipes.stream().anyMatch((recipe) -> {
+				return recipe.isAdditionIngredient(stack);
+			});
+		}).withResultSlot(3, 98, 48).build();
 	}
 
 	@Override
@@ -100,71 +121,89 @@ public class ContainerModuleSmithingTable extends CosmosContainerMenuBlockEntity
 		});
 	}
 
-
 	@Override
 	public boolean stillValid(Player playerIn) {
 		return stillValid(this.access, playerIn, ObjectManager.block_wall_smithing_table);
 	}
 
+	protected boolean mayPickup(Player p_40268_, boolean p_40269_) {
+		return this.selectedRecipe != null && this.selectedRecipe.matches(this.inputSlots, this.getLevel());
+	}
+
 	protected void onTake(Player playerIn, ItemStack stackIn) {
-		stackIn.onCraftedBy(playerIn.level, playerIn, stackIn.getCount());
-		
-		this.resultSlots.awardUsedRecipes(playerIn);
+		stackIn.onCraftedBy(playerIn.level(), playerIn, stackIn.getCount());
+		this.resultSlots.awardUsedRecipes(playerIn, this.getRelevantItems());
 		this.shrinkStackInSlot(0);
 		this.shrinkStackInSlot(1);
-		
-		this.access.execute((p_40263_, p_40264_) -> {
-			p_40263_.levelEvent(1044, p_40264_, 0);
+		this.shrinkStackInSlot(2);
+		this.access.execute((level, pos) -> {
+			level.levelEvent(1044, pos, 0);
 		});
 	}
 
-	private void shrinkStackInSlot(int slotIndex) {
-		ItemStack itemstack = this.inputSlots.getItem(slotIndex);
-		itemstack.shrink(1);
-		this.inputSlots.setItem(slotIndex, itemstack);
+	private List<ItemStack> getRelevantItems() {
+		return List.of(this.inputSlots.getItem(0), this.inputSlots.getItem(1), this.inputSlots.getItem(2));
+	}
+
+	private void shrinkStackInSlot(int p_40271_) {
+		ItemStack itemstack = this.inputSlots.getItem(p_40271_);
+		if (!itemstack.isEmpty()) {
+			itemstack.shrink(1);
+			this.inputSlots.setItem(p_40271_, itemstack);
+		}
+
 	}
 
 	public void createResult() {
-		List<UpgradeRecipe> list = this.getLevel().getRecipeManager().getRecipesFor(RecipeType.SMITHING, this.inputSlots, this.getLevel());
-		
+		List<SmithingRecipe> list = this.getLevel().getRecipeManager().getRecipesFor(RecipeType.SMITHING, this.inputSlots, this.getLevel());
 		if (list.isEmpty()) {
 			this.resultSlots.setItem(0, ItemStack.EMPTY);
 		} else {
-			this.selectedRecipe = list.get(0);
-			ItemStack itemstack = this.selectedRecipe.assemble(this.inputSlots);
-			this.resultSlots.setRecipeUsed(this.selectedRecipe);
-			this.resultSlots.setItem(0, itemstack);
+			SmithingRecipe smithingrecipe = list.get(0);
+			ItemStack itemstack = smithingrecipe.assemble(this.inputSlots, this.getLevel().registryAccess());
+			if (itemstack.isItemEnabled(this.getLevel().enabledFeatures())) {
+				this.selectedRecipe = smithingrecipe;
+				this.resultSlots.setRecipeUsed(smithingrecipe);
+				this.resultSlots.setItem(0, itemstack);
+			}
 		}
 	}
 
-	@Override
-	public ItemStack quickMoveStack(Player playerIn, int indexIn) {
+	public ItemStack quickMoveStack(Player p_39792_, int p_39793_) {
 		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slot = this.slots.get(indexIn);
-
+		Slot slot = this.slots.get(p_39793_);
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (indexIn == 2) {
-				if (!this.moveItemStackTo(itemstack1, 3, this.slots.size(), true)) {
+			int i = this.getInventorySlotStart();
+			int j = this.getUseRowEnd();
+			if (p_39793_ == this.getResultSlot()) {
+				if (!this.moveItemStackTo(itemstack1, i, j, true)) {
 					return ItemStack.EMPTY;
 				}
 
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (indexIn != 0 && indexIn != 1) {
-				if (indexIn >= 3 && indexIn < this.slots.size()) {
-					int i = this.shouldQuickMoveToAdditionalSlot(itemstack) ? 1 : 0;
-					
-					if (!this.moveItemStackTo(itemstack1, i, 2, false)) {
-						return ItemStack.EMPTY;
-					}
+			} else if (this.inputSlotIndexes.contains(p_39793_)) {
+				if (!this.moveItemStackTo(itemstack1, i, j, false)) {
+					return ItemStack.EMPTY;
 				}
-			} else if (!this.moveItemStackTo(itemstack1, 3, this.slots.size(), false)) {
+			} else if (this.canMoveIntoInputSlots(itemstack1) && p_39793_ >= this.getInventorySlotStart()
+					&& p_39793_ < this.getUseRowEnd()) {
+				int k = this.getSlotToQuickMoveTo(itemstack);
+				if (!this.moveItemStackTo(itemstack1, k, this.getResultSlot(), false)) {
+					return ItemStack.EMPTY;
+				}
+			} else if (p_39793_ >= this.getInventorySlotStart() && p_39793_ < this.getInventorySlotEnd()) {
+				if (!this.moveItemStackTo(itemstack1, this.getUseRowStart(), this.getUseRowEnd(), false)) {
+					return ItemStack.EMPTY;
+				}
+			} else if (p_39793_ >= this.getUseRowStart() && p_39793_ < this.getUseRowEnd() && !this
+					.moveItemStackTo(itemstack1, this.getInventorySlotStart(), this.getInventorySlotEnd(), false)) {
 				return ItemStack.EMPTY;
 			}
 
 			if (itemstack1.isEmpty()) {
-				slot.set(ItemStack.EMPTY);
+				slot.setByPlayer(ItemStack.EMPTY);
 			} else {
 				slot.setChanged();
 			}
@@ -173,20 +212,53 @@ public class ContainerModuleSmithingTable extends CosmosContainerMenuBlockEntity
 				return ItemStack.EMPTY;
 			}
 
-			slot.onTake(playerIn, itemstack1);
+			slot.onTake(p_39792_, itemstack1);
 		}
 
 		return itemstack;
 	}
 
-	@Override
+	private static Optional<Integer> findSlotMatchingIngredient(SmithingRecipe recipeIn, ItemStack stackIn) {
+		if (recipeIn.isTemplateIngredient(stackIn)) {
+			return Optional.of(0);
+		} else if (recipeIn.isBaseIngredient(stackIn)) {
+			return Optional.of(1);
+		} else {
+			return recipeIn.isAdditionIngredient(stackIn) ? Optional.of(2) : Optional.empty();
+		}
+	}
+
 	public boolean canTakeItemForPickAll(ItemStack stackIn, Slot slotIn) {
 		return slotIn.container != this.resultSlots && super.canTakeItemForPickAll(stackIn, slotIn);
 	}
 
-	protected boolean shouldQuickMoveToAdditionalSlot(ItemStack p_40255_) {
-		return this.recipes.stream().anyMatch((p_40261_) -> {
-			return p_40261_.isAdditionIngredient(p_40255_);
-		});
+	public boolean canMoveIntoInputSlots(ItemStack stackIn) {
+		return this.recipes.stream().map((recipe) -> {
+			return findSlotMatchingIngredient(recipe, stackIn);
+		}).anyMatch(Optional::isPresent);
+	}
+
+	public int getSlotToQuickMoveTo(ItemStack p_267159_) {
+		return this.inputSlots.isEmpty() ? 0 : this.inputSlotIndexes.get(0);
+	}
+
+	public int getResultSlot() {
+		return this.resultSlotIndex;
+	}
+
+	private int getInventorySlotStart() {
+		return this.getResultSlot() + 1;
+	}
+
+	private int getInventorySlotEnd() {
+		return this.getInventorySlotStart() + 27;
+	}
+
+	private int getUseRowStart() {
+		return this.getInventorySlotEnd();
+	}
+
+	private int getUseRowEnd() {
+		return this.getUseRowStart() + 9;
 	}
 }

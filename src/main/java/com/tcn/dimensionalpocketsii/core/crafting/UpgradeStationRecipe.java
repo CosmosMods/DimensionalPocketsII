@@ -3,10 +3,14 @@ package com.tcn.dimensionalpocketsii.core.crafting;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.google.gson.JsonObject;
+import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -21,35 +25,40 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
 public class UpgradeStationRecipe implements Recipe<Container> {
-	public final Ingredient focus;
-	public final Ingredient[] topRow;
-	public final Ingredient[] middleRow;
-	public final Ingredient[] bottomRow;
-	public final ItemStack result;
-	private final ResourceLocation id;
+	
+	public final Ingredient focusIngredient;
+	public final Ingredient[] topIngredients;
+	public final Ingredient[] middleIngredients;
+	public final Ingredient[] bottomIngredients;
+	public final ItemStack resultIngredient;
+	public ResourceLocation ident;
 
-	public UpgradeStationRecipe(ResourceLocation idIn, Ingredient focusIn, Ingredient[] topRowIn, Ingredient[] middleRowIn, Ingredient[] bottomRowIn, ItemStack resultIn) {
-		this.id = idIn;
-		this.focus = focusIn;
-		this.topRow = topRowIn;
-		this.middleRow = middleRowIn;
-		this.bottomRow = bottomRowIn;
-		this.result = resultIn;
+	public UpgradeStationRecipe(ResourceLocation identIn, Ingredient focusIngredientIn, Ingredient[] topIngredientsIn, Ingredient[] middleIngredientsIn, Ingredient[] bottomIngredientsIn, ItemStack resultIngredientIn) {
+		this.ident = identIn;
+		this.focusIngredient = focusIngredientIn;
+		this.topIngredients = topIngredientsIn;
+		this.middleIngredients = middleIngredientsIn;
+		this.bottomIngredients = bottomIngredientsIn;
+		this.resultIngredient = resultIngredientIn;
 	}
 
 	@Override
 	public boolean matches(Container containerIn, Level levelIn) {
-		boolean flagFocus = this.focus.test(containerIn.getItem(0));
-		boolean flagTopRow = this.topRow[0].test(containerIn.getItem(1)) && this.topRow[1].test(containerIn.getItem(2)) && this.topRow[2].test(containerIn.getItem(3));
-		boolean flagMiddleRow = this.middleRow[0].test(containerIn.getItem(4)) && this.middleRow[1].test(containerIn.getItem(5));
-		boolean flagBottomRow = this.bottomRow[0].test(containerIn.getItem(6)) && this.bottomRow[1].test(containerIn.getItem(7)) && this.bottomRow[2].test(containerIn.getItem(8));
+		boolean flagFocus = this.focusIngredient.test(containerIn.getItem(0));
+		boolean flagTopRow = this.topIngredients[0].test(containerIn.getItem(1)) && this.topIngredients[1].test(containerIn.getItem(2)) && this.topIngredients[2].test(containerIn.getItem(3));
+		boolean flagMiddleRow = this.middleIngredients[0].test(containerIn.getItem(4)) && this.middleIngredients[1].test(containerIn.getItem(5));
+		boolean flagBottomRow = this.bottomIngredients[0].test(containerIn.getItem(6)) && this.bottomIngredients[1].test(containerIn.getItem(7)) && this.bottomIngredients[2].test(containerIn.getItem(8));
 		
 		return flagFocus && flagTopRow && flagMiddleRow && flagBottomRow;
 	}
 
+	public boolean isFocusIngredient(ItemStack stackIn) {
+		return focusIngredient.test(stackIn);
+	}
+	
 	@Override
-	public ItemStack assemble(Container containerIn) {
-		ItemStack itemstack = this.result.copy();
+	public ItemStack assemble(Container containerIn, RegistryAccess accessIn) {
+		ItemStack itemstack = this.resultIngredient.copy();
 		CompoundTag compoundtag = containerIn.getItem(0).getTag();
 		
 		if (compoundtag != null) {
@@ -65,12 +74,8 @@ public class UpgradeStationRecipe implements Recipe<Container> {
 	}
 
 	@Override
-	public ItemStack getResultItem() {
-		return this.result;
-	}
-
-	public boolean isFocusIngredient(ItemStack stackIn) {
-		return this.focus.test(stackIn);
+	public ItemStack getResultItem(RegistryAccess accessIn) {
+		return resultIngredient.copy();
 	}
 
 	@Override
@@ -80,43 +85,51 @@ public class UpgradeStationRecipe implements Recipe<Container> {
 
 	@Override
 	public ResourceLocation getId() {
-		return this.id;
+		return ident;
 	}
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return ObjectManager.upgrading;
+		return ObjectManager.recipe_serializer_upgrade_station;
 	}
 
 	@Override
 	public RecipeType<?> getType() {
-		return Type.INSTANCE;
+		return ObjectManager.recipe_type_upgrade_station;
 	}
 	
 	@Override
 	public boolean isIncomplete() {
-		return Stream.of(this.focus, this.topRow[0], this.topRow[1], this.topRow[2], this.middleRow[0], this.middleRow[1], this.bottomRow[0], this.bottomRow[1], this.bottomRow[2]).anyMatch((p_151284_) -> {
+		return Stream.of(this.focusIngredient, this.topIngredients[0], this.topIngredients[1], this.topIngredients[2], this.middleIngredients[0], this.middleIngredients[1], this.bottomIngredients[0], this.bottomIngredients[1], this.bottomIngredients[2]).anyMatch((p_151284_) -> {
 			return p_151284_.getItems().length == 0;
 		});
 	}
 	
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(this.focus, this.topRow[0], this.topRow[1], this.topRow[2], this.middleRow[0], this.middleRow[1], this.bottomRow[0], this.bottomRow[1], this.bottomRow[2]);
+		return NonNullList.of(this.focusIngredient, this.topIngredients[0], this.topIngredients[1], this.topIngredients[2], this.middleIngredients[0], this.middleIngredients[1], this.bottomIngredients[0], this.bottomIngredients[1], this.bottomIngredients[2]);
 	}
 	
 	public List<Ingredient> getIngredientList() {
-		return List.of(this.focus, this.topRow[0], this.topRow[1], this.topRow[2], this.middleRow[0], this.middleRow[1], this.bottomRow[0], this.bottomRow[1], this.bottomRow[2]);
+		return List.of(this.focusIngredient, this.topIngredients[0], this.topIngredients[1], this.topIngredients[2], this.middleIngredients[0], this.middleIngredients[1], this.bottomIngredients[0], this.bottomIngredients[1], this.bottomIngredients[2]);
+	}
+	
+	@Override
+	public boolean isSpecial() {
+		return true;
 	}
 	
 	public static class Type implements RecipeType<UpgradeStationRecipe> {
-		private Type() { }
 		public static final Type INSTANCE = new Type();
 		public static final String ID = "upgrading";
+		
+		private Type() { }
 	}
 
 	public static class Serializer implements RecipeSerializer<UpgradeStationRecipe> {
-		
+		public static final Serializer INSTANCE = new Serializer();
+		public static final ResourceLocation ID = new ResourceLocation(DimensionalPockets.MOD_ID, "upgrading");
+				
 		@Override
 		public UpgradeStationRecipe fromJson(ResourceLocation idIn, JsonObject recipeIn) {
 			Ingredient focus = Ingredient.fromJson(GsonHelper.getAsJsonObject(recipeIn, "focus"));
@@ -147,7 +160,7 @@ public class UpgradeStationRecipe implements Recipe<Container> {
 		}
 
 		@Override
-		public UpgradeStationRecipe fromNetwork(ResourceLocation idIn, FriendlyByteBuf extraDataIn) {
+		public @Nullable UpgradeStationRecipe fromNetwork(ResourceLocation idIn, FriendlyByteBuf extraDataIn) {			
 			Ingredient focus = Ingredient.fromNetwork(extraDataIn);
 			
 			Ingredient[] topRow = new Ingredient[] { null, null, null };
@@ -172,21 +185,21 @@ public class UpgradeStationRecipe implements Recipe<Container> {
 
 		@Override
 		public void toNetwork(FriendlyByteBuf extraDataIn, UpgradeStationRecipe recipeIn) {
-			recipeIn.focus.toNetwork(extraDataIn);
+			recipeIn.focusIngredient.toNetwork(extraDataIn);
 			
 			for (int i = 0; i < 3; i ++) {
-				recipeIn.topRow[i].toNetwork(extraDataIn);
+				recipeIn.topIngredients[i].toNetwork(extraDataIn);
 			}
 
 			for (int i = 0; i < 2; i ++) {
-				recipeIn.middleRow[i].toNetwork(extraDataIn);
+				recipeIn.middleIngredients[i].toNetwork(extraDataIn);
 			}
 			
 			for (int i = 0; i < 3; i ++) {
-				recipeIn.bottomRow[i].toNetwork(extraDataIn);
+				recipeIn.bottomIngredients[i].toNetwork(extraDataIn);
 			}
 			
-			extraDataIn.writeItem(recipeIn.result);
+			extraDataIn.writeItem(recipeIn.resultIngredient);
 		}
 	}
 }

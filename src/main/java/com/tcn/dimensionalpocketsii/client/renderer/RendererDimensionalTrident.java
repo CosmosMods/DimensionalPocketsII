@@ -2,7 +2,7 @@ package com.tcn.dimensionalpocketsii.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.client.renderer.model.DimensionalTridentModel;
 import com.tcn.dimensionalpocketsii.core.entity.DimensionalTridentEntity;
@@ -29,8 +29,8 @@ public class RendererDimensionalTrident extends EntityRenderer<DimensionalTriden
 	@Override
 	public void render(DimensionalTridentEntity entityIn, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource typeBuffer, int packedLightIn) {
 		matrixStack.pushPose();
-		matrixStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 90.0F));
-		matrixStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot()) + 90.0F));
+		matrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entityIn.yRotO, entityIn.getYRot()) - 90.0F));
+		matrixStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot()) + 90.0F));
 		VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(typeBuffer, this.model.renderType(this.getTextureLocation(entityIn)), false, entityIn.isFoil());
 		this.model.renderToBuffer(matrixStack, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		matrixStack.popPose();

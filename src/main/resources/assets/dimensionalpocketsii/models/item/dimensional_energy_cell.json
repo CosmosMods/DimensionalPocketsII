@@ -1,7 +1,7 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "dimensionalpocketsii:items/device/cell/cell_base",
-        "layer1": "dimensionalpocketsii:items/device/cell/cell_top"
+        "layer0": "dimensionalpocketsii:item/device/cell/cell_base",
+        "layer1": "dimensionalpocketsii:item/device/cell/cell_top"
     }
 }

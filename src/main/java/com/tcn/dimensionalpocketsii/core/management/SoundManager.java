@@ -13,12 +13,12 @@ public class SoundManager {
 	
 	public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, DimensionalPockets.MOD_ID);
 
-	public static final RegistryObject<SoundEvent> PORTAL_IN = SOUND_EVENTS.register("sound_portal_in", () -> new SoundEvent(new ResourceLocation(DimensionalPockets.MOD_ID + ":" + "sound_portal_in")));
-	public static final RegistryObject<SoundEvent> PORTAL_OUT = SOUND_EVENTS.register("sound_portal_out", () -> new SoundEvent(new ResourceLocation(DimensionalPockets.MOD_ID + ":" + "sound_portal_in")));
+	public static final RegistryObject<SoundEvent> PORTAL_IN = SOUND_EVENTS.register("sound_portal_in", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(DimensionalPockets.MOD_ID + ":" + "sound_portal_in")));
+	public static final RegistryObject<SoundEvent> PORTAL_OUT = SOUND_EVENTS.register("sound_portal_out", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(DimensionalPockets.MOD_ID + ":" + "sound_portal_in")));
 	
-	public static final RegistryObject<SoundEvent> WOOSH = SOUND_EVENTS.register("sound_woosh", () -> new SoundEvent(new ResourceLocation(DimensionalPockets.MOD_ID + ":" + "sound_woosh")));
+	public static final RegistryObject<SoundEvent> WOOSH = SOUND_EVENTS.register("sound_woosh", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(DimensionalPockets.MOD_ID + ":" + "sound_woosh")));
 
-	public static final RegistryObject<SoundEvent> TINK = SOUND_EVENTS.register("sound_tink", () -> new SoundEvent(new ResourceLocation(DimensionalPockets.MOD_ID + ":" + "sound_tink")));
+	public static final RegistryObject<SoundEvent> TINK = SOUND_EVENTS.register("sound_tink", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(DimensionalPockets.MOD_ID + ":" + "sound_tink")));
 	
 	public static void register(IEventBus bus) {
 		SOUND_EVENTS.register(bus);

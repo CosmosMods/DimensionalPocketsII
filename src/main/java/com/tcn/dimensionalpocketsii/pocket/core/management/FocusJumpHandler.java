@@ -21,14 +21,15 @@ import net.minecraft.world.phys.Vec3;
  * This means that any code contained in this class can be copied as per the MIT Licence.
  *
  */
+@SuppressWarnings("deprecation")
 public class FocusJumpHandler {
 
     public static boolean isBlocked(BlockGetter world, BlockPos target) {
         return validateTargets(world.getBlockState(target.above()), world.getBlockState(target.above(2)));
     }
 
-    private static boolean validTarget(BlockState blockState) {
-        return !blockState.getMaterial().isSolid();
+	private static boolean validTarget(BlockState blockState) {
+        return !blockState.isSolid();
     }
 
     private static boolean validateTargets(BlockState... states) {
@@ -47,7 +48,7 @@ public class FocusJumpHandler {
             return true;
         }
 
-        ServerLevel world = player.getLevel();
+        ServerLevel world = player.serverLevel();
         BlockPos fromPos = msg.getFrom();
         BlockPos toPos = msg.getTo();
 
@@ -77,5 +78,4 @@ public class FocusJumpHandler {
 
         return false;
     }
-
 }

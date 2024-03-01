@@ -1,13 +1,16 @@
 package com.tcn.dimensionalpocketsii.client.container;
 
+import java.util.Optional;
+
 import javax.annotation.Nullable;
 
+import com.tcn.cosmoslibrary.client.container.slot.SlotBucket;
 import com.tcn.cosmoslibrary.client.container.slot.SlotRestrictedAccess;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.dimensionalpocketsii.DimReference;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,8 +20,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class ContainerElytraplateConnector extends AbstractContainerMenu {
 
@@ -26,6 +34,7 @@ public class ContainerElytraplateConnector extends AbstractContainerMenu {
 	protected final Player player;
 	private final Level world;
 	private Pocket pocket;
+	private Container bucketSlots;
 	
 	public static ContainerElytraplateConnector createContainerServerSide(int windowID, Inventory playerInventory, ItemStack stackIn) {
 		if (stackIn.hasTag()) {
@@ -41,28 +50,30 @@ public class ContainerElytraplateConnector extends AbstractContainerMenu {
 					int z = chunkPos.getInt("z");
 					CosmosChunkPos chunk = new CosmosChunkPos(x, z);
 					
-					Pocket pocket_ = PocketRegistryManager.getPocketFromChunkPosition(chunk);
+					Pocket pocket_ = StorageManager.getPocketFromChunkPosition(null, chunk);
 					
 					if (pocket_ != null) {
-						return new ContainerElytraplateConnector(windowID, playerInventory, pocket_, pocket_, stackIn);
+						return new ContainerElytraplateConnector(windowID, playerInventory, pocket_, new SimpleContainer(2), pocket_, stackIn);
 					}
 				}
 			}
 		}
 		
-		return new ContainerElytraplateConnector(windowID, playerInventory, new SimpleContainer(DimReference.CONSTANT.POCKET_HELD_ITEMS_SIZE_WITH), new Pocket(null), stackIn);
+		return new ContainerElytraplateConnector(windowID, playerInventory, new SimpleContainer(DimReference.CONSTANT.POCKET_HELD_ITEMS_SIZE_WITH), new SimpleContainer(2), new Pocket(null), stackIn);
 	}
 
 	public static ContainerElytraplateConnector createContainerClientSide(int windowID, Inventory playerInventory, FriendlyByteBuf extraData) {
-		return new ContainerElytraplateConnector(windowID, playerInventory, new SimpleContainer(DimReference.CONSTANT.POCKET_HELD_ITEMS_SIZE_WITH), Pocket.readFromNBT(extraData.readNbt()), extraData.readItem());
+		return new ContainerElytraplateConnector(windowID, playerInventory, new SimpleContainer(DimReference.CONSTANT.POCKET_HELD_ITEMS_SIZE_WITH), new SimpleContainer(2), Pocket.readFromNBT(extraData.readNbt()), extraData.readItem());
 	}
 	
-	protected ContainerElytraplateConnector(int id, Inventory playerInventoryIn, Container pocketIn, @Nullable Pocket pocketActual, ItemStack stackIn) {
+	protected ContainerElytraplateConnector(int id, Inventory playerInventoryIn, Container pocketIn, Container contentsIn, @Nullable Pocket pocketActual, ItemStack stackIn) {
 		super(ObjectManager.container_elytraplate, id);
 		
 		this.stack = stackIn;
 		this.player = playerInventoryIn.player;
-		this.world = playerInventoryIn.player.level;
+		this.world = playerInventoryIn.player.level();
+		
+		this.bucketSlots = contentsIn;
 		
 		if (pocketActual != null) {
 			this.pocket = pocketActual;
@@ -92,6 +103,60 @@ public class ContainerElytraplateConnector extends AbstractContainerMenu {
 		this.addSlot(new SlotRestrictedAccess(pocketIn, 52, 37, 85, 1, false, false));
 		this.addSlot(new SlotRestrictedAccess(pocketIn, 53, 58, 85, 1, false, false));
 
+		/** - Bucket Slots -*/
+		this.addSlot(new SlotBucket(contentsIn, 0, 60, 184) {
+			
+			@Override
+			public void set(ItemStack stackIn) {
+				super.set(stackIn);
+				
+				if (stackIn.getItem() instanceof BucketItem) {
+					Optional<FluidStack> fluidStack = FluidUtil.getFluidContained(stackIn);
+					
+					if (fluidStack.isPresent()) {
+						FluidStack fluid = fluidStack.get();
+						
+						if (fluid != null) {
+							int amount = ContainerElytraplateConnector.this.pocket.fill(fluid, FluidAction.SIMULATE);
+							
+							if (amount == fluid.getAmount()) {
+								if (contentsIn.getItem(1).getItem().equals(Items.BUCKET) && contentsIn.getItem(1).getCount() < 17) {
+									ContainerElytraplateConnector.this.pocket.fill(fluid, FluidAction.EXECUTE);
+									
+									stackIn.shrink(1);
+									contentsIn.getItem(1).grow(1);
+									this.setChanged();
+								} if (contentsIn.getItem(1).isEmpty()) {
+									ContainerElytraplateConnector.this.pocket.fill(fluid, FluidAction.EXECUTE);
+									
+									stackIn.shrink(1);
+									contentsIn.setItem(1, new ItemStack(Items.BUCKET));
+									this.setChanged();
+								}
+							}
+						}
+					} else {
+						if (ContainerElytraplateConnector.this.pocket.getCurrentFluidAmount() > 0) {
+							if (contentsIn.getItem(51).isEmpty()) {
+								ItemStack fillStack = FluidUtil.tryFillContainer(stackIn, ContainerElytraplateConnector.this.pocket.getFluidTank(), 1000, null, true).result;
+								
+								if (fillStack.getItem() instanceof BucketItem) {
+									stackIn.shrink(1);
+									contentsIn.setItem(1, fillStack);
+									this.setChanged();
+								} else {
+									stackIn.shrink(1);
+									contentsIn.setItem(1, new ItemStack(Items.BUCKET));
+									this.setChanged();
+								}
+							}
+						}	
+					}
+				}
+			}
+		});
+		this.addSlot(new SlotRestrictedAccess(contentsIn, 1, 60, 205, 1, false, true));
+		
 		/** - Player Inventory - */
 		for (int x = 0; x < 3; ++x) {
 			for (int y = 0; y < 9; ++y) {
@@ -158,5 +223,13 @@ public class ContainerElytraplateConnector extends AbstractContainerMenu {
 	
 	public Pocket getPocket() {
 		return this.pocket;
+	}
+
+	@Override
+	public void removed(Player playerIn) {
+		if (!this.bucketSlots.getItem(0).isEmpty() || !this.bucketSlots.getItem(1).isEmpty()) {
+			playerIn.getInventory().placeItemBackInInventory(this.bucketSlots.removeItemNoUpdate(0));
+			playerIn.getInventory().placeItemBackInInventory(this.bucketSlots.removeItemNoUpdate(1));
+		}
 	}
 }

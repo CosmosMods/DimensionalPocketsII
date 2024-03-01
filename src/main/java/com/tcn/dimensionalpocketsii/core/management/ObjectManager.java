@@ -7,6 +7,7 @@ import com.tcn.dimensionalpocketsii.core.crafting.UpgradeStationRecipe;
 import com.tcn.dimensionalpocketsii.core.entity.DimensionalTridentEnhancedEntity;
 import com.tcn.dimensionalpocketsii.core.entity.DimensionalTridentEntity;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerFocus;
+import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleAnvil;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleArmourWorkbench;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleBlastFurnace;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleCharger;
@@ -17,26 +18,30 @@ import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleGener
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleSmithingTable;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleUpgradeStation;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerPocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityFocus;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleArmourWorkbench;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleBlastFurnace;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleCharger;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleConnector;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleCrafter;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleFluidDisplay;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleFurnace;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleGenerator;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleSmithingTable;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleUpgradeStation;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityPocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityZModuleCreativeEnergy;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityZModuleCreativeFluid;
+import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerPocketEnhanced;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityFocus;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleAnvil;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleArmourWorkbench;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleBlastFurnace;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleCharger;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleConnector;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleCrafter;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleFluidDisplay;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleFurnace;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleGenerator;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleSmithingTable;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleUpgradeStation;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityPocket;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityPocketEnhanced;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityZModuleCreativeEnergy;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityZModuleCreativeFluid;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ObjectHolder;
@@ -138,7 +143,7 @@ public class ObjectManager {
 	public static final Item dimensional_leggings_enhanced = null;
 	@ObjectHolder(registryName = "minecraft:item", value = "dimensionalpocketsii:dimensional_boots_enhanced")
 	public static final Item dimensional_boots_enhanced = null;
-	
+
 	@ObjectHolder(registryName = "minecraft:item", value = "dimensionalpocketsii:dimensional_elytraplate")
 	public static final Item dimensional_elytraplate = null;
 	@ObjectHolder(registryName = "minecraft:menu", value = "dimensionalpocketsii:container_elytraplate")
@@ -187,11 +192,16 @@ public class ObjectManager {
 	public static final Item module_upgrade_station = null;
 	@ObjectHolder(registryName = "minecraft:item", value = "dimensionalpocketsii:module_focus")
 	public static final Item module_focus = null;
+	@ObjectHolder(registryName = "minecraft:item", value = "dimensionalpocketsii:module_anvil")
+	public static final Item module_anvil = null;
 	
 	@ObjectHolder(registryName = "minecraft:item", value = "dimensionalpocketsii:module_creative_energy")
 	public static final Item module_creative_energy = null;
 	@ObjectHolder(registryName = "minecraft:item", value = "dimensionalpocketsii:module_creative_fluid")
 	public static final Item module_creative_fluid = null;
+
+	@ObjectHolder(registryName = "minecraft:item", value = "dimensionalpocketsii:dimensional_upgrade_template")
+	public static final Item dimensional_upgrade_template = null;
 	
 	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_dimensional_ore")
 	public static final Block block_dimensional_ore = null;
@@ -204,13 +214,25 @@ public class ObjectManager {
 
 	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_dimensional")
 	public static final Block block_dimensional = null;
+
+	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_dimensional_slab")
+	public static final Block block_dimensional_slab = null;
+
+	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_dimensional_stair")
+	public static final Block block_dimensional_stair = null;
+	
 	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_dimensional_metal")
 	public static final Block block_dimensional_metal = null;
+	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_dimensional_metal_enhanced")
+	public static final Block block_dimensional_metal_enhanced = null;
 	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_dimensional_gem")
 	public static final Block block_dimensional_gem = null;
 
 	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_dimensional_core")
 	public static final Block block_dimensional_core = null;
+
+	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_dimensional_core_enhanced")
+	public static final Block block_dimensional_core_enhanced = null;
 
 	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_wall")
 	public static final Block block_wall = null;
@@ -227,6 +249,15 @@ public class ObjectManager {
 	@ObjectHolder(registryName = "minecraft:menu", value = "dimensionalpocketsii:container_pocket")
 	public static final MenuType<ContainerPocket> container_pocket = null;
 
+
+	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_pocket_enhanced")
+	public static final Block block_pocket_enhanced = null;
+	@ObjectHolder(registryName = "minecraft:block_entity_type", value = "dimensionalpocketsii:tile_entity_pocket_enhanced")
+	public static final BlockEntityType<BlockEntityPocketEnhanced> tile_entity_pocket_enhanced = null;
+	@ObjectHolder(registryName = "minecraft:menu", value = "dimensionalpocketsii:container_pocket_enhanced")
+	public static final MenuType<ContainerPocketEnhanced> container_pocket_enhanced = null;
+
+	
 	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_wall_connector")
 	public static final Block block_wall_connector = null;
 	@ObjectHolder(registryName = "minecraft:block_entity_type", value = "dimensionalpocketsii:tile_entity_connector")
@@ -315,13 +346,22 @@ public class ObjectManager {
 	@ObjectHolder(registryName = "minecraft:block_entity_type", value = "dimensionalpocketsii:tile_entity_creative_fluid")
 	public static final BlockEntityType<BlockEntityZModuleCreativeFluid> tile_entity_creative_fluid = null;
 
+	@ObjectHolder(registryName = "minecraft:block", value = "dimensionalpocketsii:block_wall_anvil")
+	public static final Block block_wall_anvil = null;
+	@ObjectHolder(registryName = "minecraft:block_entity_type", value = "dimensionalpocketsii:tile_entity_anvil")
+	public static final BlockEntityType<BlockEntityModuleAnvil> tile_entity_anvil = null;
+	@ObjectHolder(registryName = "minecraft:menu", value = "dimensionalpocketsii:container_anvil")
+	public static final MenuType<ContainerModuleAnvil> container_anvil = null;
+
+	
+	
 	@ObjectHolder(registryName = "minecraft:entity_type", value = "dimensionalpocketsii:dimensional_trident_type")
 	public static final EntityType<DimensionalTridentEntity> dimensional_trident_type = null;
 	@ObjectHolder(registryName = "minecraft:entity_type", value = "dimensionalpocketsii:dimensional_trident_enhanced_type")
 	public static final EntityType<DimensionalTridentEnhancedEntity> dimensional_trident_enhanced_type = null;
 
-	@ObjectHolder(registryName = "minecraft:recipe_serializer", value = "dimensionalpocketsii:upgrading")
-	public static final RecipeSerializer<UpgradeStationRecipe> upgrading = null;
+	//@ObjectHolder(registryName = "minecraft:recipe_serializer", value = "dimensionalpocketsii:upgrading")
+	//public static final RecipeSerializer<UpgradeStationRecipe> upgrading = null;
 	
 	@ObjectHolder(registryName = "minecraft:sound_event", value = "dimensionalpocketsii:sound_portal_in")
 	public static final SoundEvent sound_portal_in = null;
@@ -334,4 +374,10 @@ public class ObjectManager {
 	
 	@ObjectHolder(registryName = "minecraft:sound_event", value = "dimensionalpocketsii:sound_tink")
 	public static final SoundEvent sound_tink = null;
+	
+	@ObjectHolder(registryName = "minecraft:recipe_serializer", value = "dimensionalpocketsii:upgrading")
+	public static final RecipeSerializer<UpgradeStationRecipe> recipe_serializer_upgrade_station = null;
+	
+	@ObjectHolder(registryName = "minecraft:recipe_type", value = "dimensionalpocketsii:upgrading")
+	public static final RecipeType<UpgradeStationRecipe> recipe_type_upgrade_station = null;
 }

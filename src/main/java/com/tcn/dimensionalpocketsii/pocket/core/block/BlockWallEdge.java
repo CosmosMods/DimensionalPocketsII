@@ -11,12 +11,14 @@ import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
 import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.DebugPackets;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -33,13 +35,16 @@ import net.minecraft.world.phys.BlockHitResult;
 public class BlockWallEdge extends CosmosBlockConnectedUnbreakable {
 
 	public BlockWallEdge(Block.Properties prop) {
-		super(prop);
+		super(prop.randomTicks());
 	}
-
+	
+	@Override
+	public void tick(BlockState stateIn, ServerLevel levelIn, BlockPos posIn, RandomSource source) { }
+	
 	@Override
 	public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player playerIn, InteractionHand handIn, BlockHitResult hit) {
 		if (PocketUtil.isDimensionEqual(worldIn, DimensionManager.POCKET_WORLD)) {
-			Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(CosmosChunkPos.scaleToChunkPos(pos));
+			Pocket pocket = StorageManager.getPocketFromChunkPosition(worldIn, CosmosChunkPos.scaleToChunkPos(pos));
 			
 			if (pocket.exists()) {
 				if (playerIn.isShiftKeyDown()) {
@@ -53,6 +58,7 @@ public class BlockWallEdge extends CosmosBlockConnectedUnbreakable {
 				return InteractionResult.FAIL;
 			}
 		}
+		
 		return InteractionResult.FAIL;
 	}
 	
@@ -78,6 +84,7 @@ public class BlockWallEdge extends CosmosBlockConnectedUnbreakable {
 				return false;
 			}
 		}
+		
 		return false;
 	}
 

@@ -2,12 +2,10 @@ package com.tcn.dimensionalpocketsii.pocket.client.renderer.ter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.tcn.cosmoslibrary.client.renderer.lib.CosmosRendererHelper;
-import com.tcn.cosmoslibrary.common.util.CosmosUtil;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleFluidDisplay;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleFluidDisplay;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -67,8 +65,6 @@ public class RendererBlockEntityModuleFluidDisplay implements BlockEntityRendere
 			
 			float mappedHeight = CosmosRendererHelper.getMappedTextureHeight(sprite, fillLevel * 16);
 			
-			Quaternion rotation = Vector3f.YP.rotationDegrees(0);
-
 			int color = props.getTintColor();
 			
 			float a = 1.0F;
@@ -77,7 +73,7 @@ public class RendererBlockEntityModuleFluidDisplay implements BlockEntityRendere
 			float b = (color & 0xFF) / 255.0F;
 
 			poseStack.pushPose();
-			poseStack.mulPose(rotation);
+			poseStack.mulPose(Axis.YP.rotationDegrees(0));
 			
 			// Top Face
 			CosmosRendererHelper.addF(builder, poseStack, values[0], height[1], values[1], sprite.getU0(), sprite.getV1(), r, g, b, a);
@@ -127,7 +123,7 @@ public class RendererBlockEntityModuleFluidDisplay implements BlockEntityRendere
 			CosmosRendererHelper.addF(builder, poseStack, values[0], height[1], values[1], sprite.getU1(), sprite.getV0() + mappedHeight, r, g, b, a);
 			CosmosRendererHelper.addF(builder, poseStack, values[1], height[1], values[1], sprite.getU0(), sprite.getV0() + mappedHeight, r, g, b, a);
 
-			poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
+			poseStack.mulPose(Axis.YP.rotationDegrees(90));
 			poseStack.translate(-1f, 0, 0);
 			
 			// Front Faces [EAST - WEST]

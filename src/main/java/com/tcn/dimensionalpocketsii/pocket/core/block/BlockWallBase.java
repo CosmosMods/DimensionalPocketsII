@@ -9,14 +9,15 @@ import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 import com.tcn.dimensionalpocketsii.core.management.DimensionManager;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleArmourWorkbench;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleBlastFurnace;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleCharger;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleFurnace;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleGenerator;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleSmithingTable;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleUpgradeStation;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleAnvil;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleArmourWorkbench;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleBlastFurnace;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleCharger;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleFurnace;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleGenerator;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleSmithingTable;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleUpgradeStation;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 import com.tcn.dimensionalpocketsii.pocket.core.shift.EnumShiftDirection;
 import com.tcn.dimensionalpocketsii.pocket.core.util.PocketUtil;
 
@@ -48,7 +49,7 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 		}
 		
 		if (PocketUtil.isDimensionEqual(levelIn, DimensionManager.POCKET_WORLD)) {
-			Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(CosmosChunkPos.scaleToChunkPos(pos));
+			Pocket pocket = StorageManager.getPocketFromChunkPosition(levelIn, CosmosChunkPos.scaleToChunkPos(pos));
 			
 			if (pocket.exists()) {
 				if (!playerIn.isShiftKeyDown()) {
@@ -65,6 +66,7 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 											playerIn.getInventory().getSelected().shrink(1);
 										}
 									}
+									
 									return InteractionResult.SUCCESS;
 								} else {
 									CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.status.action.not_owner"));
@@ -75,10 +77,12 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 
 						else if (CosmosUtil.handItem(playerIn, ObjectManager.module_crafter)) {
 							if (pocket.checkIfOwner(playerIn)) {
-								levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_crafter.defaultBlockState());
-
-								if (!playerIn.isCreative()) {
-									playerIn.getInventory().getSelected().shrink(1);
+								if (!levelIn.isClientSide) {
+									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_crafter.defaultBlockState());
+	
+									if (!playerIn.isCreative()) {
+										playerIn.getInventory().getSelected().shrink(1);
+									}
 								}
 								
 								return InteractionResult.SUCCESS;
@@ -90,12 +94,14 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 						
 						else if (CosmosUtil.handItem(playerIn, ObjectManager.module_connector)) {
 							if (pocket.checkIfOwner(playerIn)) {
-								levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_connector.defaultBlockState());
-								
-								if (!playerIn.isCreative()) {
-									playerIn.getInventory().getSelected().shrink(1);
+								if (!levelIn.isClientSide) {
+									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_connector.defaultBlockState());
+									
+									if (!playerIn.isCreative()) {
+										playerIn.getInventory().getSelected().shrink(1);
+									}
 								}
-
+								
 								if (!levelIn.isClientSide) {
 									pocket.addUpdateable(pos);
 								}
@@ -109,10 +115,12 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 						
 						else if (CosmosUtil.handItem(playerIn, ObjectManager.module_creative_energy)) {
 							if (pocket.checkIfOwner(playerIn)) {
-								levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_creative_energy.defaultBlockState());
-								
-								if (!playerIn.isCreative()) {
-									playerIn.getInventory().getSelected().shrink(1);
+								if (!levelIn.isClientSide) {
+									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_creative_energy.defaultBlockState());
+									
+									if (!playerIn.isCreative()) {
+										playerIn.getInventory().getSelected().shrink(1);
+									}
 								}
 								
 								return InteractionResult.SUCCESS;
@@ -124,12 +132,14 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 
 						else if (CosmosUtil.handItem(playerIn, ObjectManager.module_creative_fluid)) {
 							if (pocket.checkIfOwner(playerIn)) {
-								levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_creative_fluid.defaultBlockState());
-								
-								if (!playerIn.isCreative()) {
-									playerIn.getInventory().getSelected().shrink(1);
+								if (!levelIn.isClientSide) {
+									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_creative_fluid.defaultBlockState());
+									
+									if (!playerIn.isCreative()) {
+										playerIn.getInventory().getSelected().shrink(1);
+									}
 								}
-								
+									
 								return InteractionResult.SUCCESS;
 							} else {
 								CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.status.action.not_owner"));
@@ -139,20 +149,19 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 						
 						if (pos.getY() != 1 && pos.getY() != pocket.getInternalHeight()) {
 							if (CosmosUtil.handItem(playerIn, ObjectManager.module_charger)) {
-								if (pocket.checkIfOwner(playerIn)) {
-									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_charger.defaultBlockState());
-
-									BlockEntity entity = levelIn.getBlockEntity(pos);
-									
-									if (entity instanceof BlockEntityModuleCharger) {
-										((BlockEntityModuleCharger) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
-									}
-
-									if (!playerIn.isCreative()) {
-										playerIn.getInventory().getSelected().shrink(1);
-									}
-									
-									if (!levelIn.isClientSide) {
+								if (!levelIn.isClientSide) {
+									if (pocket.checkIfOwner(playerIn)) {
+										levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_charger.defaultBlockState());
+	
+										BlockEntity entity = levelIn.getBlockEntity(pos);
+										
+										if (entity instanceof BlockEntityModuleCharger) {
+											((BlockEntityModuleCharger) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
+										}
+	
+										if (!playerIn.isCreative()) {
+											playerIn.getInventory().getSelected().shrink(1);
+										}
 										pocket.addUpdateable(pos);
 									}
 									
@@ -165,16 +174,18 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 
 							else if (CosmosUtil.handItem(playerIn, ObjectManager.module_smithing_table)) {
 								if (pocket.checkIfOwner(playerIn)) {
-									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_smithing_table.defaultBlockState());
-
-									BlockEntity entity = levelIn.getBlockEntity(pos);
-									
-									if (entity instanceof BlockEntityModuleSmithingTable) {
-										((BlockEntityModuleSmithingTable) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
-									}
-
-									if (!playerIn.isCreative()) {
-										playerIn.getInventory().getSelected().shrink(1);
+									if (!levelIn.isClientSide) {
+										levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_smithing_table.defaultBlockState());
+	
+										BlockEntity entity = levelIn.getBlockEntity(pos);
+										
+										if (entity instanceof BlockEntityModuleSmithingTable) {
+											((BlockEntityModuleSmithingTable) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
+										}
+	
+										if (!playerIn.isCreative()) {
+											playerIn.getInventory().getSelected().shrink(1);
+										}
 									}
 									
 									return InteractionResult.SUCCESS;
@@ -186,16 +197,18 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 
 							else if (CosmosUtil.handItem(playerIn, ObjectManager.module_upgrade_station)) {
 								if (pocket.checkIfOwner(playerIn)) {
-									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_upgrade_station.defaultBlockState());
-									
-									BlockEntity entity = levelIn.getBlockEntity(pos);
-									
-									if (entity instanceof BlockEntityModuleUpgradeStation) {
-										((BlockEntityModuleUpgradeStation) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
-									}
-
-									if (!playerIn.isCreative()) {
-										playerIn.getInventory().getSelected().shrink(1);
+									if (!levelIn.isClientSide) {
+										levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_upgrade_station.defaultBlockState());
+										
+										BlockEntity entity = levelIn.getBlockEntity(pos);
+										
+										if (entity instanceof BlockEntityModuleUpgradeStation) {
+											((BlockEntityModuleUpgradeStation) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
+										}
+	
+										if (!playerIn.isCreative()) {
+											playerIn.getInventory().getSelected().shrink(1);
+										}
 									}
 									
 									return InteractionResult.SUCCESS;
@@ -207,16 +220,18 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 							
 							else if (CosmosUtil.handItem(playerIn, ObjectManager.module_furnace)) {
 								if (pocket.checkIfOwner(playerIn)) {
-									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_furnace.defaultBlockState());
-									
-									BlockEntity entity = levelIn.getBlockEntity(pos);
-									
-									if (entity instanceof BlockEntityModuleFurnace) {
-										((BlockEntityModuleFurnace) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
-									}
-
-									if (!playerIn.isCreative()) {
-										playerIn.getInventory().getSelected().shrink(1);
+									if (!levelIn.isClientSide) {
+										levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_furnace.defaultBlockState());
+										
+										BlockEntity entity = levelIn.getBlockEntity(pos);
+										
+										if (entity instanceof BlockEntityModuleFurnace) {
+											((BlockEntityModuleFurnace) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
+										}
+	
+										if (!playerIn.isCreative()) {
+											playerIn.getInventory().getSelected().shrink(1);
+										}
 									}
 									
 									return InteractionResult.SUCCESS;
@@ -228,16 +243,18 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 							
 							else if (CosmosUtil.handItem(playerIn, ObjectManager.module_blast_furnace)) {
 								if (pocket.checkIfOwner(playerIn)) {
-									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_blast_furnace.defaultBlockState());
-									
-									BlockEntity entity = levelIn.getBlockEntity(pos);
-									
-									if (entity instanceof BlockEntityModuleBlastFurnace) {
-										((BlockEntityModuleBlastFurnace) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
-									}
-
-									if (!playerIn.isCreative()) {
-										playerIn.getInventory().getSelected().shrink(1);
+									if (!levelIn.isClientSide) {
+										levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_blast_furnace.defaultBlockState());
+										
+										BlockEntity entity = levelIn.getBlockEntity(pos);
+										
+										if (entity instanceof BlockEntityModuleBlastFurnace) {
+											((BlockEntityModuleBlastFurnace) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
+										}
+	
+										if (!playerIn.isCreative()) {
+											playerIn.getInventory().getSelected().shrink(1);
+										}
 									}
 									
 									return InteractionResult.SUCCESS;
@@ -249,13 +266,13 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 
 							else if (CosmosUtil.handItem(playerIn, ObjectManager.module_energy_display)) {
 								if (pocket.checkIfOwner(playerIn)) {
-									levelIn.setBlockAndUpdate(pos, ((BlockWallEnergyDisplay) ObjectManager.block_wall_energy_display).updateState(state, pos, levelIn));
-
-									if (!playerIn.isCreative()) {
-										playerIn.getInventory().getSelected().shrink(1);
-									}
-
 									if (!levelIn.isClientSide) {
+										levelIn.setBlockAndUpdate(pos, ((BlockWallEnergyDisplay) ObjectManager.block_wall_energy_display).updateState(state, pos, levelIn));
+	
+										if (!playerIn.isCreative()) {
+											playerIn.getInventory().getSelected().shrink(1);
+										}
+	
 										pocket.addUpdateable(pos);
 									}
 									
@@ -268,13 +285,13 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 
 							else if (CosmosUtil.handItem(playerIn, ObjectManager.module_fluid_display)) {
 								if (pocket.checkIfOwner(playerIn)) {
-									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_fluid_display.defaultBlockState());
-
-									if (!playerIn.isCreative()) {
-										playerIn.getInventory().getSelected().shrink(1);
-									}
-
 									if (!levelIn.isClientSide) {
+										levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_fluid_display.defaultBlockState());
+
+										if (!playerIn.isCreative()) {
+											playerIn.getInventory().getSelected().shrink(1);
+										}
+	
 										pocket.addUpdateable(pos);
 									}
 									
@@ -287,16 +304,18 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 
 							else if (CosmosUtil.handItem(playerIn, ObjectManager.module_armour_workbench)) {
 								if (pocket.checkIfOwner(playerIn)) {
-									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_armour_workbench.defaultBlockState());
-
-									BlockEntity entity = levelIn.getBlockEntity(pos);
-									
-									if (entity instanceof BlockEntityModuleArmourWorkbench) {
-										((BlockEntityModuleArmourWorkbench) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
-									}
-
-									if (!playerIn.isCreative()) {
-										playerIn.getInventory().getSelected().shrink(1);
+									if (!levelIn.isClientSide) {
+										levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_armour_workbench.defaultBlockState());
+	
+										BlockEntity entity = levelIn.getBlockEntity(pos);
+										
+										if (entity instanceof BlockEntityModuleArmourWorkbench) {
+											((BlockEntityModuleArmourWorkbench) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
+										}
+	
+										if (!playerIn.isCreative()) {
+											playerIn.getInventory().getSelected().shrink(1);
+										}
 									}
 									
 									return InteractionResult.SUCCESS;
@@ -308,16 +327,18 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 
 							else if (CosmosUtil.handItem(playerIn, ObjectManager.module_generator)) {
 								if (pocket.checkIfOwner(playerIn)) {
-									levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_generator.defaultBlockState());
-
-									BlockEntity entity = levelIn.getBlockEntity(pos);
-									
-									if (entity instanceof BlockEntityModuleGenerator) {
-										((BlockEntityModuleGenerator) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
-									}
-
-									if (!playerIn.isCreative()) {
-										playerIn.getInventory().getSelected().shrink(1);
+									if (!levelIn.isClientSide) {
+										levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_generator.defaultBlockState());
+	
+										BlockEntity entity = levelIn.getBlockEntity(pos);
+										
+										if (entity instanceof BlockEntityModuleGenerator) {
+											((BlockEntityModuleGenerator) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
+										}
+	
+										if (!playerIn.isCreative()) {
+											playerIn.getInventory().getSelected().shrink(1);
+										}
 									}
 									
 									return InteractionResult.SUCCESS;
@@ -326,6 +347,30 @@ public class BlockWallBase extends CosmosBlockUnbreakable {
 									return InteractionResult.FAIL;
 								}
 							}
+							
+							else if (CosmosUtil.handItem(playerIn, ObjectManager.module_anvil)) {
+								if (pocket.checkIfOwner(playerIn)) {
+									if (!levelIn.isClientSide) {
+										levelIn.setBlockAndUpdate(pos, ObjectManager.block_wall_anvil.defaultBlockState());
+	
+										BlockEntity entity = levelIn.getBlockEntity(pos);
+										
+										if (entity instanceof BlockEntityModuleAnvil) {
+											((BlockEntityModuleAnvil) levelIn.getBlockEntity(pos)).loadFromItemStack(CosmosUtil.getStack(playerIn));
+										}
+	
+										if (!playerIn.isCreative()) {
+											playerIn.getInventory().getSelected().shrink(1);
+										}
+									}
+									
+									return InteractionResult.SUCCESS;
+								} else {
+									CosmosChatUtil.sendServerPlayerMessage(playerIn, ComponentHelper.getErrorText("dimensionalpocketsii.pocket.status.action.not_owner"));
+									return InteractionResult.FAIL;
+								}
+							}
+
 						}
 					} else {
 						if (CosmosUtil.handEmpty(playerIn)) {

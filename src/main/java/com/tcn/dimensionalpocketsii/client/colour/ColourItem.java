@@ -9,14 +9,17 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ColourItem implements ItemColor {
 
 	@Override
 	public int getColor(ItemStack stack, int itemLayerIn) {
 		Item item = stack.getItem();
 		
-		if (item.equals(ObjectManager.block_pocket.asItem())) {
+		if (item.equals(ObjectManager.block_pocket.asItem()) || item.equals(ObjectManager.block_pocket_enhanced.asItem())) {
 			if (stack.hasTag()) {
 				CompoundTag stack_tag = stack.getTag();
 				

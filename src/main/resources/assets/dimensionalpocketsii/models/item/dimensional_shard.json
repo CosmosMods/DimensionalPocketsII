@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "dimensionalpocketsii:items/material/dimensional_shard"
+        "layer0": "dimensionalpocketsii:item/material/dimensional_shard"
     }
 }

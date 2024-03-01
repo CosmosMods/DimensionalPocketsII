@@ -3,7 +3,9 @@ package com.tcn.dimensionalpocketsii.core.management;
 import com.mojang.brigadier.CommandDispatcher;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.core.command.PocketCommands;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.ChunkLoadingManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.BackupManager.BackupType;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -20,8 +22,11 @@ public class ForgeBusManager {
 
 	@SubscribeEvent
 	public static void onServerAboutToStart(final ServerAboutToStartEvent event) {
-		PocketRegistryManager.loadData();
+		StorageManager.clearRegistry();
+		StorageManager.loadRegistry();
 
+		ChunkLoadingManager.loadFromStorage();
+		
 		DimensionalPockets.CONSOLE.startup("[Server Init] {server} <abouttostart> Server about to start.");
 	}
 
@@ -37,9 +42,11 @@ public class ForgeBusManager {
 
 	@SubscribeEvent
 	public static void onServerStopping(final ServerStoppingEvent event) {
-		PocketRegistryManager.saveData();
-		PocketRegistryManager.clearPocketMap();
-
+		StorageManager.saveRegistry();
+		StorageManager.createBackup(BackupType.SYSTEM);
+		
+		ChunkLoadingManager.saveToStorage();
+		
 		DimensionalPockets.CONSOLE.startup("[Server Stopping] {server} <stopping> Server stopping.");
 	}
 	

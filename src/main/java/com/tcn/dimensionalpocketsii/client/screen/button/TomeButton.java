@@ -1,10 +1,10 @@
 package com.tcn.dimensionalpocketsii.client.screen.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -25,8 +25,8 @@ public class TomeButton extends Button {
 	protected long nextNarration = Long.MAX_VALUE;
 	private int identifier;
 
-	public TomeButton(int x, int y, int size, int identifier, int colour, ResourceLocation location, Button.OnPress pressedAction) {
-		super(x, y, size, size, ComponentHelper.empty(), pressedAction);
+	public TomeButton(int x, int y, int size, int identifier, int colour, ResourceLocation location, Button.OnPress pressedAction, Button.CreateNarration createNarr) {
+		super(x, y, size, size, ComponentHelper.empty(), pressedAction, createNarr);
 		this.x = x;
 		this.y = y;
 		this.width = size;
@@ -37,8 +37,8 @@ public class TomeButton extends Button {
 		this.identifier = identifier;
 	}
 	
-	public TomeButton(int x, int y, int colour, ResourceLocation location, Button.OnPress pressedAction) {
-		super(x, y, 15, 25, ComponentHelper.empty(), pressedAction);
+	public TomeButton(int x, int y, int colour, ResourceLocation location, Button.OnPress pressedAction, Button.CreateNarration createNarr) {
+		super(x, y, 15, 25, ComponentHelper.empty(), pressedAction, createNarr);
 		this.x = x;
 		this.y = y;
 		this.width = 15;
@@ -49,9 +49,9 @@ public class TomeButton extends Button {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 		//if (this.visible) {
-			this.renderButton(poseStack, mouseX, mouseY, partialTicks);
+			this.renderButton(graphics, mouseX, mouseY, partialTicks);
 		//}
 	}
 
@@ -59,9 +59,8 @@ public class TomeButton extends Button {
 	public void onPress() {
 		this.onPress.onPress(this);
 	}
-
-	@Override
-	public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+	
+	public void renderButton(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 		this.setFGColor(this.colour);
 		
 		float[] rgb = ComponentColour.rgbFloatArray(this.colour);
@@ -81,9 +80,9 @@ public class TomeButton extends Button {
 	    
 	    if (this.width > 10 && this.height > 10) {
 		    if (id < 2) {
-		    	this.blit(poseStack, this.x, this.y, id == 0 ? 50 : 63, hovered ? 243 : 230, this.width, this.height);
+		    	graphics.blit(this.TEXTURE, this.x, this.y, id == 0 ? 50 : 63, hovered ? 243 : 230, this.width, this.height);
 		    } else {
-		    	this.blit(poseStack, this.x, this.y, hovered ? 76 : 91, 231, this.width, this.height);
+		    	graphics.blit(this.TEXTURE, this.x, this.y, hovered ? 76 : 91, 231, this.width, this.height);
 		    }
 	    }
 	}

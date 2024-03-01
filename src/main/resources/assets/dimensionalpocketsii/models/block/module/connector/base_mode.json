@@ -13,8 +13,8 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/wall/wall",
-        "overlay": "dimensionalpocketsii:blocks/wall/module/connector/mode_base"
+        "particle": "dimensionalpocketsii:block/wall/wall",
+        "overlay": "dimensionalpocketsii:block/wall/module/connector/mode_base"
     },
     "elements": [
         {

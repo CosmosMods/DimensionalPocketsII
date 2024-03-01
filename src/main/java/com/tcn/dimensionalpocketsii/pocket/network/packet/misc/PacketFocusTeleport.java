@@ -49,7 +49,7 @@ public class PacketFocusTeleport implements PacketPocketNet {
 				return;
 			}
 
-			ServerLevel world = player.getLevel();
+			ServerLevel world = player.serverLevel();
 			BlockPos toPos = message.getTo();
 			BlockState toState = world.getBlockState(message.getTo());
 

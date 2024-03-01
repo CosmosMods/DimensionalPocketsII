@@ -185,7 +185,7 @@ public class DimensionalTrident extends TridentItem implements Vanishable, ICosm
 						f3 = f3 * (f5 / f4);
 						playerentity.push((double) f1, (double) f2, (double) f3);
 						playerentity.startAutoSpinAttack(20);
-						if (playerentity.isOnGround()) {
+						if (playerentity.onGround()) {
 							float f6 = 1.1999999F;
 							playerentity.move(MoverType.SELF, new Vec3(0.0D, (double) 1.1999999F, 0.0D));
 						}

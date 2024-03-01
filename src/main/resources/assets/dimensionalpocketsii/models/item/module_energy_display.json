@@ -1,7 +1,7 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "dimensionalpocketsii:items/module/pocket/base",
-        "layer1": "dimensionalpocketsii:blocks/wall/module/display/overlay_12"
+        "layer0": "dimensionalpocketsii:item/module/pocket/base",
+        "layer1": "dimensionalpocketsii:block/wall/module/display/overlay_12"
     }
 }

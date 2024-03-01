@@ -5,6 +5,12 @@ import javax.annotation.Nullable;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.core.crafting.UpgradeStationRecipe;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
+import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleBlastFurnace;
+import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleCrafter;
+import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleFurnace;
+import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleSmithingTable;
+import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleUpgradeStation;
+import com.tcn.dimensionalpocketsii.pocket.client.screen.ScreenModuleAnvil;
 import com.tcn.dimensionalpocketsii.pocket.client.screen.ScreenModuleBlastFurnace;
 import com.tcn.dimensionalpocketsii.pocket.client.screen.ScreenModuleCrafter;
 import com.tcn.dimensionalpocketsii.pocket.client.screen.ScreenModuleFurnace;
@@ -70,17 +76,15 @@ public class CoreJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-		/*
-		registration.addRecipeTransferHandler(ContainerModuleUpgradeStation.class, UPGRADING, 0, 9, 10, 36);
+		registration.addRecipeTransferHandler(ContainerModuleUpgradeStation.class, ObjectManager.container_upgrade_station, UPGRADING, 0, 9, 10, 36);
 		
-		registration.addRecipeTransferHandler(ContainerModuleCrafter.class, RecipeTypes.CRAFTING, 1, 9, 10, 36);
-		registration.addRecipeTransferHandler(ContainerModuleSmithingTable.class, RecipeTypes.SMITHING, 0, 2, 3, 36);
-		registration.addRecipeTransferHandler(ContainerModuleFurnace.class, RecipeTypes.SMELTING, 0, 1, 3, 36);
-		registration.addRecipeTransferHandler(ContainerModuleFurnace.class, RecipeTypes.FUELING, 1, 1, 3, 36);
+		registration.addRecipeTransferHandler(ContainerModuleCrafter.class, ObjectManager.container_crafter, RecipeTypes.CRAFTING, 1, 9, 10, 36);
+		registration.addRecipeTransferHandler(ContainerModuleSmithingTable.class, ObjectManager.container_smithing_table, RecipeTypes.SMITHING, 0, 2, 3, 36);
+		registration.addRecipeTransferHandler(ContainerModuleFurnace.class, ObjectManager.container_furnace, RecipeTypes.SMELTING, 0, 1, 3, 36);
+		registration.addRecipeTransferHandler(ContainerModuleFurnace.class, ObjectManager.container_furnace, RecipeTypes.FUELING, 1, 1, 3, 36);
 
-		registration.addRecipeTransferHandler(ContainerModuleBlastFurnace.class, RecipeTypes.BLASTING, 0, 1, 3, 36);
-		registration.addRecipeTransferHandler(ContainerModuleBlastFurnace.class, RecipeTypes.FUELING, 1, 1, 3, 36);
-		*/
+		registration.addRecipeTransferHandler(ContainerModuleBlastFurnace.class, ObjectManager.container_blast_furnace, RecipeTypes.BLASTING, 0, 1, 3, 36);
+		registration.addRecipeTransferHandler(ContainerModuleBlastFurnace.class, ObjectManager.container_blast_furnace, RecipeTypes.FUELING, 1, 1, 3, 36);
 	}
 
 	@Override
@@ -95,12 +99,13 @@ public class CoreJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-		registration.addRecipeClickArea(ScreenModuleUpgradeStation.class, 103, 38, 20, 24, UPGRADING);
+		registration.addRecipeClickArea(ScreenModuleUpgradeStation.class, 116, 38, 20, 24, UPGRADING);
 		
 		registration.addRecipeClickArea(ScreenModuleFurnace.class, 76, 35, 22, 15, RecipeTypes.SMELTING);
 		registration.addRecipeClickArea(ScreenModuleBlastFurnace.class, 76, 35, 22, 15, RecipeTypes.BLASTING);
 		registration.addRecipeClickArea(ScreenModuleCrafter.class, 94, 35, 22, 15, RecipeTypes.CRAFTING);
 		registration.addRecipeClickArea(ScreenModuleSmithingTable.class, 105, 56, 22, 15, RecipeTypes.SMITHING);
+		registration.addRecipeClickArea(ScreenModuleAnvil.class, 105, 56, 22, 15, RecipeTypes.ANVIL);
 	}
 
 	@Override

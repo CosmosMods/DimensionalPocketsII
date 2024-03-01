@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionBoolean;
 import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionBoolean.TYPE;
 import com.tcn.cosmoslibrary.client.ui.screen.option.CosmosOptionInstance;
@@ -21,9 +20,9 @@ import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.dimensionalpocketsii.core.management.ConfigurationManager;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.TooltipAccessor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Style;
@@ -60,25 +59,21 @@ public final class ScreenConfiguration extends Screen {
 	private CosmosOptionListTextEntry EDIT_BOX_ITEMS;
 	private CosmosOptionListTextEntry EDIT_BOX_COMMANDS;
 	
-	private static ConfigScreenFactory INSTANCE = new ConfigScreenFactory((mc, screen) -> new ScreenConfiguration(screen));
-
-	public static ConfigScreenFactory getInstance() {
-		return INSTANCE;
-	}
+	private Button closeButton;
 	
 	public ScreenConfiguration(Screen parentScreenIn) {
 		super(ComponentHelper.style(ComponentColour.POCKET_PURPLE_GUI, "boldunderline", "dimensionalpocketsii.gui.config.name"));
 
 		this.PARENT_SCREEN = parentScreenIn;
 		
-		EDIT_BOX_BLOCKS = new CosmosOptionListTextEntry(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "", ""), true, ComponentHelper.style(ComponentColour.GREEN, "bold", "+"), (button) -> {  });
-		EDIT_BOX_ITEMS = new CosmosOptionListTextEntry(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "", ""), true, ComponentHelper.style(ComponentColour.GREEN, "bold", "+"), (button) -> {  });
-		EDIT_BOX_COMMANDS = new CosmosOptionListTextEntry(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "", ""), true, ComponentHelper.style(ComponentColour.GREEN, "bold", "+"), (button) -> {  });
+		this.EDIT_BOX_BLOCKS = new CosmosOptionListTextEntry(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "", ""), true, ComponentHelper.style(ComponentColour.GREEN, "bold", "+"), ComponentHelper.style(ComponentColour.GREEN, "", "dimensionalpocketsii.gui.config.add"), (button) -> {  }, (button) -> { return button.get(); });
+		this.EDIT_BOX_ITEMS = new CosmosOptionListTextEntry(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "", ""), true, ComponentHelper.style(ComponentColour.GREEN, "bold", "+"), ComponentHelper.style(ComponentColour.GREEN, "", "dimensionalpocketsii.gui.config.add"), (button) -> {  }, (button) -> { return button.get(); });
+		this.EDIT_BOX_COMMANDS = new CosmosOptionListTextEntry(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "", ""), true, ComponentHelper.style(ComponentColour.GREEN, "bold", "+"), ComponentHelper.style(ComponentColour.GREEN, "", "dimensionalpocketsii.gui.config.add"), (button) -> {  }, (button) -> { return button.get(); });
 	}
 	
 	@Override
 	protected void init() {
-		this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
+		//this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
 		
 		if (this.CURRENT_SCREEN == "home") {
 			this.initOptions();
@@ -95,6 +90,17 @@ public final class ScreenConfiguration extends Screen {
 					ConfigurationManager.getInstance().getInternalHeight(), 15, 255, 15,
 					ComponentColour.WHITE, ComponentHelper.style(ComponentColour.GREEN, "Min"), ComponentHelper.style(ComponentColour.DARK_YELLOW, "Blocks"), ComponentHelper.style(ComponentColour.RED, "Max"), (intValue) -> {
 					ConfigurationManager.getInstance().setInternalHeight(intValue);
+				})
+			);
+
+			this.OPTIONS_ROW_LIST.addBig(
+				CosmosOptionInstance.createIntSlider(ComponentHelper.style(ComponentColour.ORANGE, "dimensionalpocketsii.gui.config.height_enhanced"),
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.height_enhanced_info"), 
+							ComponentHelper.style(ComponentColour.RED, "dimensionalpocketsii.gui.config.height_enhanced_info_two")
+					), 
+					ConfigurationManager.getInstance().getInternalHeightEnhanced(), 31, 255, 31,
+					ComponentColour.WHITE, ComponentHelper.style(ComponentColour.GREEN, "Min"), ComponentHelper.style(ComponentColour.DARK_YELLOW, "Blocks"), ComponentHelper.style(ComponentColour.RED, "Max"), (intValue) -> {
+					ConfigurationManager.getInstance().setInternalHeightEnhanced(intValue);
 				})
 			);
 			
@@ -137,7 +143,6 @@ public final class ScreenConfiguration extends Screen {
 					ConfigurationManager.getInstance().getKeepChunksLoaded(), 
 					(newValue) -> ConfigurationManager.getInstance().setKeepChunksLoaded(newValue), ":"
 				)
-				
 			);
 	
 			this.OPTIONS_ROW_LIST.addSmall(
@@ -162,7 +167,12 @@ public final class ScreenConfiguration extends Screen {
 					ConfigurationManager.getInstance().getCanDestroyWalls(),
 					(newValue) -> ConfigurationManager.getInstance().setCanDestroyWalls(newValue), ":"
 				),
-				null
+				new CosmosOptionBoolean(
+					ComponentColour.ORANGE, "", "dimensionalpocketsii.gui.config.backups", TYPE.YES_NO,
+					CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.backups_info")),
+					ConfigurationManager.getInstance().getCreateBackups(),
+					(newValue) -> ConfigurationManager.getInstance().setCreateBackups(newValue), ":"
+				)
 			);
 	
 			this.OPTIONS_ROW_LIST.addBig(
@@ -218,13 +228,15 @@ public final class ScreenConfiguration extends Screen {
 					this.updateWidgets();
 				}, ""),
 				null
+			); 
+			
+			this.closeButton = (Button.builder(
+				ComponentHelper.style(ComponentColour.RED, "bold", "dimensionalpocketsii.gui.done"), 
+				(button) -> { 
+					this.onClose();
+				}).pos((this.width - this.BIG_WIDTH) / 2, this.height - this.DONE_BUTTON_TOP_OFFSET).size(this.SMALL_WIDTH, this.OPTIONS_LIST_BUTTON_HEIGHT).build()
 			);
-	
-
-			this.addRenderableWidget(new Button(
-				(this.width - BIG_WIDTH) /2, this.height - DONE_BUTTON_TOP_OFFSET, SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT,
-				ComponentHelper.style(ComponentColour.RED, "bold", "dimensionalpocketsii.gui.done"), (button) -> { this.onClose(); }
-			));			
+			this.addRenderableWidget(this.closeButton);
 		} 
 		
 		else if (this.CURRENT_SCREEN == "blocks") {
@@ -246,18 +258,28 @@ public final class ScreenConfiguration extends Screen {
 				String object = ConfigurationManager.getInstance().getBlockedStructures().get(i);
 				
 				this.OPTIONS_ROW_LIST.addBig(
-					new CosmosOptionListElement(ComponentHelper.style(ComponentColour.WHITE, "", object), true, ComponentHelper.style(ComponentColour.RED, "bold", "-"), (button) -> { 
+					new CosmosOptionListElement(ComponentHelper.style(ComponentColour.WHITE, "", object), true, 
+					ComponentHelper.style(ComponentColour.RED, "bold", "-"), 
+					ComponentHelper.style(ComponentColour.RED, "dimensionalpocketsii.gui.config.remove"),
+					(button) -> { 
 						ConfigurationManager.getInstance().removeBlockedStructure(object);
 						this.updateWidgets();
+					}, 
+					(button) -> {
+						return button.get();
 					})
 				);
 			}
 			
-			this.addRenderableWidget(new Button(
-				(this.width) /2, this.height - DONE_BUTTON_TOP_OFFSET, SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT,
-				ComponentHelper.style(ComponentColour.GREEN, "bold", "dimensionalpocketsii.gui.done"), (button) -> { this.switchScreen("home"); }
-			));
-		} else if (this.CURRENT_SCREEN == "items") {
+			this.addRenderableWidget(Button.builder(
+				ComponentHelper.style(ComponentColour.GREEN, "bold", "dimensionalpocketsii.gui.done"), 
+				(button) -> { 
+					this.switchScreen("home");
+				}).pos((this.width) /2, this.height - DONE_BUTTON_TOP_OFFSET).size(SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT).build()
+			);
+		} 
+		
+		else if (this.CURRENT_SCREEN == "items") {
 			this.initOptions();
 			
 			this.OPTIONS_ROW_LIST.addBig(
@@ -276,22 +298,43 @@ public final class ScreenConfiguration extends Screen {
 				String object = ConfigurationManager.getInstance().getBlockedItems().get(i);
 				
 				this.OPTIONS_ROW_LIST.addBig(
-					new CosmosOptionListElement(ComponentHelper.style(ComponentColour.WHITE, "", object), true, ComponentHelper.style(ComponentColour.RED, "bold", "-"), (button) -> { 
+					new CosmosOptionListElement(ComponentHelper.style(ComponentColour.WHITE, "", object), true, 
+					ComponentHelper.style(ComponentColour.RED, "bold", "-"), 
+					ComponentHelper.style(ComponentColour.RED, "dimensionalpocketsii.gui.config.remove"), 
+					(button) -> { 
 						ConfigurationManager.getInstance().removeBlockedItem(object);
 						this.updateWidgets();
+					},
+					(button) -> {
+						return button.get();
 					})
 				);
 			}
 			
-			this.addRenderableWidget(new Button(
-				(this.width) /2, this.height - DONE_BUTTON_TOP_OFFSET, SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT,
-				ComponentHelper.style(ComponentColour.GREEN, "bold", "dimensionalpocketsii.gui.done"), (button) -> { this.switchScreen("home"); }
-			));
-		} else if (this.CURRENT_SCREEN == "commands") {
+			this.addRenderableWidget(Button.builder(
+				ComponentHelper.style(ComponentColour.GREEN, "bold", "dimensionalpocketsii.gui.done"),
+				(button) -> { 
+					this.switchScreen("home"); 
+				}).pos((this.width) /2, this.height - DONE_BUTTON_TOP_OFFSET).size(SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT).build()
+			);
+		} 
+		
+		else if (this.CURRENT_SCREEN == "commands") {
 			this.initOptions();
 
 			this.OPTIONS_ROW_LIST.addBig(
 				new CosmosOptionTitle(ComponentHelper.style(ComponentColour.LIGHT_GRAY, "boldunderline", "dimensionalpocketsii.gui.config.blocked_commands"))
+			);
+
+			this.OPTIONS_ROW_LIST.addBig(
+				CosmosOptionInstance.createIntSlider(ComponentHelper.style(ComponentColour.ORANGE, "dimensionalpocketsii.gui.config.op_level"),
+				CosmosOptionInstance.getTooltipSplitComponent(ComponentHelper.style(DESC_COLOUR, "dimensionalpocketsii.gui.config.op_level_info"), 
+				ComponentHelper.style(ComponentColour.RED, "dimensionalpocketsii.gui.config.op_level_info_two")), 
+				ConfigurationManager.getInstance().getOPLevel(), 0, 4, 4, ComponentColour.WHITE, ComponentHelper.style(ComponentColour.GREEN, "Min"), 
+				ComponentHelper.style(ComponentColour.DARK_YELLOW, "dimensionalpocketsii.gui.config.op_level_slide"), ComponentHelper.style(ComponentColour.RED, "Max"), 
+				(intValue) -> {
+					ConfigurationManager.getInstance().setOPLevel(intValue);
+				})
 			);
 
 			this.EDIT_BOX_COMMANDS.setOnPressFunction((button) -> { 
@@ -306,17 +349,23 @@ public final class ScreenConfiguration extends Screen {
 				String object = ConfigurationManager.getInstance().getBlockedCommands().get(i);
 				
 				this.OPTIONS_ROW_LIST.addBig(
-					new CosmosOptionListElement(ComponentHelper.style(ComponentColour.WHITE, "", object), true, ComponentHelper.style(ComponentColour.RED, "bold", "-"), (button) -> { 
+					new CosmosOptionListElement(ComponentHelper.style(ComponentColour.WHITE, "", object), true, 
+					ComponentHelper.style(ComponentColour.RED, "bold", "-"), 
+					ComponentHelper.style(ComponentColour.RED, "dimensionalpocketsii.gui.config.remove"), 
+					(button) -> { 
 						ConfigurationManager.getInstance().removeBlockedCommand(object);
 						this.updateWidgets();
+					}, (button) -> {
+						return button.get();
 					})
 				);
 			}
 			
-			this.addRenderableWidget(new Button(
-				(this.width) /2, this.height - DONE_BUTTON_TOP_OFFSET, SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT,
-				ComponentHelper.style(ComponentColour.GREEN, "bold", "dimensionalpocketsii.gui.done"), (button) -> { this.switchScreen("home"); }
-			));
+			this.addRenderableWidget(Button.builder(
+				ComponentHelper.style(ComponentColour.GREEN, "bold", "dimensionalpocketsii.gui.done"), (button) -> { 
+					this.switchScreen("home"); 
+				}).pos((this.width) /2, this.height - DONE_BUTTON_TOP_OFFSET).size(SMALL_WIDTH, OPTIONS_LIST_BUTTON_HEIGHT).build()
+			);
 		}
 		
 		this.addWidget(this.OPTIONS_ROW_LIST);
@@ -341,17 +390,17 @@ public final class ScreenConfiguration extends Screen {
 	}
 	
 	@Override
-	public void render(PoseStack poseStackIn, int mouseX, int mouseY, float ticks) {
-		this.renderBackground(poseStackIn);
+	public void render(GuiGraphics graphicsIn, int mouseX, int mouseY, float ticks) {
+		this.renderBackground(graphicsIn);
 		
-		this.OPTIONS_ROW_LIST.render(poseStackIn, mouseX, mouseY, ticks);
+		this.OPTIONS_ROW_LIST.render(graphicsIn, mouseX, mouseY, ticks);
 		
-		drawCenteredString(poseStackIn, this.font, this.title, width / 2, TITLE_HEIGHT, 0xFFFFFF);
-		//drawCenteredString(poseStackIn, this.font, ComponentHelper.style(ComponentColour.GREEN, "bold", (this.CURRENT_SCREEN.substring(0, 1).toUpperCase()) + this.CURRENT_SCREEN.substring(1)), width / 2 + 150, TITLE_HEIGHT, 0xFFFFFF);
+		graphicsIn.drawCenteredString(this.font, this.title, width / 2, TITLE_HEIGHT, 0xFFFFFF);
+		//drawCenteredString(graphicsIn, this.font, ComponentHelper.style(ComponentColour.GREEN, "bold", (this.CURRENT_SCREEN.substring(0, 1).toUpperCase()) + this.CURRENT_SCREEN.substring(1)), width / 2 + 150, TITLE_HEIGHT, 0xFFFFFF);
 		
-		super.render(poseStackIn, mouseX, mouseY, ticks);
-		List<FormattedCharSequence> list = tooltipAt(this.OPTIONS_ROW_LIST, mouseX, mouseY);
-		this.renderTooltip(poseStackIn, list, mouseX, mouseY);
+		super.render(graphicsIn, mouseX, mouseY, ticks);
+		//List<FormattedCharSequence> list = tooltipAt(this.OPTIONS_ROW_LIST, mouseX, mouseY);
+		//graphicsIn.renderTooltip(this.font, list, mouseX, mouseY);
 	}
 	
 	public void updateWidgets() {
@@ -363,11 +412,11 @@ public final class ScreenConfiguration extends Screen {
 		
 		this.OPTIONS_ROW_LIST.setScrollAmount(scroll);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static List<FormattedCharSequence> tooltipAt(CosmosOptionsList listIn, int mouseX, int mouseY) {
 		Optional<AbstractWidget> optional = listIn.getMouseOver((double)  mouseX, (double) mouseY);
-		return (List<FormattedCharSequence>) (optional.isPresent() && optional.get() instanceof TooltipAccessor ? ((TooltipAccessor) optional.get()).getTooltip() : ImmutableList.of());
+		return (List<FormattedCharSequence>) (optional.isPresent() && optional.get() instanceof AbstractWidget ? ((AbstractWidget) optional.get()).getTooltip() : ImmutableList.of());
 	}
 
 	@Override
@@ -397,10 +446,25 @@ public final class ScreenConfiguration extends Screen {
 	public boolean charTyped(char charCode, int test) {
 		return super.charTyped(charCode, test);
 	}
-	
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int p_94701_, double p_94702_, double p_94703_) {
+		boolean dragged = super.mouseDragged(mouseX, mouseY, p_94701_, p_94702_, p_94703_);
+		
+		if (this.getChildAt(mouseX, mouseY).isPresent()) {
+			for (GuiEventListener listener : this.OPTIONS_ROW_LIST.children()) {
+				if (listener.isMouseOver(mouseX, mouseY)) {
+					this.updateWidgets();
+				}
+			}
+		}
+		
+		return dragged;
+	}
+
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int ticks) {
-		super.mouseClicked(mouseX, mouseY, ticks);
+		boolean clicked = super.mouseClicked(mouseX, mouseY, ticks);
 		
 		if (this.CURRENT_SCREEN == "blocks") {
 			return this.EDIT_BOX_BLOCKS.getEditBox().mouseClicked(mouseX, mouseY, ticks);
@@ -412,25 +476,33 @@ public final class ScreenConfiguration extends Screen {
 		
 		if (this.getChildAt(mouseX, mouseY).isPresent()) {
 			for (GuiEventListener listener : this.OPTIONS_ROW_LIST.children()) {
-				if (listener.isMouseOver(mouseX, mouseY)) {
-					this.updateWidgets();
+				if (!listener.equals(this.closeButton)) {
+					if (listener.isMouseOver(mouseX, mouseY)) {
+						this.updateWidgets();
+					}
 				}
 			}
 		}
 		
-		return super.mouseClicked(mouseX, mouseY, ticks);
+		return clicked;
 	}
+	
 	public void switchScreen(String screen) {
 		this.CURRENT_SCREEN = screen;
 		this.updateWidgets();
+		this.init();
 	}
 	
     @Override
     public void onClose() {
     	if (this.CURRENT_SCREEN == "home") {
-	    	this.minecraft.setScreen(PARENT_SCREEN);
+	    	this.minecraft.setScreen(this.PARENT_SCREEN);
+
+	        ConfigurationManager.save();
+	    	super.onClose();
     	} 
     	
         ConfigurationManager.save();
+    	super.onClose();
     }
 }

@@ -13,8 +13,8 @@
         }
     },
     "textures": {
-        "particle": "dimensionalpocketsii:blocks/pocket/sides/side_west",
-        "overlay": "dimensionalpocketsii:blocks/pocket/sides/side_west"
+        "particle": "dimensionalpocketsii:block/pocket/sides/side_west",
+        "overlay": "dimensionalpocketsii:block/pocket/sides/side_west"
     },
     "elements": [
         {

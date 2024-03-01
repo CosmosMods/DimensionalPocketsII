@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.tcn.cosmoslibrary.client.container.CosmosContainerMenuBlockEntity;
+import com.tcn.cosmoslibrary.client.container.slot.SlotArmourItem;
 import com.tcn.cosmoslibrary.client.container.slot.SlotBooleanItem;
 import com.tcn.cosmoslibrary.client.container.slot.SlotRestrictedAccess;
 import com.tcn.dimensionalpocketsii.core.crafting.UpgradeStationRecipe;
@@ -21,6 +22,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -52,22 +54,22 @@ public class ContainerModuleUpgradeStation extends CosmosContainerMenuBlockEntit
 		this.recipes = this.getLevel().getRecipeManager().getAllRecipesFor((RecipeType<UpgradeStationRecipe>) UpgradeStationRecipe.Type.INSTANCE);
 		
 		//Focus Slot
-		this.addSlot(new SlotBooleanItem(inputSlots, 0, 63, 42, true, 1));
+		this.addSlot(new SlotBooleanItem(inputSlots, 0, 76, 42, true, 1));
 
 		//Input Slots
-		this.addSlot(new SlotBooleanItem(inputSlots, 1, 42, 21, true, 1));
-		this.addSlot(new SlotBooleanItem(inputSlots, 2, 63, 21, true, 1));
-		this.addSlot(new SlotBooleanItem(inputSlots, 3, 84, 21, true, 1));
+		this.addSlot(new SlotBooleanItem(inputSlots, 1, 55, 21, true, 1));
+		this.addSlot(new SlotBooleanItem(inputSlots, 2, 76, 21, true, 1));
+		this.addSlot(new SlotBooleanItem(inputSlots, 3, 97, 21, true, 1));
 
-		this.addSlot(new SlotBooleanItem(inputSlots, 4, 42, 42, true, 1));
-		this.addSlot(new SlotBooleanItem(inputSlots, 5, 84, 42, true, 1));
+		this.addSlot(new SlotBooleanItem(inputSlots, 4, 55, 42, true, 1));
+		this.addSlot(new SlotBooleanItem(inputSlots, 5, 97, 42, true, 1));
 		
-		this.addSlot(new SlotBooleanItem(inputSlots, 6, 42, 63, true, 1));
-		this.addSlot(new SlotBooleanItem(inputSlots, 7, 63, 63, true, 1));
-		this.addSlot(new SlotBooleanItem(inputSlots, 8, 84, 63, true, 1));
+		this.addSlot(new SlotBooleanItem(inputSlots, 6, 55, 63, true, 1));
+		this.addSlot(new SlotBooleanItem(inputSlots, 7, 76, 63, true, 1));
+		this.addSlot(new SlotBooleanItem(inputSlots, 8, 97, 63, true, 1));
 
 		//Output Slot
-		this.addSlot(new SlotRestrictedAccess(resultSlots, 9, 126, 42, false, true) {
+		this.addSlot(new SlotRestrictedAccess(resultSlots, 9, 139, 42, false, true) {
 			@Override
 			public boolean mayPlace(ItemStack stackIn) {
 				return false;
@@ -95,6 +97,12 @@ public class ContainerModuleUpgradeStation extends CosmosContainerMenuBlockEntit
 		for (int l = 0; l < 9; ++l) {
 			this.addSlot(new Slot(playerInventoryIn, l, 12 + l * 18, 160));
 		}
+		
+		//Armour Slots
+		this.addSlot(new SlotArmourItem(playerInventoryIn, 39, 25, 15, this.player, 0));
+		this.addSlot(new SlotArmourItem(playerInventoryIn, 38, 25, 33, this.player, 1));
+		this.addSlot(new SlotArmourItem(playerInventoryIn, 37, 25, 51, this.player, 2));
+		this.addSlot(new SlotArmourItem(playerInventoryIn, 36, 25, 69, this.player, 3));
 	}
 	
 	protected boolean mayPickup(Player playerIn, boolean bool) {
@@ -133,16 +141,20 @@ public class ContainerModuleUpgradeStation extends CosmosContainerMenuBlockEntit
 	}
 
 	protected void onTake(Player playerIn, ItemStack stackIn) {
-		stackIn.onCraftedBy(playerIn.level, playerIn, stackIn.getCount());
+		stackIn.onCraftedBy(playerIn.level(), playerIn, stackIn.getCount());
 		
-		this.resultSlots.awardUsedRecipes(playerIn);
+		this.resultSlots.awardUsedRecipes(playerIn, this.getRelevantItems());
 		for (int i = 0; i < 9; i++) {
 			if (!inputSlots.getItem(i).isEmpty()) {
 				this.shrinkStackInSlot(i);
 			}
 		}
 		
-		player.getLevel().playSound(playerIn, this.getBlockPos(), ObjectManager.sound_tink, SoundSource.BLOCKS, 1.0F, 1.0F);
+		player.level().playSound(playerIn, this.getBlockPos(), ObjectManager.sound_tink, SoundSource.BLOCKS, 1.0F, 1.0F);
+	}
+
+	private List<ItemStack> getRelevantItems() {
+		return List.of(this.inputSlots.getItem(0), this.inputSlots.getItem(1), this.inputSlots.getItem(2));
 	}
 
 	private void shrinkStackInSlot(int slotIndex) {
@@ -158,7 +170,7 @@ public class ContainerModuleUpgradeStation extends CosmosContainerMenuBlockEntit
 			this.resultSlots.setItem(0, ItemStack.EMPTY);
 		} else {
 			this.selectedRecipe = list.get(0);
-			ItemStack itemstack = this.selectedRecipe.assemble(this.inputSlots);
+			ItemStack itemstack = this.selectedRecipe.assemble(this.inputSlots, this.getLevel().registryAccess());
 			this.resultSlots.setRecipeUsed(this.selectedRecipe);
 			this.resultSlots.setItem(0, itemstack);
 		}
@@ -174,12 +186,30 @@ public class ContainerModuleUpgradeStation extends CosmosContainerMenuBlockEntit
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
 			
-			if (indexIn >= 0 && indexIn <= 9) {
+			if (indexIn == 0) {
+				if (itemstack.getItem() instanceof ArmorItem) {
+					if (!this.moveItemStackTo(itemstack1, this.slots.size() - 4, this.slots.size(), false)) {
+						if (!this.moveItemStackTo(itemstack1, 11, this.slots.size() - 13, false)) {
+							return ItemStack.EMPTY;
+						}
+					}
+				} else {
+					if (!this.moveItemStackTo(itemstack1, 11, this.slots.size() - 13, false)) {
+						return ItemStack.EMPTY;
+					}
+				}
+			} else if (indexIn >= 1 && indexIn <= 9) {
 				if (!this.moveItemStackTo(itemstack1, 10, this.slots.size() - 9, false)) {
 					return ItemStack.EMPTY;
 				}
 			} else if (indexIn > 9 && indexIn < this.slots.size()) {
-				if (!this.moveItemStackTo(itemstack1, 0, 9, false)) {
+				if (itemstack.getItem() instanceof ArmorItem && indexIn < this.slots.size() - 4) {
+					if (!this.moveItemStackTo(itemstack1, 0, 1, false)) { 
+						if (!this.moveItemStackTo(itemstack1, this.slots.size() - 4, this.slots.size(), false)) {
+							return ItemStack.EMPTY;
+						}
+					}
+				} else if (!this.moveItemStackTo(itemstack1, 0, 9, false)) {
 					return ItemStack.EMPTY;
 				}
 			}

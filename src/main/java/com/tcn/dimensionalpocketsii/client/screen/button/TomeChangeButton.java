@@ -1,9 +1,9 @@
 package com.tcn.dimensionalpocketsii.client.screen.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -20,8 +20,8 @@ public class TomeChangeButton extends Button {
 
 	private ResourceLocation texture;
 
-	public TomeChangeButton(int posX, int posY, boolean isForwardIn, boolean playTurnSoundIn, ResourceLocation textureIn, Button.OnPress onPressIn) {
-		super(posX, posY, 25, 13, ComponentHelper.empty(), onPressIn);
+	public TomeChangeButton(int posX, int posY, boolean isForwardIn, boolean playTurnSoundIn, ResourceLocation textureIn, Button.OnPress onPressIn, Button.CreateNarration createNarr) {
+		super(posX, posY, 25, 13, ComponentHelper.empty(), onPressIn, createNarr);
 		this.isForward = isForwardIn;
 		this.playTurnSound = playTurnSoundIn;
 
@@ -30,14 +30,13 @@ public class TomeChangeButton extends Button {
 	}
 	
 	@Override
-	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 		if (this.visible) {
-			this.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+			this.renderButton(graphics, mouseX, mouseY, partialTicks);
 		}
 	}
 	
-	@Override
-	public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, this.texture);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
@@ -57,7 +56,7 @@ public class TomeChangeButton extends Button {
 			j += 13;
 		}
 
-		this.blit(matrixStack, this.x, this.y, i, j, 25, 13);
+		graphics.blit(this.texture, this.getX(), this.getY(), i, j, 25, 13);
 	}
 
 	public void playDownSound(SoundManager handler) {

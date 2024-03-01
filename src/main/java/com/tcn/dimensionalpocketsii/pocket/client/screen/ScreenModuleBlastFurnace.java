@@ -1,16 +1,17 @@
 package com.tcn.dimensionalpocketsii.pocket.client.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
 import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeRecipeBook;
+import com.tcn.cosmoslibrary.common.enums.EnumUIMode;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.dimensionalpocketsii.DimReference.GUI;
 import com.tcn.dimensionalpocketsii.DimReference.GUI.RESOURCE;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleBlastFurnace;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleBlastFurnace;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleBlastFurnace;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -44,13 +45,13 @@ public class ScreenModuleBlastFurnace extends CosmosScreenUIModeRecipeBook<Conta
 		super.init();
 	}
 	
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		super.render(poseStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(graphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-		super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+	protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+		super.renderBg(graphics, partialTicks, mouseX, mouseY);
 		BlockEntity entity = this.getBlockEntity();
 		
 		if (entity instanceof BlockEntityModuleBlastFurnace) {
@@ -69,20 +70,19 @@ public class ScreenModuleBlastFurnace extends CosmosScreenUIModeRecipeBook<Conta
 					rgb = ComponentColour.rgbFloatArray(decimal);
 				}
 				
-				CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, new float[] { rgb[0], rgb[1], rgb[2], 1.0F }, blockEntity, GUI.RESOURCE.FURNACE_BASE);
+				CosmosUISystem.renderStaticElementWithUIMode(this, graphics, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, new float[] { rgb[0], rgb[1], rgb[2], 1.0F }, blockEntity, GUI.RESOURCE.FURNACE_BASE);
 			}
 			
-			CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, blockEntity, GUI.RESOURCE.FURNACE_OVERLAY);
-		}
+			CosmosUISystem.renderStaticElementWithUIMode(this, graphics, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, blockEntity, GUI.RESOURCE.FURNACE_OVERLAY);
 
-		
-		if (this.menu.isLit()) {
-			int k = this.menu.getLitProgress();
-			this.blit(poseStack, this.getScreenCoords()[0] + 53, this.getScreenCoords()[1] + 36 + 13 - k, 184, 12 - k, 14, k + 1);
-		}
+			if (this.menu.isLit()) {
+				int k = this.menu.getLitProgress();
+				graphics.blit(blockEntity.getUIMode().equals(EnumUIMode.DARK)? GUI.RESOURCE.FURNACE_OVERLAY[1] : GUI.RESOURCE.FURNACE_OVERLAY[0], this.getScreenCoords()[0] + 53, this.getScreenCoords()[1] + 36 + 13 - k, 184, 12 - k, 14, k + 1);
+			}
 
-		int l = this.menu.getBurnProgress();
-		this.blit(poseStack, this.getScreenCoords()[0] + 75, this.getScreenCoords()[1] + 34, 184, 14, l + 1, 16);
+			int l = this.menu.getBurnProgress();
+			graphics.blit(blockEntity.getUIMode().equals(EnumUIMode.DARK)? GUI.RESOURCE.FURNACE_OVERLAY[1] : GUI.RESOURCE.FURNACE_OVERLAY[0], this.getScreenCoords()[0] + 75, this.getScreenCoords()[1] + 34, 184, 14, l + 1, 16);
+		}
 	}
 
 	@Override

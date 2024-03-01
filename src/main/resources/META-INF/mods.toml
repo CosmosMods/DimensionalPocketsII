@@ -1,13 +1,13 @@
 #dimensionalpocketsii
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[47,)"
 license="All Rights Reserved"
 issueTrackerURL="https://github.com/TheCosmicNebula/DimensionalPocketsII/issues"
 logoFile="dimensional_logo.png"
 	
 [[mods]] #mandatory
 	modId="dimensionalpocketsii"
-	version="7.1.1.20"
+	version="9.0.4.40"
 	displayName="Dimensional Pockets II"
 	displayURL="https://www.curseforge.com/minecraft/mc-mods/dimensional-pockets-ii"
 	credits="NPException, VsnGamer (Elevator Code), SuperMartijn642 (Chunkloading Code), Scarlet Spark, Apolybrium, Rechalow, Discord Members"
@@ -19,31 +19,31 @@ Create pocket dimensions!
 [[dependencies.dimensionalpocketsii]]
     modId="cosmoslibrary"
     mandatory=true
-    versionRange="[7.2.0,)"
+    versionRange="[10.3.1.0,11)"
     ordering="BEFORE"
     side="BOTH"
 [[dependencies.dimensionalpocketsii]]
     modId="forge"
     mandatory=true
-    versionRange="[41.1.0,)"
+    versionRange="[47,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.dimensionalpocketsii]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19, 1.20]"
+    versionRange="[1.20.1, 1.21]"
     ordering="NONE"
     side="BOTH"
 
 #cosmoslibrary
 modLoader="javafml" #mandatory
-loaderVersion="[41,)" #mandatory
+loaderVersion="[47,)" #mandatory
 license="All Rights Reserved" #mandatory
 logoFile="cosmos_logo.png" #optional
 
 [[mods]] #mandatory
 	modId="cosmoslibrary" #mandatory
-	version="7.2.0.0" #mandatory
+	version="10.3.1.0" #mandatory
 	displayName="Cosmos Library" #mandatory
 	displayURL="https://www.curseforge.com/minecraft/mc-mods/cosmos-library" #optional
 	authors="TheCosmicNebula" #optional
@@ -54,12 +54,12 @@ Library and API for TheCosmicNebula's Mods.
 [[dependencies.cosmoslibrary]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[41.0.0,)" #mandatory
+    versionRange="[47,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.cosmoslibrary]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19, 1.20]"
+    versionRange="[1.20.1, 1.21]"
     ordering="NONE"
     side="BOTH"

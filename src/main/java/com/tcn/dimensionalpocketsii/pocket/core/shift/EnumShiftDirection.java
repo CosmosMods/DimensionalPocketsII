@@ -6,6 +6,7 @@ import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.dimensionalpocketsii.core.management.ObjectManager;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -78,7 +79,7 @@ public enum EnumShiftDirection {
 		return ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.pocket.direction.pre").append(getUseName()).append(ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.pocket.direction.suff"));
 	}
 
-	public SoundEvent getSound() {
-		return this.sound;
+	public Holder<SoundEvent> getSound() {
+		return Holder.direct(this.sound);
 	}
 }

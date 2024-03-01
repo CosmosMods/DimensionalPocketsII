@@ -1,7 +1,7 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "dimensionalpocketsii:items/tool/bow_enhanced_2"
+        "layer0": "dimensionalpocketsii:item/tool/bow_enhanced_2"
     },
     "display": {
         "thirdperson_righthand": {

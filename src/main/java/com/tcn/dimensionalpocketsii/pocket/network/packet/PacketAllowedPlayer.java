@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -42,7 +42,7 @@ public class PacketAllowedPlayer implements PacketPocketNet {
 			String player_name = packet.player_name;
 			boolean add = packet.add;
 			
-			Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(packet.pos);
+			Pocket pocket = StorageManager.getPocketFromChunkPosition(null, packet.pos);
 			
 			if (!player_name.isEmpty()) {
 				if (pocket.exists()) {
@@ -61,7 +61,7 @@ public class PacketAllowedPlayer implements PacketPocketNet {
 				}
 			} 
 			
-			PocketRegistryManager.saveData();
+			StorageManager.saveRegistry();
 		});
 		
 		ctx.setPacketHandled(true);

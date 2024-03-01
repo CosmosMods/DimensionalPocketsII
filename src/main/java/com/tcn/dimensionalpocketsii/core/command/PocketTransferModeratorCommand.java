@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -25,7 +25,7 @@ public class PocketTransferModeratorCommand {
 	
 	private static int transferPocket(CommandSourceStack commandSourceIn, Vec2 vector, ServerPlayer newPlayer) {
 		CosmosChunkPos chunkPos = new CosmosChunkPos(vector.x, vector.y); 
-		Pocket pocket = PocketRegistryManager.getPocketFromChunkPosition(chunkPos);
+		Pocket pocket = StorageManager.getPocketFromChunkPosition(null, chunkPos);
 		
 		if (pocket.exists()) {
 			pocket.updateOwner(null, newPlayer);

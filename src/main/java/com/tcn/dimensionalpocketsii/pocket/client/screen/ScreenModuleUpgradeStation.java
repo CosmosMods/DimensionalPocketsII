@@ -1,6 +1,5 @@
 package com.tcn.dimensionalpocketsii.pocket.client.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tcn.cosmoslibrary.client.ui.lib.CosmosUISystem;
 import com.tcn.cosmoslibrary.client.ui.screen.CosmosScreenUIModeBE;
 import com.tcn.cosmoslibrary.common.lib.ComponentColour;
@@ -9,8 +8,9 @@ import com.tcn.dimensionalpocketsii.DimReference.GUI;
 import com.tcn.dimensionalpocketsii.DimReference.GUI.RESOURCE;
 import com.tcn.dimensionalpocketsii.pocket.client.container.ContainerModuleUpgradeStation;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityModuleUpgradeStation;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.BlockEntityModuleUpgradeStation;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -37,7 +37,7 @@ public class ScreenModuleUpgradeStation extends CosmosScreenUIModeBE<ContainerMo
 		this.setUILockButtonIndex(167, 19);
 		this.setUIHelpElementDeadzone(23, 13, 160, 86);
 		
-		this.setTitleLabelDims(34, 4);
+		this.setTitleLabelDims(48, 4);
 		this.setInventoryLabelDims(8, 89);
 	}
 
@@ -47,13 +47,13 @@ public class ScreenModuleUpgradeStation extends CosmosScreenUIModeBE<ContainerMo
 	}
 	
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		super.render(poseStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(graphics, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-		super.renderBg(poseStack, partialTicks, mouseX, mouseY);
+	protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+		super.renderBg(graphics, partialTicks, mouseX, mouseY);
 		
 		BlockEntity entity = this.getBlockEntity();
 		
@@ -73,16 +73,16 @@ public class ScreenModuleUpgradeStation extends CosmosScreenUIModeBE<ContainerMo
 					rgb = ComponentColour.rgbFloatArray(decimal);
 				}
 				
-				CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, new float[] { rgb[0], rgb[1], rgb[2], 1.0F }, blockEntity, GUI.RESOURCE.UPGRADE_STATION_BASE);
+				CosmosUISystem.renderStaticElementWithUIMode(this, graphics, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, new float[] { rgb[0], rgb[1], rgb[2], 1.0F }, blockEntity, GUI.RESOURCE.UPGRADE_STATION_BASE);
 			}
 			
-			CosmosUISystem.renderStaticElementWithUIMode(this, poseStack, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, blockEntity, GUI.RESOURCE.UPGRADE_STATION_OVERLAY);
+			CosmosUISystem.renderStaticElementWithUIMode(this, graphics, this.getScreenCoords(), 0, 0, 0, 0, this.imageWidth, this.imageHeight, blockEntity, GUI.RESOURCE.UPGRADE_STATION_OVERLAY);
 		}
 	}
 
 	@Override
-	public void renderStandardHoverEffect(PoseStack poseStack, Style style, int mouseX, int mouseY) {
-		super.renderStandardHoverEffect(poseStack, style, mouseX, mouseY);
+	public void renderStandardHoverEffect(GuiGraphics graphics, Style style, int mouseX, int mouseY) {
+		super.renderStandardHoverEffect(graphics, style, mouseX, mouseY);
 	}
 	
 	@Override
@@ -92,43 +92,59 @@ public class ScreenModuleUpgradeStation extends CosmosScreenUIModeBE<ContainerMo
 		
 	
 	@Override
-	public void pushButton(Button button) {
-		super.pushButton(button);
+	public void clickButton(Button button, boolean isLeftClick) {
+		super.clickButton(button, isLeftClick);
 	}
 
 	protected void addUIHelpElements() {
 		super.addUIHelpElements();
 		
-		this.addRenderableUIHelpElement(this.getScreenCoords(), 124, 40, 20, 20, ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.gui.help.upgrade_station.result_slot"), 
+		this.addRenderableUIHelpElement(this.getScreenCoords(), 137, 40, 20, 20, ComponentHelper.style(ComponentColour.CYAN, "dimensionalpocketsii.gui.help.upgrade_station.result_slot"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.result_slot_one"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.result_slot_two")
 		);
 
-		this.addRenderableUIHelpElement(this.getScreenCoords(), 61, 40, 20, 20, ComponentHelper.style(ComponentColour.PURPLE, "dimensionalpocketsii.gui.help.upgrade_station.focused_slot"), 
+		this.addRenderableUIHelpElement(this.getScreenCoords(), 74, 40, 20, 20, ComponentHelper.style(ComponentColour.PURPLE, "dimensionalpocketsii.gui.help.upgrade_station.focused_slot"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.focused_slot_one"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.focused_slot_two")
 		);
 		
-		this.addRenderableUIHelpElement(this.getScreenCoords(), 40, 19, 62, 20, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.upgrade_station.input_slots"), 
+		this.addRenderableUIHelpElement(this.getScreenCoords(), 53, 19, 62, 20, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.upgrade_station.input_slots"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.input_slots_one"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.input_slots_two")
 		);
 
-		this.addRenderableUIHelpElement(this.getScreenCoords(), 40, 40, 20, 20, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.upgrade_station.input_slots"), 
+		this.addRenderableUIHelpElement(this.getScreenCoords(), 53, 40, 20, 20, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.upgrade_station.input_slots"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.input_slots_one"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.input_slots_two")
 		);
 		
-		this.addRenderableUIHelpElement(this.getScreenCoords(), 40, 61, 62, 20, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.upgrade_station.input_slots"), 
+		this.addRenderableUIHelpElement(this.getScreenCoords(), 53, 61, 62, 20, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.upgrade_station.input_slots"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.input_slots_one"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.input_slots_two")
 		);
 
-		this.addRenderableUIHelpElement(this.getScreenCoords(), 82, 40, 20, 20, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.upgrade_station.input_slots"), 
+		this.addRenderableUIHelpElement(this.getScreenCoords(), 95, 40, 20, 20, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.upgrade_station.input_slots"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.input_slots_one"), 
 			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.upgrade_station.input_slots_two")
 		);
-		
+
+		this.addRenderableUIHelpElement(this.getScreenCoords(), 24, 14, 18, 18, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.slot.helmet"), 
+			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.slot.armour"),
+			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.slot.helmet_one")
+		);
+		this.addRenderableUIHelpElement(this.getScreenCoords(), 24, 32, 18, 18, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.slot.chestplate"), 
+			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.slot.armour"),
+			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.slot.chestplate_one")
+		);
+		this.addRenderableUIHelpElement(this.getScreenCoords(), 24, 50, 18, 18, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.slot.leggings"), 
+			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.slot.armour"),
+			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.slot.leggings_one")
+		);
+		this.addRenderableUIHelpElement(this.getScreenCoords(), 24, 68, 18, 18, ComponentHelper.style(ComponentColour.LIGHT_BLUE, "dimensionalpocketsii.gui.help.slot.boots"), 
+			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.slot.armour"),
+			ComponentHelper.style(ComponentColour.LIGHT_GRAY, "dimensionalpocketsii.gui.help.slot.boots_one")
+		);
 	}
 	
 	@Override

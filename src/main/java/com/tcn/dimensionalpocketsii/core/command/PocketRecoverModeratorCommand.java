@@ -7,7 +7,7 @@ import com.tcn.cosmoslibrary.common.lib.ComponentColour;
 import com.tcn.cosmoslibrary.common.lib.ComponentHelper;
 import com.tcn.cosmoslibrary.common.lib.CosmosChunkPos;
 import com.tcn.dimensionalpocketsii.pocket.core.Pocket;
-import com.tcn.dimensionalpocketsii.pocket.core.management.PocketRegistryManager;
+import com.tcn.dimensionalpocketsii.pocket.core.registry.StorageManager;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -34,13 +34,13 @@ public class PocketRecoverModeratorCommand {
 		String playerDisplayName = serverPlayer.getDisplayName().getString();
 		UUID playerUUID = serverPlayer.getUUID();
 		
-		Pocket pocketIn = PocketRegistryManager.getPocketFromChunkPosition(chunkPos);
+		Pocket pocketIn = StorageManager.getPocketFromChunkPosition(null, chunkPos);
 		if (serverPlayer.isCreative()) {
 			if (pocketIn.exists()) {
 				ItemStack pocketStack = pocketIn.generateItemStackWithNBT();
 				
 				if (serverPlayer.getInventory().add(pocketStack)) {
-					commandSourceIn.sendSuccess(ComponentHelper.style2(ComponentColour.GREEN, "dimensionalpocketsii.command.recoverpocket.success.single", ": [ " + chunkPos.getX() + ", " + chunkPos.getZ() + " ]"), true);
+					commandSourceIn.sendSuccess(() -> ComponentHelper.style2(ComponentColour.GREEN, "dimensionalpocketsii.command.recoverpocket.success.single", ": [ " + chunkPos.getX() + ", " + chunkPos.getZ() + " ]"), true);
 					System.out.println("Player: [ " + playerDisplayName + ", " + playerUUID + " ] Just activated the Recover Pocket Command. For Pocket: " + chunkPos);
 				} else {
 					commandSourceIn.sendFailure(ComponentHelper.comp("dimensionalpocketsii.command.recoverpocket.error.no_space"));

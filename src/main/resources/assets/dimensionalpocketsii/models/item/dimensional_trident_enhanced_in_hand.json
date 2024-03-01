@@ -2,7 +2,7 @@
     "parent": "builtin/entity",
     "gui_light": "front",
     "textures": {
-        "particle": "dimensionalpocketsii:items/tool/trident_enhanced"
+        "particle": "dimensionalpocketsii:item/tool/trident_enhanced"
     },
     "display": {
         "thirdperson_righthand": {

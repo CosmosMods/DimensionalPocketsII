@@ -3,11 +3,11 @@ package com.tcn.dimensionalpocketsii.pocket.network.packet.block;
 import java.util.function.Supplier;
 
 import com.tcn.dimensionalpocketsii.DimensionalPockets;
-import com.tcn.dimensionalpocketsii.pocket.core.blockentity.BlockEntityPocket;
+import com.tcn.dimensionalpocketsii.pocket.core.block.entity.AbstractBlockEntityPocket;
 import com.tcn.dimensionalpocketsii.pocket.network.packet.PacketPocketNet;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +26,7 @@ public class PacketSideGuide implements PacketPocketNet {
 	public PacketSideGuide(FriendlyByteBuf buf) {
 		this.pos = buf.readBlockPos();
 		ResourceLocation location = buf.readResourceLocation();
-		this.dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, location);
+		this.dimension = ResourceKey.create(Registries.DIMENSION, location);
 	}
 	
 	public PacketSideGuide(BlockPos pos, ResourceKey<Level> dimensionIn) {
@@ -47,8 +47,8 @@ public class PacketSideGuide implements PacketPocketNet {
 			ServerLevel world = server.getLevel(packet.dimension);
 			BlockEntity tile = world.getBlockEntity(packet.pos);
 			
-			if (tile instanceof BlockEntityPocket) {
-				BlockEntityPocket tile_pocket = (BlockEntityPocket) tile;
+			if (tile instanceof AbstractBlockEntityPocket) {
+				AbstractBlockEntityPocket tile_pocket = (AbstractBlockEntityPocket) tile;
 			
 				tile_pocket.toggleSideGuide();
 				
