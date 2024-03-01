@@ -1,7 +1,7 @@
-![Version](https://img.shields.io/badge/VERSION-1.19.2-success?style=for-the-badge) ![Repo Size](https://img.shields.io/github/repo-size/TheCosmicNebula/DimensionalPocketsII?label=REPO%20SIZE&style=for-the-badge) ![Open Issues](https://img.shields.io/github/issues/TheCosmicNebula/DimensionalPocketsII?style=for-the-badge) ![Closed Issues](https://img.shields.io/github/issues-closed/TheCosmicNebula/DimensionalPocketsII?color=green&style=for-the-badge) [![Discord](https://img.shields.io/discord/729402437051351040?color=blueviolet&label=DISCORD&style=for-the-badge)](https://discord.gg/8ydCtzm)
+![Version](https://img.shields.io/badge/VERSION-1.20.1-success?style=for-the-badge) ![Repo Size](https://img.shields.io/github/repo-size/TheCosmicNebula/DimensionalPocketsII?label=REPO%20SIZE&style=for-the-badge) ![Open Issues](https://img.shields.io/github/issues/TheCosmicNebula/DimensionalPocketsII?style=for-the-badge) ![Closed Issues](https://img.shields.io/github/issues-closed/TheCosmicNebula/DimensionalPocketsII?color=green&style=for-the-badge) [![Discord](https://img.shields.io/discord/729402437051351040?color=blueviolet&label=DISCORD&style=for-the-badge)](https://discord.gg/8ydCtzm)
 
 # DimensionalPocketsII
-Due to having a similiar idea to NPException's Dimensional Pockets, I have created DimensionalPocketsII with some features carried over, but with my own twist. Currently using MinecraftForge 1.19.2.
+Due to having a similiar idea to NPException's Dimensional Pockets, I have created DimensionalPocketsII with some features carried over, but with my own twist. Currently using MinecraftForge 1.20.1.
 
 ## Licence
 This repo does not have a licence. This means that by default, it is All Rights Reserved. However, due to having complete control over what rights that includes, here is a list of what you can and cannot do:
@@ -43,4 +43,4 @@ If you wish to view the original DimensionalPockets code, please refer to [NPExc
 ### Development Team Applications:
  - Please feel free to email: thecosmicnebula_@outlook.com
 
-| 2022 @ TheCosmicNebula | TCN | All Rights Reserved (Except Where Specified) |
+| 2024 @ TheCosmicNebula | TCN | All Rights Reserved (Except Where Specified) |
